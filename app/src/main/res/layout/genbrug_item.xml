@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#777777"
+        android:id="@+id/iv_photo" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#d8d8d8">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="4">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:textSize="18sp"
+                android:textColor="#484a4f"
+                android:text="@string/gitem_headline"
+                android:id="@+id/tv_headline"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/gitem_description"
+                android:textSize="12sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="16dp"
+                android:textColor="#abaeb3"
+                android:id="@+id/tv_desc" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:text="Sub"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/button4"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
