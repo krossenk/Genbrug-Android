@@ -1,12 +1,11 @@
 package com.iha.genbrug;
 
 import android.app.ActionBar;
-import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -47,15 +46,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         });
 
         ActionBar.Tab tab1 = actionBar.newTab();
-        tab1.setText("Tab 1");
+        tab1.setText("Feed");
         tab1.setTabListener(this);
 
         ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("Tab 2");
+        tab2.setText("Takes");
         tab2.setTabListener(this);
 
         ActionBar.Tab tab3 = actionBar.newTab();
-        tab3.setText("Tab 3");
+        tab3.setText("Gives");
         tab3.setTabListener(this);
 
         actionBar.addTab(tab1);
@@ -87,7 +86,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 }
 
-class MyAdapter extends FragmentPagerAdapter{
+class MyAdapter extends FragmentPagerAdapter {
     public MyAdapter(FragmentManager fm) {
         super(fm);
     }
