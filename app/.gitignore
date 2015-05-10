@@ -1,1 +1,7 @@
 /build
+app/app.iml
+app/.gitignore
+Genbrug-Android.git.iml
+.idea/modules.xml
+.idea/misc.xml
+Genbrug-Android.iml
