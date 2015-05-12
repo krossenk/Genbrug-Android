@@ -8,5 +8,8 @@
     KEY: gitem -->
     <string name="gitem_headline">Headline</string>
     <string name="gitem_description">Description</string>
+    <string name="title_activity_give">GiveActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

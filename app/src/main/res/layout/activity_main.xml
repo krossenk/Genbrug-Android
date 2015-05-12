@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/AppTheme"
     android:layout_width="match_parent"
@@ -8,8 +9,20 @@
     <android.support.v4.view.ViewPager
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:id="@+id/pager">
+        android:id="@+id/pager" />
 
-    </android.support.v4.view.ViewPager>
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/btn_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_add"
+        fab:fab_colorNormal="@color/light_brown"
+        fab:fab_colorPressed="@color/brown"
+        fab:fab_colorRipple="#c8c8c8"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"/>
 
-</LinearLayout>
+</RelativeLayout>

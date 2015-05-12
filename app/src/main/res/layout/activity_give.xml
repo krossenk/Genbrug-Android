@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.iha.genbrug.GiveActivity">
+
+    <RelativeLayout
+        android:id="@+id/rel_image_background"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/old_cam">
+
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_cam_pic"
+            android:src="@drawable/ic_action_camera"
+            android:background="@drawable/circle_brown"
+            android:layout_gravity="center_vertical"
+            android:layout_alignTop="@+id/btn_browse_pic"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="90dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_browse_pic"
+            android:src="@drawable/ic_action_picture"
+            android:background="@drawable/circle_brown"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="90dp"
+            />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_below="@id/rel_image_background"
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+</RelativeLayout>
