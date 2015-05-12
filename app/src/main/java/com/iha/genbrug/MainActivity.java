@@ -1,8 +1,8 @@
 package com.iha.genbrug;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,12 +11,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+
+import com.melnykov.fab.FloatingActionButton;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener, View.OnClickListener {
 
     ViewPager viewPager = null;
     ActionBar actionBar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        fab = (FloatingActionButton) findViewById(R.id.btn_fab);
+        fab.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -47,15 +54,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         });
 
         ActionBar.Tab tab1 = actionBar.newTab();
-        tab1.setText("Tab 1");
+        tab1.setText("Feed");
         tab1.setTabListener(this);
 
         ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("Tab 2");
+        tab2.setText("Takes");
         tab2.setTabListener(this);
 
         ActionBar.Tab tab3 = actionBar.newTab();
-        tab3.setText("Tab 3");
+        tab3.setText("Gives");
         tab3.setTabListener(this);
 
         actionBar.addTab(tab1);
@@ -85,9 +92,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btn_fab){
+            startActivity(new Intent(this, GiveActivity.class));
+        }
+    }
 }
 
-class MyAdapter extends FragmentPagerAdapter{
+class MyAdapter extends FragmentPagerAdapter {
     public MyAdapter(FragmentManager fm) {
         super(fm);
     }

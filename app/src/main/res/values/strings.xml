@@ -1,9 +1,15 @@
 <resources>
-    <string name="app_name">Genbrug</string>
 
-    <string name="hello_world">Hello world!</string>
+    <!-- SHARED -->
+    <string name="app_name">Genbrug</string>
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- GENBRUG ITEM
+    KEY: gitem -->
+    <string name="gitem_headline">Headline</string>
+    <string name="gitem_description">Description</string>
+    <string name="title_activity_give">GiveActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
 </resources>
