@@ -22,10 +22,11 @@ import com.iha.genbrug.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class GiveActivity extends Activity implements View.OnClickListener {
-
     ImageButton btnCamPic;
     ImageButton btnBrowsePic;
     View relImageWrapper;
@@ -34,8 +35,11 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     TouchImageView ivChosenImage;
 
     private static int RESULT_LOAD_IMG = 1;
-    private static long MAX_IMAGE_SIZE = 150000;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private static long MAX_IMAGE_SIZE = 400000;
     private String imgDecodableString;
+    private String mCurrentPhotoPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         // IMPORTANT: INCLUDE THIS IN SOURCES, used example from following tutorial
         // http://programmerguru.com/android-tutorial/how-to-pick-image-from-gallery/
         try{
-
             // When an Image is picked
             if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
                     && null != data) {
@@ -125,7 +128,22 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 imgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
+            }
+            // Result from picture taken by camera
+            else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
+                File imgFile = new  File(mCurrentPhotoPath);
+
+                if(imgFile.exists()){
+                    imgDecodableString = imgFile.getAbsolutePath();
+                }
+
+            } else {
+                Toast.makeText(this, "You haven't picked Image",
+                        Toast.LENGTH_LONG).show();
+            }
+
+            if(!imgDecodableString.isEmpty()){
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 File f = new File(imgDecodableString);
                 long imageByteSize = f.length();
@@ -134,7 +152,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 int beforeWidth = options.outWidth;
                 int beforeHeight = options.outHeight;
                 double divider = MAX_IMAGE_SIZE < beforeWidth*beforeHeight ? ((double)beforeWidth*beforeHeight / MAX_IMAGE_SIZE) : 1;
-
 
                 int optimalInSampleSize = (int) Math.round((Math.sqrt(divider)));
                 int i = 1;
@@ -158,13 +175,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
                 ivChosenImage.setImageBitmap(rotatedBitmap);
 
-                tvSize.setText("Orientation: " + rotation + " ImageSizeBefore: " + beforeWidth + " " + beforeHeight + " " + imageByteSize + " ImageSizeAfter: " + options.outWidth + " " + options.outHeight + " " + options.outHeight * options.outWidth +
+                tvSize.setText("OptimalInSampleSize: " + optimalInSampleSize + " Orientation: " + rotation + " ImageSizeBefore: " + beforeWidth + " " + beforeHeight + " " + imageByteSize + " ImageSizeAfter: " + options.outWidth + " " + options.outHeight + " " + options.outHeight * options.outWidth +
                         " Multiplyer: " + options.inSampleSize);
-
-
-            } else {
-                Toast.makeText(this, "You haven't picked Image",
-                        Toast.LENGTH_LONG).show();
             }
 
         }catch(Exception e){
@@ -184,7 +196,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_cam_pic:
-
+                takePictureIntent();
                 break;
             case R.id.btn_browse_pic:
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -193,5 +205,50 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    /**
+     * Creates intent that starts camera if an activity can handle the intent.
+     * resolveActivity() returns null if activity can't handle intent.
+     */
+    private void takePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    /**
+     *
+     *
+     * @return ImagePhotoFile
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }
