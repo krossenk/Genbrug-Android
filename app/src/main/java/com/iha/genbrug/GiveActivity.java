@@ -16,19 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class GiveActivity extends Activity implements View.OnClickListener {
-
     ImageButton btnCamPic;
     ImageButton btnBrowsePic;
     View relImageBackground;
     TextView tvSize;
 
+
     ImageView imgView;
     private static int RESULT_LOAD_IMG = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
     private static long MAX_IMAGE_SIZE = 150000;
     private String imgDecodableString;
+    private String mCurrentPhotoPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +105,22 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
                 //relImageBackground.setBackground(new BitmapDrawable(getResources(), bitM));
 
+            }
+            // Result from picture taken by
+            else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                //Bundle extras = data.getExtras();
+                //Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+                File imgFile = new  File(mCurrentPhotoPath);
+
+                if(imgFile.exists()){
+
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+                    imgView.setImageBitmap(myBitmap);
+
+                }
+
             } else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
@@ -121,7 +143,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_cam_pic:
-
+                takePictureIntent();
                 break;
             case R.id.btn_browse_pic:
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -130,5 +152,50 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    /**
+     * Creates intent that starts camera if an activity can handle the intent.
+     * resolveActivity() returns null if activity can't handle intent.
+     */
+    private void takePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    /**
+     *
+     *
+     * @return ImagePhotoFile
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }

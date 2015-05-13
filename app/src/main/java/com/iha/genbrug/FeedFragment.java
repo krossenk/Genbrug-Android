@@ -41,7 +41,7 @@ public class FeedFragment extends Fragment {
 
         // Create fake dataset
         final ArrayList<GenbrugItem> genbrugList = new ArrayList<GenbrugItem>();
-        for(int i = 1; i < 11; i++){
+        for(int i = 1; i < 11; i++) {
             genbrugList.add(new GenbrugItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item", getResources().getDrawable(R.drawable.img+i)));
         }
 
