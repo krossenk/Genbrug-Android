@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
+import com.iha.genbrug.give.GiveActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 

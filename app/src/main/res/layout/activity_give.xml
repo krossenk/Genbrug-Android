@@ -3,14 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.iha.genbrug.GiveActivity">
+    tools:context="com.iha.genbrug.give.GiveActivity">
 
     <RelativeLayout
-        android:id="@+id/rel_image_background"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="@drawable/old_cam">
+        android:layout_height="300dp"
+        android:id="@+id/rel_image_wrapper">
 
+        <com.iha.genbrug.give.TouchImageView
+            android:id="@+id/iv_chosen_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#d8d8d8"
+            android:scaleType="centerCrop"
+            android:src="@drawable/old_cam" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -18,10 +24,8 @@
             android:id="@+id/btn_cam_pic"
             android:src="@drawable/ic_action_camera"
             android:background="@drawable/circle_brown"
-            android:layout_gravity="center_vertical"
-            android:layout_alignTop="@+id/btn_browse_pic"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_marginLeft="90dp" />
 
         <ImageButton
@@ -30,16 +34,14 @@
             android:id="@+id/btn_browse_pic"
             android:src="@drawable/ic_action_picture"
             android:background="@drawable/circle_brown"
-            android:layout_gravity="center_vertical"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginRight="90dp"
             />
     </RelativeLayout>
 
     <ImageView
-        android:layout_below="@id/rel_image_background"
+        android:layout_below="@id/rel_image_wrapper"
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="400dp" />
@@ -50,7 +52,7 @@
         android:text="New Text"
         android:id="@+id/tv_image_size"
         android:textColor="#F44"
-        android:layout_below="@+id/rel_image_background"
+        android:layout_below="@+id/rel_image_wrapper"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

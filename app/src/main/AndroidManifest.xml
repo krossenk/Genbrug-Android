@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GiveActivity"
+            android:name=".give.GiveActivity"
             android:label="@string/title_activity_give" >
         </activity>
     </application>
