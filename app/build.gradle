@@ -4,6 +4,10 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    repositories {
+        mavenCentral()
+    }
+
     defaultConfig {
         applicationId "com.iha.genbrug"
         minSdkVersion 15
@@ -23,4 +27,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    
 }
