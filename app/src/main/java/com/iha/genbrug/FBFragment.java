@@ -30,6 +30,7 @@ public class FBFragment extends Fragment {
 
 
     private CallbackManager mcallbackManager;
+    private View view;
 
 
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
@@ -86,8 +87,18 @@ public class FBFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_fb, container, false);
+        setFragmentView(rootView);
 
         return rootView;
+    }
+
+    public void setFragmentView (View v)
+    {
+        this.view = v;
+    }
+    public View getFragmentView ()
+    {
+        return this.view;
     }
 
 

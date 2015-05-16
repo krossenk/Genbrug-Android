@@ -45,7 +45,7 @@
         android:layout_alignEnd="@+id/createPassword" />
 
     <Button
-        android:id="@+id/signUpBtn"
+        android:id="@+id/createSignUpBtn"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
         android:onClick="authenticateSignUp"

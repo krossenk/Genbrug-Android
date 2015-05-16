@@ -1,6 +1,12 @@
 package com.iha.genbrug;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,10 +14,15 @@ import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.regex.Pattern;
+
+import webservice.User;
 
 
 public class CreateAccountActivity extends FragmentActivity{
@@ -19,10 +30,24 @@ public class CreateAccountActivity extends FragmentActivity{
     private EditText CreateUserName;
     private EditText CreatePassword;
     private EditText CreateRePassword;
-    private String UserName;
-    private String Password;
+    private Button signUpBtn;
+
+    private ServerService serverServiceCreate;
+    private User user;
 
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
+            serverServiceCreate = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +56,9 @@ public class CreateAccountActivity extends FragmentActivity{
 
         setupVariables();
 
+        Intent intent = new Intent(this,ServerService.class);
+
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         if (savedInstanceState == null) {
 
@@ -46,6 +74,12 @@ public class CreateAccountActivity extends FragmentActivity{
         }
     }
 
+    public void enabledState(boolean isEnabled)
+    {
+        signUpBtn = (Button) findViewById(R.id.createSignUpBtn);
+        signUpBtn.setEnabled(isEnabled);
+    }
+
     private void setupVariables() {
         CreateUserName = (EditText) findViewById(R.id.createUsername);
         CreatePassword = (EditText) findViewById(R.id.createPassword);
@@ -53,19 +87,22 @@ public class CreateAccountActivity extends FragmentActivity{
     }
 
     public void authenticateSignUp (View view){
+
         String username;
         String password;
         String rePassword;
 
         username = CreateUserName.getText().toString();
-        SetUserName(username);
         password = CreatePassword.getText().toString();
         rePassword = CreateRePassword.getText().toString();
         Intent intent = new Intent(this, LoginActivity.class);
 
         if(!password.isEmpty()&& !rePassword.isEmpty()&&password.equals(rePassword)&& validEmail(username))
         {
-            SetPassword(password);
+            user = new User();
+            user.username = username;
+            user.password = password;
+
             Toast.makeText(getApplicationContext(), "Account created!",
                     Toast.LENGTH_LONG).show();
 
@@ -80,31 +117,25 @@ public class CreateAccountActivity extends FragmentActivity{
                 Toast.LENGTH_SHORT).show();
         }
 
+        try {
+
+            serverServiceCreate.createUser(user);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
     private boolean validEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
     }
 
-    public void SetUserName(String userName)
-    {
-        this.UserName = userName;
-    }
-
-    public String GetUserName ()
-    {
-        return this.UserName;
-    }
-
-
-    public void SetPassword(String password)
-    {
-        this.Password = password;
-    }
-
-    public String GetPassword () {return this.Password;}
-
-    @Override
+       @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, LoginActivity.class);
