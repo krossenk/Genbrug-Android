@@ -12,4 +12,11 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string-array name="categories_array">
+        <item>Bikes</item>
+        <item>Furniture</item>
+        <item>Clothes</item>
+        <item>Books</item>
+    </string-array>
+
 </resources>

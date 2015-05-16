@@ -14,10 +14,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +27,9 @@ import com.iha.genbrug.R;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-
+import java.util.List;
 
 
 public class GiveActivity extends Activity implements View.OnClickListener {
@@ -45,10 +47,12 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     Button btnCropImage;
     View relImageWrapper;
     TextView tvSize;
-    ImageView imgView;
     TouchImageView ivChosenImage;
     View layoutHorizontal;
     View layoutVertical;
+
+    // FORM Views
+    Spinner spinnerCategories;
 
     Button mBtnUpdate;
     TextView mTvUpdate;
@@ -78,7 +82,19 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnRotatePic = (ImageButton) findViewById(R.id.btn_rotate_pic);
         btnCropImage = (Button) findViewById(R.id.btn_crop_image);
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
-        imgView = (ImageView) findViewById(R.id.image_view);
+
+        // FORM Views
+        List<String> Categories =  Arrays.asList("Jonas", "Bikes", "Furniture", "Clothes", "Books");
+        spinnerCategories = (Spinner) findViewById(R.id.spinner_category);
+        ArrayAdapter<String> catAdapter = new CategoriesSpinnerAdapter(this, R.layout.categories_dropdown_item_layout, Categories);
+        spinnerCategories.setAdapter(catAdapter);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        //ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        //categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+       // spinnerCategories.setAdapter(categoriesAdapter);
 
         // SOURCE: https://github.com/MikeOrtiz/TouchImageView
         ivChosenImage = (TouchImageView) findViewById(R.id.iv_chosen_image);
@@ -373,5 +389,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
+
 
 }

@@ -1,191 +1,244 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.iha.genbrug.give.InterceptScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context="com.iha.genbrug.give.GiveActivity">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:id="@+id/rel_image_wrapper">
+        android:layout_height="match_parent"
 
-        <com.iha.genbrug.give.TouchImageView
-            android:id="@+id/iv_chosen_image"
+        tools:context="com.iha.genbrug.give.GiveActivity">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
+            android:id="@+id/rel_image_wrapper">
+
+            <com.iha.genbrug.give.TouchImageView
+                android:id="@+id/iv_chosen_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#d8d8d8"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_cam_pic"
+                android:src="@drawable/ic_action_camera"
+                android:background="@drawable/circle_brown"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="90dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_browse_pic"
+                android:src="@drawable/ic_action_picture"
+                android:background="@drawable/circle_brown"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="90dp" />
+
+            <Button
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:visibility="gone"
+                android:id="@+id/btn_crop_image"
+                android:background="@drawable/crop_btn"
+                android:text="Crop"
+                android:textColor="#B3FFFFFF"
+                android:typeface="sans"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="25dp"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_cancel_pic"
+                android:visibility="gone"
+                android:src="@drawable/ic_action_cancel"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_rotate_pic"
+                android:visibility="gone"
+                android:src="@drawable/ic_action_cancel"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                />
+
+            <LinearLayout
+                android:id="@+id/layout_crop_grid_vertical"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/crop_grid_horizontal"
+                    android:clickable="false"
+                    android:layout_margin="-1dp"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_crop_grid_horizontal"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/crop_grid_vertical"
+                    android:clickable="false"
+                    android:layout_margin="-1dp"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
             android:background="#d8d8d8"
-            android:scaleType="centerCrop" />
+            android:id="@+id/linFormWrapper"
+            android:orientation="vertical"
+            android:layout_below="@+id/rel_image_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true">
 
-        <ImageButton
+            <Spinner
+                android:id="@+id/spinner_category"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="20dp"
+                android:padding="5dp"
+                />
+
+            <EditText
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="5dp"
+
+                android:text="Headline"
+                android:textColor="#939393"
+                />
+
+            <EditText
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="5dp"
+                />
+
+            <EditText
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="5dp"
+                />
+
+        </LinearLayout>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_cam_pic"
-            android:src="@drawable/ic_action_camera"
-            android:background="@drawable/circle_brown"
-            android:layout_centerVertical="true"
+            android:text="New Text"
+            android:id="@+id/tv_image_size"
+            android:textColor="#F44"
+            android:layout_below="@+id/linFormWrapper"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="90dp" />
+            android:layout_alignParentStart="true" />
 
-        <ImageButton
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_browse_pic"
-            android:src="@drawable/ic_action_picture"
-            android:background="@drawable/circle_brown"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="90dp" />
+            android:text="New Text"
+            android:id="@+id/tv_update"
+            android:textColor="#F44"
+            android:layout_below="@+id/tv_image_size"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <Button
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:visibility="gone"
-            android:id="@+id/btn_crop_image"
-            android:background="@drawable/crop_btn"
-            android:text="Crop"
-            android:textColor="#B3FFFFFF"
-            android:typeface="sans"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="25dp"/>
-
-        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_cancel_pic"
-            android:visibility="gone"
-            android:src="@drawable/ic_action_cancel"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:background="@null"
-            />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_rotate_pic"
-            android:visibility="gone"
-            android:src="@drawable/ic_action_cancel"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="50dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:background="@null"
-            />
-
-        <LinearLayout
-            android:id="@+id/layout_crop_grid_vertical"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/crop_grid_horizontal"
-                android:clickable="false"
-                android:layout_margin="-1dp"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_crop_grid_horizontal"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/crop_grid_vertical"
-                android:clickable="false"
-                android:layout_margin="-1dp"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:layout_weight="1"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-        </LinearLayout>
-
+            android:id="@+id/btn_update"
+            android:layout_below="@id/tv_update"
+            android:text="update"/>
     </RelativeLayout>
 
-    <ImageView
-        android:layout_below="@id/rel_image_wrapper"
-        android:id="@+id/image_view"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tv_image_size"
-        android:textColor="#F44"
-        android:layout_below="@+id/rel_image_wrapper"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tv_update"
-        android:textColor="#F44"
-        android:layout_below="@+id/tv_image_size"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_update"
-        android:layout_below="@id/tv_update"
-        android:text="update"/>
-</RelativeLayout>
+</com.iha.genbrug.give.InterceptScrollView>
