@@ -35,8 +35,7 @@ public class LoginActivity extends FragmentActivity {
     private EditText password;
     private static boolean loginStatusVariable =false;
     private ServerService serverService;
-    private boolean mBound;
-    private User user;
+     private User user;
     private ServiceMessagesReceiver serviceMessagesReceiver;
     private Intent mainIntent;
 
@@ -45,12 +44,11 @@ public class LoginActivity extends FragmentActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
             serverService = binder.getService();
-            mBound = true;
-        }
+                   }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
+            
         }
     };
 
