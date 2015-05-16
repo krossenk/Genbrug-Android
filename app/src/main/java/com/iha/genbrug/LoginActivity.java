@@ -151,7 +151,7 @@ public class LoginActivity extends FragmentActivity {
 
                 if(user != null)
                 {
-                    Toast.makeText(getApplicationContext(), "Hello " + user.firstname + user.lastname,
+                    Toast.makeText(getApplicationContext(), "Hello " + user.firstname + " " + user.lastname,
                             Toast.LENGTH_SHORT).show();
 
                     //loginStatusVariable =true;
