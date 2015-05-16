@@ -31,7 +31,7 @@ public class RecycleWebService
         java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object result) throws java.lang.Exception;
     }
 
-    String url="http://localhost:8080/RecycleWebService/RecycleWebService";
+    String url="http://vmi19372.iry.dk:8880/RecycleWebService/RecycleWebService";
 
     int timeOut=60000;
     public List< HeaderProperty> httpHeaders;
@@ -350,37 +350,11 @@ public class RecycleWebService
         });
     }
     
-    public void createPublication(final Publication publication ) throws java.lang.Exception
-    {
-        execute(new IWcfMethod()
-        {
-            @Override
-            public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
-                __envelope.addMapping("","publication",new Publication().getClass());
-                SoapObject __soapReq = new SoapObject("http://recycle/", "createPublication");
-                __envelope.setOutputSoapObject(__soapReq);
-                
-                PropertyInfo __info=null;
-                __info = new PropertyInfo();
-                __info.namespace="";
-                __info.name="publication";
-                __info.type= Publication.class;
-                __info.setValue(publication!=null?publication:SoapPrimitive.NullSkip);
-                __soapReq.addProperty(__info);
-                return __envelope;
-            }
-            
-            @Override
-            public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
-                return null;
-            }
-        },"");
-    }
+
 	
 	public Publication getPublication(final Integer id ) throws java.lang.Exception
     {
-        return (Publication)execute(new ODUIWcfMethod()
+        return (Publication)execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
@@ -413,22 +387,11 @@ public class RecycleWebService
             }
         });
     }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< Void>> createPublicationAsync(final Publication publication)
-    {
-        return executeAsync(new Functions.IFunc< Void>()
-        {
-            @Override
-            public Void Func() throws java.lang.Exception {
-                createPublication( publication);
-                return null;
-            }
-        }) ;
-    }
+
     
     public void createPublication(final Publication publication ) throws java.lang.Exception
     {
-        execute(new ODUIWcfMethod()
+        execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){

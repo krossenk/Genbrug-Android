@@ -32,7 +32,7 @@ public class Publication extends AttributeContainer implements KvmSerializable
     
     public String title;
     
-    public ODUuser userId;
+    public User userId;
 
     public Publication()
     {
@@ -160,7 +160,7 @@ public class Publication extends AttributeContainer implements KvmSerializable
         if (soapObject.hasProperty("userId"))
         {	
 	        java.lang.Object j = soapObject.getProperty("userId");
-	        this.userId = (ODUuser)__envelope.get(j,ODUuser.class);
+	        this.userId = (User)__envelope.get(j,User.class);
         }
 
 
@@ -268,7 +268,7 @@ public class Publication extends AttributeContainer implements KvmSerializable
         }
         if(propertyIndex==8)
         {
-            info.type = ODUuser.class;
+            info.type = User.class;
             info.name = "userId";
             info.namespace= "";
         }
