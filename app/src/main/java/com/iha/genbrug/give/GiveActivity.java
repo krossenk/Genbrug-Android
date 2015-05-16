@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,13 +27,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+
 public class GiveActivity extends Activity implements View.OnClickListener {
+
+    private enum TouchImageViewState {
+        PICK_IMAGE,
+        CROP_IMAGE,
+        SHOW_IMAGE
+    }
+
     ImageButton btnCamPic;
     ImageButton btnBrowsePic;
+    ImageButton btnCancelPic;
+    Button btnCropImage;
     View relImageWrapper;
     TextView tvSize;
     ImageView imgView;
     TouchImageView ivChosenImage;
+    View layoutHorizontal;
+    View layoutVertical;
 
     private static int RESULT_LOAD_IMG = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
@@ -40,14 +53,18 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private String imgDecodableString;
     private String mCurrentPhotoPath;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give);
 
+        layoutHorizontal = findViewById(R.id.layout_crop_grid_horizontal);
+        layoutVertical = findViewById(R.id.layout_crop_grid_vertical);
+
         btnCamPic = (ImageButton) findViewById(R.id.btn_cam_pic);
         btnBrowsePic = (ImageButton) findViewById(R.id.btn_browse_pic);
+        btnCancelPic = (ImageButton) findViewById(R.id.btn_cancel_pic);
+        btnCropImage = (Button) findViewById(R.id.btn_crop_image);
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
         imgView = (ImageView) findViewById(R.id.image_view);
 
@@ -71,6 +88,11 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
         btnCamPic.setOnClickListener(this);
         btnBrowsePic.setOnClickListener(this);
+        btnCancelPic.setOnClickListener(this);
+        btnCropImage.setOnClickListener(this);
+
+        //Typeface font = Typeface.createFromAsset(getAssets(), "Sketchetik-Bold.otf");
+        //btnCropImage.setTypeface(font);
     }
 
     private int getImageRotation(String path){
@@ -177,6 +199,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
                 tvSize.setText("OptimalInSampleSize: " + optimalInSampleSize + " Orientation: " + rotation + " ImageSizeBefore: " + beforeWidth + " " + beforeHeight + " " + imageByteSize + " ImageSizeAfter: " + options.outWidth + " " + options.outHeight + " " + options.outHeight * options.outWidth +
                         " Multiplyer: " + options.inSampleSize);
+                setTouchImageViewState(TouchImageViewState.CROP_IMAGE);
             }
 
         }catch(Exception e){
@@ -203,6 +226,12 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 if(isExternalStorageWritable()) {
                     startActivityForResult(intent, RESULT_LOAD_IMG);
                 }
+                break;
+            case R.id.btn_cancel_pic:
+                setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
+                break;
+            case R.id.btn_crop_image:
+                setTouchImageViewState(TouchImageViewState.SHOW_IMAGE);
                 break;
         }
     }
@@ -251,4 +280,31 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
+    private void setTouchImageViewState(final TouchImageViewState state) {
+        switch (state){
+            case PICK_IMAGE:
+                layoutHorizontal.setVisibility(View.GONE);
+                layoutVertical.setVisibility(View.GONE);
+                btnCropImage.setVisibility(View.GONE);
+                btnBrowsePic.setVisibility(View.VISIBLE);
+                btnCancelPic.setVisibility(View.GONE);
+                btnCamPic.setVisibility(View.VISIBLE);
+                break;
+            case CROP_IMAGE:
+                layoutHorizontal.setVisibility(View.VISIBLE);
+                layoutVertical.setVisibility(View.VISIBLE);
+                btnCropImage.setVisibility(View.VISIBLE);
+                btnBrowsePic.setVisibility(View.GONE);
+                btnCancelPic.setVisibility(View.VISIBLE);
+                btnCamPic.setVisibility(View.GONE);
+                break;
+            case SHOW_IMAGE:
+                layoutHorizontal.setVisibility(View.GONE);
+                layoutVertical.setVisibility(View.GONE);
+                btnCropImage.setVisibility(View.GONE);
+                break;
+        }
+    }
+
 }
