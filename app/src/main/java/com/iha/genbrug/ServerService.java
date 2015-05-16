@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 
 import webservice.RecycleWebService;
 import webservice.User;
+import webservice.getAllPublicationsResponse;
 
 /**
  * Created by Parsa on 16/05/2015.
@@ -25,10 +26,11 @@ public class ServerService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
     private RecycleWebService recycleService = new RecycleWebService();
-    private User validatetUser;
+    private User validatedUser;
     public static final String RESULT_RETURNED_FROM_SERVICE = "Result_Returned_From_Service";
+    public static final String ALL_PUBLICATIONS_RESULT = "Result_Returned_From_getAllPublications";
     private Thread servicecallthread = null;
-
+    private getAllPublicationsResponse publicationsResponseList;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,7 +57,7 @@ public class ServerService extends Service {
         servicecallthread = new Thread() {
             public void run() {
                 try {
-                    validatetUser = recycleService.validateUser(usrname, pass);
+                    validatedUser = recycleService.validateUser(usrname, pass);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -74,7 +76,29 @@ public class ServerService extends Service {
 
     public User getValidatedUser ()
     {
-        return validatetUser;
+        return validatedUser;
+    }
+
+    public void startGetAllPublications()
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    publicationsResponseList = recycleService.getAllPublications();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Intent retint = new Intent(ALL_PUBLICATIONS_RESULT);
+                sendBroadcast(retint);
+//
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public getAllPublicationsResponse getAllPublications()
+    {
+        return publicationsResponseList;
     }
 
 
