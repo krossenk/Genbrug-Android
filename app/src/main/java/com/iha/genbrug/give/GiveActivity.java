@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     ImageButton btnCamPic;
     ImageButton btnBrowsePic;
     ImageButton btnCancelPic;
+    ImageButton btnRotatePic;
     Button btnCropImage;
     View relImageWrapper;
     TextView tvSize;
@@ -47,16 +50,24 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     View layoutHorizontal;
     View layoutVertical;
 
+    Button mBtnUpdate;
+    TextView mTvUpdate;
+
     private static int RESULT_LOAD_IMG = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
     private static long MAX_IMAGE_SIZE = 400000;
-    private String imgDecodableString;
+    private String mImgDecodableString;
     private String mCurrentPhotoPath;
+    private Bitmap mDisplayedBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give);
+
+        mBtnUpdate = (Button) findViewById(R.id.btn_update);
+        mTvUpdate = (TextView) findViewById(R.id.tv_update);
+        mBtnUpdate.setOnClickListener(this);
 
         layoutHorizontal = findViewById(R.id.layout_crop_grid_horizontal);
         layoutVertical = findViewById(R.id.layout_crop_grid_vertical);
@@ -64,6 +75,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnCamPic = (ImageButton) findViewById(R.id.btn_cam_pic);
         btnBrowsePic = (ImageButton) findViewById(R.id.btn_browse_pic);
         btnCancelPic = (ImageButton) findViewById(R.id.btn_cancel_pic);
+        btnRotatePic = (ImageButton) findViewById(R.id.btn_rotate_pic);
         btnCropImage = (Button) findViewById(R.id.btn_crop_image);
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
         imgView = (ImageView) findViewById(R.id.image_view);
@@ -89,7 +101,10 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnCamPic.setOnClickListener(this);
         btnBrowsePic.setOnClickListener(this);
         btnCancelPic.setOnClickListener(this);
+        btnRotatePic.setOnClickListener(this);
         btnCropImage.setOnClickListener(this);
+
+        setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
 
         //Typeface font = Typeface.createFromAsset(getAssets(), "Sketchetik-Bold.otf");
         //btnCropImage.setTypeface(font);
@@ -148,7 +163,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 cursor.moveToFirst();
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                imgDecodableString = cursor.getString(columnIndex);
+                mImgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
             }
             // Result from picture taken by camera
@@ -157,7 +172,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 File imgFile = new  File(mCurrentPhotoPath);
 
                 if(imgFile.exists()){
-                    imgDecodableString = imgFile.getAbsolutePath();
+                    mImgDecodableString = imgFile.getAbsolutePath();
                 }
 
             } else {
@@ -165,12 +180,13 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                         Toast.LENGTH_LONG).show();
             }
 
-            if(!imgDecodableString.isEmpty()){
+            if((requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK && null != data) ||
+                    (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)){
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                File f = new File(imgDecodableString);
+                File f = new File(mImgDecodableString);
                 long imageByteSize = f.length();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(imgDecodableString, options);
+                BitmapFactory.decodeFile(mImgDecodableString, options);
                 int beforeWidth = options.outWidth;
                 int beforeHeight = options.outHeight;
                 double divider = MAX_IMAGE_SIZE < beforeWidth*beforeHeight ? ((double)beforeWidth*beforeHeight / MAX_IMAGE_SIZE) : 1;
@@ -185,20 +201,21 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 options.inJustDecodeBounds = false;
 
                 // Decode image to a Bitmap
-                Bitmap bitM = BitmapFactory.decodeFile(imgDecodableString, options);
+                Bitmap bitM = BitmapFactory.decodeFile(mImgDecodableString, options);
 
                 // Get rotation and prepare matrix
-                int rotation = getImageRotation(imgDecodableString);
+                int rotation = getImageRotation(mImgDecodableString);
                 Matrix rotationMatrix = new Matrix();
                 rotationMatrix.postRotate(rotation);
 
                 // Create rotated bitmap
                 Bitmap rotatedBitmap = Bitmap.createBitmap(bitM, 0, 0, bitM.getWidth(), bitM.getHeight(), rotationMatrix, true);
 
-                ivChosenImage.setImageBitmap(rotatedBitmap);
+                setmDisplayedBitmap(rotatedBitmap);
 
-                tvSize.setText("OptimalInSampleSize: " + optimalInSampleSize + " Orientation: " + rotation + " ImageSizeBefore: " + beforeWidth + " " + beforeHeight + " " + imageByteSize + " ImageSizeAfter: " + options.outWidth + " " + options.outHeight + " " + options.outHeight * options.outWidth +
-                        " Multiplyer: " + options.inSampleSize);
+
+                tvSize.setText("OptimalInSampleSize: " + optimalInSampleSize + " Orientation: " + rotation + " ImageSizeBefore: " + beforeWidth + " " + beforeHeight + " " + imageByteSize + " ImageSizeAfter: " + rotatedBitmap.getWidth() + " " + rotatedBitmap.getHeight() + " " + rotatedBitmap.getWidth() * rotatedBitmap.getHeight() +
+                        " Multiplyer: ");
                 setTouchImageViewState(TouchImageViewState.CROP_IMAGE);
             }
 
@@ -231,9 +248,51 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
                 break;
             case R.id.btn_crop_image:
+                RectF zoomedRect = ivChosenImage.getZoomedRect();
+
+                int x0 = (int)(zoomedRect.left * mDisplayedBitmap.getWidth());
+                int x1 = (int)(zoomedRect.right * mDisplayedBitmap.getWidth());
+                int y0 = (int)(zoomedRect.top * mDisplayedBitmap.getHeight());
+                int y1 = (int)(zoomedRect.bottom * mDisplayedBitmap.getHeight());
+                int width = x1 - x0;
+                int height = y1 - y0;
+
+                Bitmap croppedImage = Bitmap.createBitmap(mDisplayedBitmap, x0, y0, width, height);
+                setmDisplayedBitmap(croppedImage);
+
                 setTouchImageViewState(TouchImageViewState.SHOW_IMAGE);
                 break;
+            case R.id.btn_rotate_pic:
+                PointF lastPoint = ivChosenImage.getScrollPosition();
+                float tempX = lastPoint.x;
+                float tempY = lastPoint.y;
+                Matrix rotationMatrix = new Matrix();
+                rotationMatrix.postRotate(90);
+                Bitmap rotated = Bitmap.createBitmap(mDisplayedBitmap, 0, 0, mDisplayedBitmap.getWidth(), mDisplayedBitmap.getHeight(), rotationMatrix, true);
+                setmDisplayedBitmap(rotated);
+                ivChosenImage.setScrollPosition((1-tempY), tempX);
+                break;
+
+            case R.id.btn_update:
+                mTvUpdate.setText(ivChosenImage.getScrollPosition().toString());
+                break;
         }
+    }
+
+    /**
+     * Set the displayed bitmap to empty and set background image to TouchImageView
+     */
+    private void setmDisplayedBitmap(){
+        mDisplayedBitmap = null;
+        ivChosenImage.setImageResource(R.drawable.old_cam);
+    }
+
+    /**
+     * Set the displayed bitmap and set the same bitmap to TouchImageView
+     */
+    private void setmDisplayedBitmap(Bitmap bitM){
+        mDisplayedBitmap = bitM;
+        ivChosenImage.setImageBitmap(mDisplayedBitmap);
     }
 
     /**
@@ -289,7 +348,11 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 btnCropImage.setVisibility(View.GONE);
                 btnBrowsePic.setVisibility(View.VISIBLE);
                 btnCancelPic.setVisibility(View.GONE);
+                btnRotatePic.setVisibility(View.GONE);
                 btnCamPic.setVisibility(View.VISIBLE);
+                setmDisplayedBitmap();
+                ivChosenImage.resetZoom();
+                ivChosenImage.setEnabled(false);
                 break;
             case CROP_IMAGE:
                 layoutHorizontal.setVisibility(View.VISIBLE);
@@ -297,12 +360,16 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 btnCropImage.setVisibility(View.VISIBLE);
                 btnBrowsePic.setVisibility(View.GONE);
                 btnCancelPic.setVisibility(View.VISIBLE);
+                btnRotatePic.setVisibility(View.VISIBLE);
                 btnCamPic.setVisibility(View.GONE);
+                ivChosenImage.setEnabled(true);
                 break;
             case SHOW_IMAGE:
                 layoutHorizontal.setVisibility(View.GONE);
                 layoutVertical.setVisibility(View.GONE);
                 btnCropImage.setVisibility(View.GONE);
+                ivChosenImage.setEnabled(false);
+                ivChosenImage.resetZoom();
                 break;
         }
     }
