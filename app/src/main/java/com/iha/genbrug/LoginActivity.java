@@ -35,7 +35,7 @@ public class LoginActivity extends FragmentActivity {
     private EditText password;
     private static boolean loginStatusVariable =false;
     private ServerService serverService;
-     private User user;
+    private User user;
     private ServiceMessagesReceiver serviceMessagesReceiver;
     private Intent mainIntent;
 
