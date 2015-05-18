@@ -11,12 +11,8 @@
     <string name="title_activity_give">GiveActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="giveform_headline">Headline</string>
+    <string name="giveform_description">Description</string>
 
-    <string-array name="categories_array">
-        <item>Bikes</item>
-        <item>Furniture</item>
-        <item>Clothes</item>
-        <item>Books</item>
-    </string-array>
 
 </resources>

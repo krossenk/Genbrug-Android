@@ -187,29 +187,34 @@
                 android:layout_marginBottom="20dp"
                 android:padding="5dp"
 
-                android:text="Headline"
+                android:hint="@string/giveform_headline"
                 android:textColor="#939393"
                 />
 
             <EditText
                 android:background="@drawable/form_field"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="100dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:padding="5dp"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+
+                android:hint="@string/giveform_description"
+                android:textColor="#939393"
+
                 />
 
-            <EditText
-                android:background="@drawable/form_field"
+            <Button
+                android:id="@+id/btn_give"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
-                android:padding="5dp"
-                />
+                android:textColor="#ffffff"
+                android:textSize="30dp"
+                android:text="Give"
+                android:background="@color/light_brown"/>
 
         </LinearLayout>
 

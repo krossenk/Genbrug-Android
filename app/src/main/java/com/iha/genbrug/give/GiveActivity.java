@@ -45,6 +45,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     ImageButton btnCancelPic;
     ImageButton btnRotatePic;
     Button btnCropImage;
+    Button btnGive;
     View relImageWrapper;
     TextView tvSize;
     TouchImageView ivChosenImage;
@@ -81,6 +82,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnCancelPic = (ImageButton) findViewById(R.id.btn_cancel_pic);
         btnRotatePic = (ImageButton) findViewById(R.id.btn_rotate_pic);
         btnCropImage = (Button) findViewById(R.id.btn_crop_image);
+        btnGive = (Button) findViewById(R.id.btn_give);
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
 
         // FORM Views
@@ -119,6 +121,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnCancelPic.setOnClickListener(this);
         btnRotatePic.setOnClickListener(this);
         btnCropImage.setOnClickListener(this);
+        btnGive.setOnClickListener(this);
 
         setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
 
@@ -277,6 +280,9 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 setmDisplayedBitmap(croppedImage);
 
                 setTouchImageViewState(TouchImageViewState.SHOW_IMAGE);
+                break;
+            case R.id.btn_give:
+
                 break;
             case R.id.btn_rotate_pic:
                 PointF lastPoint = ivChosenImage.getScrollPosition();
