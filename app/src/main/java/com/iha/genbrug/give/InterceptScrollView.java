@@ -10,18 +10,23 @@ import android.widget.ScrollView;
  */
 public class InterceptScrollView extends ScrollView {
 
-    private enum TouchMode {
-        PICK_IMAGE,
-        CROP_IMAGE,
-        SHOW_IMAGE
-    }
+    // SOURCE: http://stackoverflow.com/questions/20590236/scrollview-with-children-view-how-to-intercept-scroll-conditionally
+    private boolean mDisableScrolling = true;
 
     public InterceptScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    /** Enables or disables ScrollView scroll */
+    public void setScrollEnabled (boolean status) {
+        mDisableScrolling=!status;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
+        if (mDisableScrolling)
+            return false;
+
+        return super.onInterceptTouchEvent(ev);
     }
 }

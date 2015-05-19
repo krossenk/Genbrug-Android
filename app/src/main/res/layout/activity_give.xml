@@ -1,5 +1,6 @@
 <com.iha.genbrug.give.InterceptScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/intercept_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -179,6 +180,7 @@
                 />
 
             <EditText
+                android:id="@+id/et_headline"
                 android:background="@drawable/form_field"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -212,9 +214,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:textColor="#ffffff"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:text="Give"
-                android:background="@color/light_brown"/>
+                android:background="@color/action_bar"/>
 
         </LinearLayout>
 

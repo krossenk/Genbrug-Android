@@ -40,6 +40,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         SHOW_IMAGE
     }
 
+    InterceptScrollView interceptScrollview;
     ImageButton btnCamPic;
     ImageButton btnBrowsePic;
     ImageButton btnCancelPic;
@@ -70,6 +71,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give);
 
+        interceptScrollview = (InterceptScrollView) findViewById(R.id.intercept_scrollview);
         mBtnUpdate = (Button) findViewById(R.id.btn_update);
         mTvUpdate = (TextView) findViewById(R.id.tv_update);
         mBtnUpdate.setOnClickListener(this);
