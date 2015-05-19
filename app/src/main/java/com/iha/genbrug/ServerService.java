@@ -29,8 +29,10 @@ public class ServerService extends Service {
     private User validatedUser;
     public static final String RESULT_RETURNED_FROM_SERVICE = "Result_Returned_From_Service";
     public static final String ALL_PUBLICATIONS_RESULT = "Result_Returned_From_getAllPublications";
+    public static final String IMAGE_RETURN_URL = "Result_Returned_From_Saveimage";
     private Thread servicecallthread = null;
     private getAllPublicationsResponse publicationsResponseList;
+    private String imageResponseURL;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -99,6 +101,28 @@ public class ServerService extends Service {
     public getAllPublicationsResponse getAllPublications()
     {
         return publicationsResponseList;
+    }
+
+    public void startSavingImage(final String filename, final byte[] imgData, final int publicationId)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                   imageResponseURL = recycleService.saveImage(filename,imgData,publicationId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Intent retint = new Intent(IMAGE_RETURN_URL);
+                sendBroadcast(retint);
+//
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public String getLatestImageURL()
+    {
+        return imageResponseURL;
     }
 
 
