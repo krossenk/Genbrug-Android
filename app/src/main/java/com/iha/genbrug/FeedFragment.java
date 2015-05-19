@@ -81,8 +81,10 @@ public class FeedFragment extends Fragment {
         fRecyclerView.setLayoutManager(fLayoutManager);
 
         // Create fake dataset
-        /*final ArrayList<GenbrugItem> genbrugList = new ArrayList<GenbrugItem>();
-        for(int i = 0; i < 9; i++){
+        /*
+        final ArrayList<GenbrugItem> genbrugList = new ArrayList<GenbrugItem>();
+        for(int i = 1; i < 10; i++){
+
             genbrugList.add(new GenbrugItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item", getResources().getDrawable(R.drawable.img+i)));
         }
 

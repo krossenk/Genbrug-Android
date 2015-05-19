@@ -42,7 +42,7 @@ public class RecycleEncryption
         
     public static String getSalt() throws NoSuchAlgorithmException,java.security.NoSuchProviderException
     {        
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
         

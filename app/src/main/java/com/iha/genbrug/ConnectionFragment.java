@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,11 @@ public class ConnectionFragment extends Fragment {
 
     private TextView textView;
     IntentFilter filter= new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+    private FragmentActivity activity;
+    private LoginActivity loginActivity;
+    private CreateAccountActivity createAccountActivity;
+
+
 
     public ConnectionFragment() {
 
@@ -65,12 +71,45 @@ public class ConnectionFragment extends Fragment {
 
             if (wifi.isConnected() || mobile.isConnected()) {
 
-                textView.setText("");
-            }
 
-            else {
+                activity = getActivity();
+
+                if(activity instanceof LoginActivity)
+                {
+                    loginActivity = (LoginActivity) activity;
+                    loginActivity.enabledState(true);
+                }
+                if (activity instanceof CreateAccountActivity)
+                {
+                    createAccountActivity = (CreateAccountActivity) activity;
+                    createAccountActivity.enabledState(true);
+                }
+
+                getActivity().findViewById(R.id.login_button).setEnabled(true);
+
+                textView.setText(" ");
+            }
+            else
+            {
+
+                activity = getActivity();
+
+                if(activity instanceof LoginActivity)
+                {
+                    loginActivity = (LoginActivity) activity;
+                    loginActivity.enabledState(false);
+                }
+
+                if (activity instanceof CreateAccountActivity)
+                {
+                    createAccountActivity = (CreateAccountActivity) activity;
+                    createAccountActivity.enabledState(false);
+                }
+
+                getActivity().findViewById(R.id.login_button).setEnabled(false);
 
                 textView.setText("No Internet Connection!");
+
             }
         }
     };

@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.facebook.AccessToken;
 
 import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +41,10 @@ public class LoginActivity extends FragmentActivity {
     private User user;
     private ServiceMessagesReceiver serviceMessagesReceiver;
     private Intent mainIntent;
+    FBFragment fbFragment = new FBFragment();
+    ConnectionFragment conFragment = new ConnectionFragment();
+    private Button loginBtn;
+    private Button createBtn;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -72,9 +79,9 @@ public class LoginActivity extends FragmentActivity {
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            FBFragment fragment = new FBFragment();
-            fragmentTransaction.add(R.id.container, fragment);
-            ConnectionFragment conFragment = new ConnectionFragment();
+
+            fragmentTransaction.add(R.id.container, fbFragment);
+
             fragmentTransaction.add(R.id.container, conFragment);
             fragmentTransaction.commit();
         }
@@ -87,6 +94,15 @@ public class LoginActivity extends FragmentActivity {
                 authenticateLogin(v);
             }
         });
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+        unregisterReceiver(serviceMessagesReceiver);
     }
 
     //Local Log in
@@ -105,19 +121,6 @@ public class LoginActivity extends FragmentActivity {
             e.printStackTrace();
         }
 
-       /* if (Localusername.getText().toString().equals("parsa@live.dk") &&
-                password.getText().toString().equals("admin")) {
-            Toast.makeText(getApplicationContext(), "Hello admin!",
-                    Toast.LENGTH_SHORT).show();
-
-            loginStatusVariable =true;
-           this.startActivity(intent);
-            finish();
-
-        } else {
-            Toast.makeText(getApplicationContext(), "Wrong username or password!",
-                    Toast.LENGTH_SHORT).show();
-        }*/
     }
 
     public static Boolean loginStatus()
@@ -131,10 +134,22 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
+    public void enabledState(boolean isEnabled)
+    {
+        loginBtn = (Button) findViewById(R.id.loginBtn);
+        createBtn = (Button) findViewById(R.id.signUpBtn);
+        loginBtn.setEnabled(isEnabled);
+        createBtn.setEnabled(isEnabled);
+    }
+
     public void callCreateAccount(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
     private class ServiceMessagesReceiver extends BroadcastReceiver {
@@ -147,14 +162,18 @@ public class LoginActivity extends FragmentActivity {
             {
                   user = serverService.getValidatedUser();
 
-                if(user != null)
-                {
-                    Toast.makeText(getApplicationContext(), "Hello " + user.firstname + " " + user.lastname,
-                            Toast.LENGTH_SHORT).show();
+                if (!isNetworkAvailable(context)) {
 
-                    //loginStatusVariable =true;
+                    Toast.makeText(getApplicationContext(), "Check Your connection!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+               else if(user != null)
+                {
                     startActivity(mainIntent);
                     finish();
+
+                    //loginStatusVariable =true;
                 }
 
                 else{

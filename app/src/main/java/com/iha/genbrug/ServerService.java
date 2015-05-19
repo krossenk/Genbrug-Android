@@ -72,8 +72,20 @@ public class ServerService extends Service {
 
     }
 
-    public void createUser(User usr) throws Exception {
-        recycleService.createUser(usr);
+    public void createUser(final User usr) throws Exception {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    recycleService.createUser(usr);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        this.servicecallthread.start();
+
     }
 
     public User getValidatedUser ()
