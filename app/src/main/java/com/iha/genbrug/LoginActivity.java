@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+
 import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;

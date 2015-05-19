@@ -1,6 +1,7 @@
 package com.iha.genbrug;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -73,6 +74,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     @Override
+    public void onBackPressed() {
+         moveTaskToBack(true);
+    }
+
+
+    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         viewPager.setCurrentItem(tab.getPosition());
     }
@@ -123,4 +130,5 @@ class MyAdapter extends FragmentPagerAdapter {
         }
         return null;
     }
+
 }

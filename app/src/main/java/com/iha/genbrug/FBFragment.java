@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -31,7 +33,7 @@ public class FBFragment extends Fragment {
 
     private CallbackManager mcallbackManager;
     private View view;
-
+    public static boolean loggedIn;
 
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
@@ -41,9 +43,11 @@ public class FBFragment extends Fragment {
 
             Profile profile = Profile.getCurrentProfile();
             if (profile != null) {
-                Toast.makeText(getActivity(), "Welcome " + profile.getName(),
-                        Toast.LENGTH_SHORT).show();
+
                 Uri profilePictureUri = profile.getProfilePictureUri(400,300);
+
+                Toast.makeText(getActivity(), "Welcome " + profile.getId(),
+                        Toast.LENGTH_SHORT).show();
 
                 try {
                     URL url = new URL(profilePictureUri.toString());
@@ -52,8 +56,10 @@ public class FBFragment extends Fragment {
                 }
                 startActivity(intent);
                 getActivity().finish();
+
             }
         }
+
 
         @Override
         public void onCancel() {
@@ -72,6 +78,8 @@ public class FBFragment extends Fragment {
 
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         mcallbackManager = CallbackManager.Factory.create();
+
+
     }
 
     @Override
@@ -80,6 +88,7 @@ public class FBFragment extends Fragment {
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setFragment(this);
         loginButton.registerCallback(mcallbackManager, mCallback);
+
     }
 
 
