@@ -4,21 +4,28 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
+import com.iha.genbrug.give.GiveActivity;
+import com.melnykov.fab.FloatingActionButton;
 import webservice.RecycleWebService;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener, View.OnClickListener {
 
     ViewPager viewPager = null;
     ActionBar actionBar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +34,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        fab = (FloatingActionButton) findViewById(R.id.btn_fab);
+        fab.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -92,6 +102,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btn_fab){
+            startActivity(new Intent(this, GiveActivity.class));
+        }
     }
 }
 
