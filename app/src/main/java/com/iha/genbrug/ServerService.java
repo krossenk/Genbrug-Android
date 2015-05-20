@@ -1,20 +1,14 @@
 package com.iha.genbrug;
 
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-
+import webservice.Publication;
 import webservice.RecycleWebService;
 import webservice.User;
 import webservice.getAllPublicationsResponse;
@@ -91,6 +85,20 @@ public class ServerService extends Service {
     public User getValidatedUser ()
     {
         return validatedUser;
+    }
+
+    public void createPublication(final Publication pub)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    recycleService.createPublication(pub);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        this.servicecallthread.start();
     }
 
     public void startGetAllPublications()
