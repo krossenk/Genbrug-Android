@@ -1,6 +1,7 @@
 package com.iha.genbrug;
 
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
