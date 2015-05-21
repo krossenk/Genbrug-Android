@@ -56,6 +56,7 @@ public class ConnectionFragment extends Fragment {
         getActivity().unregisterReceiver(bcReceived);
     }
 
+    // BroadcatReceiver to check internetconnection
     private BroadcastReceiver bcReceived = new BroadcastReceiver() {
 
         @Override

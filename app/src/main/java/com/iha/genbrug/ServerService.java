@@ -47,7 +47,7 @@ public class ServerService extends Service {
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.notify(NOTIFICATION_ID, builder.build());
     }
-
+    //method for validate user on DB
     public void validateUser(final String usrname, final String pass) throws Exception {
 
         servicecallthread = new Thread() {
@@ -66,6 +66,7 @@ public class ServerService extends Service {
 
     }
 
+    // method for creating user on DB
     public void createUser(final User usr) throws Exception {
         servicecallthread = new Thread() {
             public void run() {
@@ -82,9 +83,24 @@ public class ServerService extends Service {
 
     }
 
+    //method to getValidatet user on activity
     public User getValidatedUser ()
     {
         return validatedUser;
+    }
+
+    public void createSubscription(final int userId, final int publicationId)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    recycleService.createSubscription(userId,publicationId );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        this.servicecallthread.start();
     }
 
     public void createPublication(final Publication pub)

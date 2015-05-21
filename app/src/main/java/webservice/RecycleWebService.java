@@ -195,6 +195,39 @@ public class RecycleWebService
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
+
+            public void createSubscription(final Integer userId,final Integer publicationId ) throws java.lang.Exception
+            {
+                execute(new IWcfMethod()
+                {
+                    @Override
+                    public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                        ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                        SoapObject __soapReq = new SoapObject("http://recycle/", "createSubscription");
+                        __envelope.setOutputSoapObject(__soapReq);
+
+                        PropertyInfo __info=null;
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="userId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(userId);
+                        __soapReq.addProperty(__info);
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="publicationId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(publicationId);
+                        __soapReq.addProperty(__info);
+                        return __envelope;
+                    }
+
+                    @Override
+                    public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                        return null;
+                    }
+                },"");
+            }
             
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
@@ -221,45 +254,52 @@ public class RecycleWebService
             }
         });
     }
-    
-    public void createUser(final User user ) throws java.lang.Exception
+
+    public Long createUser(final User user ) throws java.lang.Exception
     {
-        execute(new IWcfMethod()
+        return (Long)execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
                 __envelope.addMapping("","user",new User().getClass());
                 SoapObject __soapReq = new SoapObject("http://recycle/", "createUser");
                 __envelope.setOutputSoapObject(__soapReq);
-                
+
                 PropertyInfo __info=null;
                 __info = new PropertyInfo();
                 __info.namespace="";
                 __info.name="user";
-                __info.type= User.class;
+                __info.type=User.class;
                 __info.setValue(user!=null?user:SoapPrimitive.NullSkip);
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
-            
+
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                SoapObject __soap=(SoapObject)__result;
+                java.lang.Object obj = __soap.getProperty("return");
+                if (obj != null && obj.getClass().equals(SoapPrimitive.class))
+                {
+                    SoapPrimitive j =(SoapPrimitive) obj;
+                    return new Long(j.toString());
+                }
+                else if (obj!= null && obj instanceof Long){
+                    return (Long)obj;
+                }
                 return null;
             }
         },"");
     }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< Void>> createUserAsync(final User user)
+
+    public android.os.AsyncTask< Void, Void, OperationResult< Long>> createUserAsync(final User user)
     {
-        return executeAsync(new Functions.IFunc< Void>()
-        {
-            @Override
-            public Void Func() throws java.lang.Exception {
-                createUser( user);
-                return null;
+        return executeAsync(new Functions.IFunc< Long>() {
+            public Long Func() throws java.lang.Exception {
+                return createUser( user);
             }
-        }) ;
+        });
     }
     
     public User validateUser(final String username,final String password ) throws java.lang.Exception

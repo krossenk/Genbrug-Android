@@ -105,7 +105,7 @@ public class FeedFragment extends Fragment {
 
             for (Publication pub : responseList)
             {
-                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                 list.add(item);
             }
 
@@ -115,6 +115,13 @@ public class FeedFragment extends Fragment {
   }
 
         fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+
     }
 
     @Override
@@ -138,7 +145,7 @@ public class FeedFragment extends Fragment {
 
                 for (Publication pub : responseList)
                 {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                     list.add(item);
                 }
 

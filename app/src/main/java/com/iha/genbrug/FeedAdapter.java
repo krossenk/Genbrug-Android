@@ -49,6 +49,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
 
 
+
         holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -56,6 +57,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 String nameofImage = "img" + position;
                 String headline = gi.getHeadline();
                 String desc = gi.getDescription();
+                int itemId = gi.getItemId();
                 if(position == 0)
                 {
                     nameofImage = "img";
@@ -66,6 +68,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 intent.putExtra("imageId", imageId);
                 intent.putExtra("headline", headline);
                 intent.putExtra("desc", desc);
+                intent.putExtra("itemId",itemId);
                 pos = position;
                 v.getContext().startActivity(intent);
                 ((Activity)v.getContext()).finish();
