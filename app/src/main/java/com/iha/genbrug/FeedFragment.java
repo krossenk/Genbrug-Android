@@ -97,6 +97,8 @@ public class FeedFragment extends Fragment {
         // specify an adapter (see also next example)
         fAdapter = new FeedAdapter(genbrugList);
         fRecyclerView.setAdapter(fAdapter);*/
+
+
         if(responseList != null)
         {
             ArrayList<GenbrugItem> list = new ArrayList<>();
@@ -110,9 +112,9 @@ public class FeedFragment extends Fragment {
             fAdapter = new FeedAdapter(list);
             fRecyclerView.setAdapter(fAdapter);
 
-        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
-
   }
+
+        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
     }
 
     @Override
