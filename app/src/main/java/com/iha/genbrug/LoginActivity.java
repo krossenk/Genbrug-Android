@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -36,7 +38,7 @@ public class LoginActivity extends FragmentActivity {
 
     private EditText Localusername;
     private EditText password;
-    private static boolean loginStatusVariable =false;
+    private boolean  loginStatusVariable = false;
     private ServerService serverService;
      private User user;
     private ServiceMessagesReceiver serviceMessagesReceiver;
@@ -45,6 +47,7 @@ public class LoginActivity extends FragmentActivity {
     ConnectionFragment conFragment = new ConnectionFragment();
     private Button loginBtn;
     private Button createBtn;
+
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -85,7 +88,7 @@ public class LoginActivity extends FragmentActivity {
             fragmentTransaction.add(R.id.container, conFragment);
             fragmentTransaction.commit();
         }
-        loginStatusVariable = false;
+        //loginStatusVariable = false;
 
         final Button btn = (Button) findViewById(R.id.loginBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +98,18 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+          // get login status from shared preferences
+        loginStatusVariable = prefs.getBoolean("Islogin", false);
+
+        if(loginStatusVariable)
+        {
+        //condition true means user is already login
+            Intent i = new Intent(this, MainActivity.class);
+            startActivityForResult(i, 1);
+
+        }
     }
 
     @Override
@@ -123,11 +137,6 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
-    public static Boolean loginStatus()
-    {
-        return loginStatusVariable;
-    }
-
     private void setupVariables() {
         Localusername = (EditText) findViewById(R.id.usernameET);
         password = (EditText) findViewById(R.id.passwordET);
@@ -140,6 +149,7 @@ public class LoginActivity extends FragmentActivity {
         createBtn = (Button) findViewById(R.id.signUpBtn);
         loginBtn.setEnabled(isEnabled);
         createBtn.setEnabled(isEnabled);
+
     }
 
     public void callCreateAccount(View view) {
@@ -162,21 +172,29 @@ public class LoginActivity extends FragmentActivity {
             {
                   user = serverService.getValidatedUser();
 
-                if (!isNetworkAvailable(context)) {
 
-                    Toast.makeText(getApplicationContext(), "Check Your connection!",
-                            Toast.LENGTH_SHORT).show();
-                }
+               if( isNetworkAvailable(context)&&user != null )
 
-               else if(user != null)
                 {
                     startActivity(mainIntent);
                     finish();
 
-                    //loginStatusVariable =true;
-                }
+                    loginStatusVariable =true;
 
-                else{
+                    // to store  if user has tried log in
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    //islogin is a boolean value of your login status pushed to SharedPreferences
+                    prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
+
+                    if (user.firstname !=null && user.lastname !=null)
+                    {
+                        prefs.edit().putString("LocalUser", user.firstname + " " + user.lastname).commit();
+                    }
+                    else {
+                        prefs.edit().putString("LocalUser", user.username).commit();
+                    }
+
+                } else {
 
                     Toast.makeText(getApplicationContext(), "Wrong username or password!",
                             Toast.LENGTH_SHORT).show();

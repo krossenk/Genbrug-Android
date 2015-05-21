@@ -1,14 +1,19 @@
 package com.iha.genbrug;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,9 +22,12 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class FeedFragment extends Fragment {
+
     private RecyclerView fRecyclerView;
     private RecyclerView.Adapter fAdapter;
     private RecyclerView.LayoutManager fLayoutManager;
+
+
 
     public FeedFragment() {
         // Required empty public constructor
@@ -48,15 +56,18 @@ public class FeedFragment extends Fragment {
         // specify an adapter (see also next example)
         fAdapter = new FeedAdapter(genbrugList);
         fRecyclerView.setAdapter(fAdapter);
-    }
+
+        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
+
+  }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
-
 
 }
 
