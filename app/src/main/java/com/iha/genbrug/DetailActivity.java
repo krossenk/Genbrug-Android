@@ -5,12 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.internal.view.menu.MenuView;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,7 +26,6 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         Bundle bundle = getIntent().getExtras();
         String imageId =(bundle.getString("imageId"));
         String header = (bundle.getString("headline"));
@@ -43,7 +38,6 @@ public class DetailActivity extends Activity {
         TextView descTextView = (TextView) findViewById(R.id.descTextView);
         headerTextView.setText(header);
         descTextView.setText(desc);
-
         infoBtn = (Button) findViewById(R.id.info);
         logOutBtn = (Button) findViewById(R.id.Logout);
 
