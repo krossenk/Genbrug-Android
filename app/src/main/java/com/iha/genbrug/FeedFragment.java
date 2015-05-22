@@ -120,7 +120,8 @@ public class FeedFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        getActivity().unbindService(serviceConnection);
+        getActivity().unregisterReceiver(receiver);
 
     }
 
