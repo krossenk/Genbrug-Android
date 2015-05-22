@@ -9,8 +9,11 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.v7.internal.view.menu.MenuView;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +28,8 @@ import java.util.List;
 
 public class DetailActivity extends Activity {
 
+    Intent intent;
+    Button infoBtn;
     Button logOutBtn;
     SharedPreferences prefs;
     private int itemId;
@@ -66,15 +71,23 @@ public class DetailActivity extends Activity {
         headerTextView.setText(header);
         descTextView.setText(desc);
 
+        infoBtn = (Button) findViewById(R.id.info);
         logOutBtn = (Button) findViewById(R.id.Logout);
 
+    }
 
     }
+    public void showInfo (View v)
+    {
+        prefs =PreferenceManager.getDefaultSharedPreferences(this);
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
+        Toast.makeText(this,prefs.getString("LocalUser", ""),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,prefs.getString("FBUser", ""),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,prefs.getString("ProfileURL", ""),Toast.LENGTH_SHORT).show();
     }
 
     // temporary logout function
