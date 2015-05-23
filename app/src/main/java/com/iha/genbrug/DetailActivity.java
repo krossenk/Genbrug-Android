@@ -8,12 +8,9 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.IBinder;
 import android.os.Bundle;
-import android.support.v7.internal.view.menu.MenuView;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,9 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class DetailActivity extends Activity {
@@ -71,15 +65,8 @@ public class DetailActivity extends Activity {
         headerTextView.setText(header);
         descTextView.setText(desc);
 
-        infoBtn = (Button) findViewById(R.id.info);
         logOutBtn = (Button) findViewById(R.id.Logout);
-
     }
-
-    }
-    public void showInfo (View v)
-    {
-        prefs =PreferenceManager.getDefaultSharedPreferences(this);
 
     @Override
     protected void onDestroy() {
