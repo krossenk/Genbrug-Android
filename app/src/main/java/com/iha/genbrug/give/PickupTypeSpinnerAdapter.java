@@ -27,6 +27,11 @@ public class PickupTypeSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     @Override
+    public int getCount() {
+        return super.getCount() - 1;
+    }
+
+    @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
@@ -47,13 +52,10 @@ public class PickupTypeSpinnerAdapter extends ArrayAdapter<String> {
 
         ImageView icon=(ImageView)row.findViewById(R.id.iv_pickup_type_icon);
 
-        icon.setImageResource(R.drawable.ic_action_camera);
-       /* if (DayOfWeek[position]=="Sunday"){
-            icon.setImageResource(R.drawable.icon);
-        }
-        else{
-            icon.setImageResource(R.drawable.icongray);
-        }*/
+        if(position == getCount())
+            icon.setImageResource(R.drawable.ic_action_dropdown);
+        else
+            icon.setImageResource(R.drawable.ic_action_camera);
 
         return row;
     }

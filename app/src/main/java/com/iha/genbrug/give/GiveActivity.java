@@ -3,7 +3,10 @@ package com.iha.genbrug.give;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,16 +17,19 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import com.iha.genbrug.ServerService;
 
 import com.iha.genbrug.R;
 
@@ -35,6 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import webservice.Publication;
+
 
 public class GiveActivity extends Activity implements View.OnClickListener {
 
@@ -43,6 +51,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         CROP_IMAGE,
         SHOW_IMAGE
     }
+
+    private Publication pub = new Publication();
 
     static final int DIALOG_ID = 0;
     int hour, minute;
@@ -61,6 +71,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
     // FORM Views
     Spinner spinnerCategories;
+    EditText etHeadline;
+    EditText etDescription;
     Spinner spinnerPickupType;
     Button btnPickStartTime;
     Button btnPickEndTime;
@@ -71,14 +83,30 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private String mImgDecodableString;
     private String mCurrentPhotoPath;
     private Bitmap mDisplayedBitmap;
+    private ServerService serverService;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
+            serverService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give);
 
-        interceptScrollview = (InterceptScrollView) findViewById(R.id.intercept_scrollview);
+        Intent intent = new Intent(this,ServerService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        interceptScrollview = (InterceptScrollView) findViewById(R.id.intercept_scrollview);
 
         layoutHorizontal = findViewById(R.id.layout_crop_grid_horizontal);
         layoutVertical = findViewById(R.id.layout_crop_grid_vertical);
@@ -92,20 +120,26 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
 
         // SPINNER CATEGORIES
-        List<String> Categories =  Arrays.asList("Jonas", "Bikes", "Furniture", "Clothes", "Books");
+        List<String> Categories =  Arrays.asList("Jonas", "Bikes", "Furniture", "Clothes", "Books", "Select category");
         spinnerCategories = (Spinner) findViewById(R.id.spinner_category);
         ArrayAdapter<String> catAdapter = new CategoriesSpinnerAdapter(this, R.layout.categories_dropdown_item_layout, Categories);
         spinnerCategories.setAdapter(catAdapter);
+        spinnerCategories.setSelection(Categories.size()-1);
 
         // SPINNER PICKUP TYPE
-        List<String> PickupTypes = Arrays.asList("Home", "Street");
+        List<String> PickupTypes = Arrays.asList("Home", "Street", "Select pickup type");
         spinnerPickupType = (Spinner) findViewById(R.id.spinner_pickup_type);
         ArrayAdapter<String> pickupAdapter = new PickupTypeSpinnerAdapter(this, R.layout.pickup_type_dropdown_item_layout, PickupTypes);
         spinnerPickupType.setAdapter(pickupAdapter);
+        spinnerPickupType.setSelection(PickupTypes.size()-1);
 
+
+        // HEADLINE FIELD
+        etHeadline = (EditText) findViewById(R.id.et_headline);
+        // DESCRIPTION FIELD
+        etDescription = (EditText) findViewById(R.id.et_description);
         // BUTTON PICK START TIME
         btnPickStartTime = (Button) findViewById(R.id.btn_pick_start_time);
-
         // BUTTON PICK END TIME
         btnPickEndTime = (Button) findViewById(R.id.btn_pick_end_time);
 
@@ -315,7 +349,11 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 setTouchImageViewState(TouchImageViewState.SHOW_IMAGE);
                 break;
             case R.id.btn_give:
-
+                if(populatePublication()){
+                    try {
+                        serverService.createPublication(pub);
+                    }catch(Exception e){ }
+                }
                 break;
             case R.id.btn_rotate_pic:
                 PointF lastPoint = ivChosenImage.getScrollPosition();
@@ -328,20 +366,18 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 ivChosenImage.setScrollPosition((1-tempY), tempX);
                 break;
             case R.id.btn_pick_start_time:
-                showDialog(DIALOG_ID);
-                break;
-            case R.id.btn_pick_end_time:
-                final Dialog petDialog = new Dialog(this);
-                petDialog.setTitle("Select latest pickup time");
-                petDialog.setContentView(R.layout.custom_dialog_date_time);
-                petDialog.show();
+                final Dialog pstDialog = new Dialog(this);
+                pstDialog.setTitle("Select earliest pickup time");
+                pstDialog.setContentView(R.layout.custom_dialog_date_time);
+                pstDialog.show();
 
                 // ---------------------------------------------------------------------------------
                 // DAY DATE PICKER (using a NumberPicker)
                 // ---------------------------------------------------------------------------------
-                final NumberPicker npDayDate = (NumberPicker) petDialog.findViewById(R.id.np_day_date);
+                final NumberPicker npDayDate = (NumberPicker) pstDialog.findViewById(R.id.np_day_date);
 
                 final String[] dayDateValues = new String[14];
+                final String[] dayDatePubValues = new String[14];
                 final Date date = new Date(); // Get today's date
 
                 for(int i = 0; i < dayDateValues.length; i++){
@@ -353,6 +389,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("EE, MMM dd"); // Format as "Tue, Jul 21"
                     dayDateValues[i] = sdf.format(futureDate);  // Add day date to values
+                    SimpleDateFormat sdfPub = new SimpleDateFormat("dd-MM-yyyy");
+                    dayDatePubValues[i] = sdfPub.format(futureDate);
                 }
                 npDayDate.setMaxValue(dayDateValues.length - 1);
                 npDayDate.setMinValue(0);
@@ -362,28 +400,120 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 // ---------------------------------------------------------------------------------
                 // TIME PICKER
                 // ---------------------------------------------------------------------------------
-                TimePicker tpTime = (TimePicker) petDialog.findViewById(R.id.tp_time);
+                final TimePicker tpTime = (TimePicker) pstDialog.findViewById(R.id.tp_time);
                 tpTime.setIs24HourView(true); // Enable 24 hour mode
 
+                // ---------------------------------------------------------------------------------
+                // IF USER ALREADY PICKED VALUE, START AT SAME PLACE
+                // ---------------------------------------------------------------------------------
+                if(pub.pickupStartime != null) // If user has already picked a time
+                {
+                    // Get the NumberPicker index for the date that was chosen previously
+                    int previousIndex = Arrays.asList(dayDatePubValues).indexOf(pub.pickupStartime.substring(0, 10));
+                    npDayDate.setValue(previousIndex); // Set this index to be the current value showing
+
+                    // Remove any zeroes in front of number, then remove any non-number characters before parsing to integer
+                    tpTime.setCurrentHour(Integer.parseInt(pub.pickupStartime.substring(11,13).replaceFirst("^0+(?!$)", "").replaceAll("[\\D]","")));
+                    tpTime.setCurrentMinute(Integer.parseInt(pub.pickupStartime.substring(14,16).replaceFirst("^0+(?!$)", "").replaceAll("[\\D]","")));
+                }
 
                 // ---------------------------------------------------------------------------------
                 // DIALOG BUTTONS
                 // ---------------------------------------------------------------------------------
-                Button btnSubmitDialog = (Button) petDialog.findViewById(R.id.btn_submit_dialog);
-                Button btnCancelDialog = (Button) petDialog.findViewById(R.id.btn_cancel_dialog);
+                Button btnSubmitDialog = (Button) pstDialog.findViewById(R.id.btn_submit_dialog);
+                Button btnCancelDialog = (Button) pstDialog.findViewById(R.id.btn_cancel_dialog);
 
                 btnSubmitDialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(), ( dayDateValues[npDayDate.getValue()]), Toast.LENGTH_SHORT).show();
-                        petDialog.cancel();
+                        String zeroPadMin = String.format("%02d", tpTime.getCurrentMinute());
+                        String zeroPadHour = String.format("%02d", tpTime.getCurrentHour());
+                        btnPickStartTime.setText(dayDateValues[npDayDate.getValue()]  + " " + zeroPadHour + ":" + zeroPadMin);
+                        pub.pickupStartime = dayDatePubValues[npDayDate.getValue()] + ":" + zeroPadHour + ":" + zeroPadMin + ":" + "00";
+                        pstDialog.cancel();
                     }
                 });
 
                 btnCancelDialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getApplicationContext(),"cancelled", Toast.LENGTH_SHORT).show();
+                        pstDialog.cancel();
+                    }
+                });
+
+                break;
+            case R.id.btn_pick_end_time:
+                final Dialog petDialog = new Dialog(this);
+                petDialog.setTitle("Select latest pickup time");
+                petDialog.setContentView(R.layout.custom_dialog_date_time);
+                petDialog.show();
+
+                // ---------------------------------------------------------------------------------
+                // DAY DATE PICKER (using a NumberPicker)
+                // ---------------------------------------------------------------------------------
+                final NumberPicker npDayDate2 = (NumberPicker) petDialog.findViewById(R.id.np_day_date);
+
+                final String[] dayDateValues2 = new String[14];
+                final String[] dayDatePubValues2 = new String[14];
+                final Date date2 = new Date(); // Get today's date
+
+                for(int i = 0; i < dayDateValues2.length; i++){
+                    Calendar c = Calendar.getInstance();
+                    Date futureDate = new Date();
+                    c.setTime(date2);            // Set today's date to calender
+                    c.add(Calendar.DATE, i);    // Increment date by i
+                    futureDate = c.getTime();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("EE, MMM dd"); // Format as "Tue, Jul 21"
+                    dayDateValues2[i] = sdf.format(futureDate);  // Add day date to values
+                    SimpleDateFormat sdfPub = new SimpleDateFormat("dd-MM-yyyy");
+                    dayDatePubValues2[i] = sdfPub.format(futureDate);
+                }
+                npDayDate2.setMaxValue(dayDateValues2.length - 1);
+                npDayDate2.setMinValue(0);
+                npDayDate2.setDisplayedValues(dayDateValues2);
+                npDayDate2.setWrapSelectorWheel(false);
+
+                // ---------------------------------------------------------------------------------
+                // TIME PICKER
+                // ---------------------------------------------------------------------------------
+                final TimePicker tpTime2 = (TimePicker) petDialog.findViewById(R.id.tp_time);
+                tpTime2.setIs24HourView(true); // Enable 24 hour mode
+
+                // ---------------------------------------------------------------------------------
+                // IF USER ALREADY PICKED VALUE, START AT SAME PLACE
+                // ---------------------------------------------------------------------------------
+                if(pub.pickupEndtime != null) // If user has already picked a time
+                {
+                    // Get the NumberPicker index for the date that was chosen previously
+                    int previousIndex = Arrays.asList(dayDatePubValues2).indexOf(pub.pickupEndtime.substring(0, 10));
+                    npDayDate2.setValue(previousIndex); // Set this index to be the current value showing
+
+                    // Remove any zeroes in front of number, then remove any non-number characters before parsing to integer
+                    tpTime2.setCurrentHour(Integer.parseInt(pub.pickupEndtime.substring(11,13).replaceFirst("^0+(?!$)", "").replaceAll("[\\D]","")));
+                    tpTime2.setCurrentMinute(Integer.parseInt(pub.pickupEndtime.substring(14,16).replaceFirst("^0+(?!$)", "").replaceAll("[\\D]","")));
+                }
+
+                // ---------------------------------------------------------------------------------
+                // DIALOG BUTTONS
+                // ---------------------------------------------------------------------------------
+                Button btnSubmitDialog2 = (Button) petDialog.findViewById(R.id.btn_submit_dialog);
+                Button btnCancelDialog2 = (Button) petDialog.findViewById(R.id.btn_cancel_dialog);
+
+                btnSubmitDialog2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String zeroPadMin = String.format("%02d", tpTime2.getCurrentMinute());
+                        String zeroPadHour = String.format("%02d", tpTime2.getCurrentHour());
+                        btnPickEndTime.setText(dayDateValues2[npDayDate2.getValue()]  + " " + zeroPadHour + ":" + zeroPadMin);
+                        pub.pickupEndtime = dayDatePubValues2[npDayDate2.getValue()] + ":" + zeroPadHour + ":" + zeroPadMin + ":" + "00";
+                        petDialog.cancel();
+                    }
+                });
+
+                btnCancelDialog2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         petDialog.cancel();
                     }
                 });
@@ -428,6 +558,26 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
+    }
+
+    private boolean populatePublication(){
+
+        pub.title = etHeadline.getText().toString();
+        pub.description = etDescription.getText().toString();
+
+        if( pub.title.length() > 0 && pub.description.length() > 0 &&
+            pub.pickupStartime != null && pub.pickupEndtime != null )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean publishImage(){
+
+
+
+        return false;
     }
 
     /**

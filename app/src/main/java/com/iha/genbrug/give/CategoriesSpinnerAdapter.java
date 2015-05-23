@@ -27,6 +27,11 @@ public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     @Override
+    public int getCount() {
+        return super.getCount() - 1;
+    }
+
+    @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
@@ -37,8 +42,6 @@ public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        //return super.getView(position, convertView, parent);
 
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(  Context.LAYOUT_INFLATER_SERVICE );
         View row = inflater.inflate(R.layout.categories_dropdown_item_layout, parent, false);
@@ -47,13 +50,10 @@ public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
 
         ImageView icon=(ImageView)row.findViewById(R.id.iv_category_icon);
 
-        icon.setImageResource(R.drawable.ic_launcher);
-       /* if (DayOfWeek[position]=="Sunday"){
-            icon.setImageResource(R.drawable.icon);
-        }
-        else{
-            icon.setImageResource(R.drawable.icongray);
-        }*/
+        if(position == getCount())
+            icon.setImageResource(R.drawable.ic_action_dropdown);
+        else
+            icon.setImageResource(R.drawable.ic_action_camera);
 
         return row;
     }

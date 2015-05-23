@@ -74,10 +74,10 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_rotate_pic"
                 android:visibility="gone"
-                android:src="@drawable/ic_action_cancel"
+                android:src="@drawable/ic_action_turn_right"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
                 android:background="@null"
@@ -162,7 +162,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:background="#d8d8d8"
+            android:background="@drawable/give_background"
             android:id="@+id/linFormWrapper"
             android:orientation="vertical"
             android:layout_below="@+id/rel_image_wrapper"
@@ -188,12 +188,13 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:padding="5dp"
-
                 android:hint="@string/giveform_headline"
-                android:textColor="#939393"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
                 />
 
             <EditText
+                android:id="@+id/et_description"
                 android:background="@drawable/form_field"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
@@ -205,12 +206,16 @@
                 android:gravity="top"
 
                 android:hint="@string/giveform_description"
-                android:textColor="#939393"
-                />
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+            />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -218,6 +223,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ghost_button"
                     android:text="From"/>
 
                 <Button
@@ -225,6 +232,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/ghost_button"
                     android:text="To"/>
 
             </LinearLayout>
@@ -237,6 +246,70 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:padding="5dp" />
+
+            <EditText
+                android:id="@+id/et_street"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_address"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+                />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_zipcode"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="2"
+                android:layout_marginRight="10dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_zipcode"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+                />
+
+            <EditText
+                android:id="@+id/et_city"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_city"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+                />
+
+        </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_country"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_country"
+                android:textColorHint="#000000"
+                android:textColor="#000000"
+                />
 
             <Button
                 android:id="@+id/btn_give"
