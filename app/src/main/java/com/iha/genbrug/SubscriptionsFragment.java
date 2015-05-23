@@ -59,9 +59,9 @@ public class SubscriptionsFragment extends Fragment {
 
         final ArrayList<TakeItem> TakeList = new ArrayList<>();
 
-        for(int i = 0; i < 20; i++){
+        for(int i = 0; i < 15; i++){
 
-            TakeList.add(new TakeItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item",pictureUri,(i+1)));
+            TakeList.add(new TakeItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item",null,(i+1)));
         }
 
         // specify an adapter (see also next example)

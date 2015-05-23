@@ -35,7 +35,7 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
 
 
     private ArrayList<TakeItem> mDataset;
-    private String imagePath;
+   public Drawable drawable;
 
     public SubAdapter(ArrayList<TakeItem> myDataset) {
         mDataset = myDataset;
@@ -50,6 +50,8 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_take_item, parent, false);
 
+        drawable = v.getResources().getDrawable(R.drawable.img1);
+
         return new SubItemViewHolder(v);
     }
 
@@ -59,25 +61,18 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         // Get element from dataset for given position
         final TakeItem gi = mDataset.get(position);
 
+
+
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
-        imagePath = gi.getImagePath();
+       /* BitmapDrawable test = (BitmapDrawable)gi.getPhotoDrawable();*/
+        BitmapDrawable testImage = (BitmapDrawable) drawable;
 
-        LongOperation task = new LongOperation();
+        Drawable testDrawable = new BitmapDrawable(getCroppedBitmap(testImage.getBitmap(), 300));
 
-        try {
-            Bitmap bitmap = task.execute().get();
-            holder.ivPhoto.setImageBitmap(getCroppedBitmap(bitmap,300));
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        holder.ivPhoto.setImageDrawable(testDrawable);
     }
-
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
@@ -99,32 +94,6 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         }
     }
 
-    public class LongOperation extends AsyncTask<Bitmap, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(Bitmap... params) {
-
-            String pictureUri = imagePath;
-            Uri myUri = Uri.parse(pictureUri);
-            String test = myUri.toString();
-            URL url = null;
-            try {
-                url = new URL(test);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            InputStream in = null;
-            try {
-                in = (InputStream) url.getContent();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Bitmap  bitmap = BitmapFactory.decodeStream(in);
-
-            return bitmap;
-
-        }
-    }
 
     public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
