@@ -4,14 +4,45 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <!-- Removes shadow fom ActionBar down on tabs.-->
+
+		<!-- Removes shadow fom ActionBar down on tabs.-->
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_action_previous_item</item>
 
+        <item name="android:typeface">sans</item>
+        <item name="android:dialogTheme">@style/cust_dialog</item>
+
     </style>
 
-    <!-- ActionBar styles -->
+	<!-- ActionBar styles -->
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/light_brown</item>
     </style>
+    
+    <style name="cust_dialog" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
+    <style name="dialog_title_style" parent="android:Widget.TextView">
+        <item name="android:padding">5dp</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#ffffff</item>
+
+    </style>
+
+    <style name="give_form_field_style">
+        <item name="android:background">@drawable/form_field</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+
+        <item name="android:textColor">#cf636363</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColorHint">#cf636363</item>
+
+        <item name="android:layout_marginLeft">25dp</item>
+        <item name="android:layout_marginRight">25dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
 </resources>

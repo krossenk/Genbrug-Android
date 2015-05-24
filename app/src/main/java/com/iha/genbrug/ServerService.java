@@ -22,6 +22,7 @@ import webservice.getUserSubscriptionsResponse;
 public class ServerService extends Service {
 
     public static final String RESULT_RETURNED_FROM_SERVICE = "Result_Returned_From_Service";
+    public static final String START_CREATE_PUBLICATION_RESULT = "Result_Returned_From_startCreatePublication";
     public static final String ALL_PUBLICATIONS_RESULT = "Result_Returned_From_getAllPublications";
     public static final String ALL_PUBLICATIONSUBSRIPTIONS_RESULT = "Result_Returned_From_getPublicationSubscriptions";
     public static final String ALL_USERSUBSRIPTIONS_RESULT = "Result_Returned_From_getUserSubscriptions";
@@ -160,10 +161,13 @@ public class ServerService extends Service {
         servicecallthread = new Thread() {
             public void run() {
                 try {
-                    recycleService.createPublication(pub);
+                    publicationId = recycleService.createPublication(pub);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                Intent retint = new Intent(START_CREATE_PUBLICATION_RESULT);
+                sendBroadcast(retint);
             }
         };
         this.servicecallthread.start();
@@ -183,9 +187,9 @@ public class ServerService extends Service {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Intent retint = new Intent(ALL_PUBLICATIONS_RESULT);
+                Intent retint = new Intent();
                 sendBroadcast(retint);
-//
+
             }
         };
         this.servicecallthread.start();
@@ -310,7 +314,7 @@ public class ServerService extends Service {
 
 
     public class LocalBinder extends Binder {
-        ServerService getService() {
+        public ServerService getService() {
             // Return this instance of LocalService so clients can call public methods
             return ServerService.this;
         }

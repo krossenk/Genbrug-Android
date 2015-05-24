@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * Created by Gladiator HelmetFace on 5/16/2015.
  */
-public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
+public class PickupTypeSpinnerAdapter extends ArrayAdapter<String> {
 
     private Context context;
     private List<String> objects;
 
-    public CategoriesSpinnerAdapter(Context context, int resource, List<String> objects) {
+    public PickupTypeSpinnerAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.context = context;
         this.objects = objects;
@@ -42,13 +42,15 @@ public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
+        // TODO Auto-generated method stub
+        //return super.getView(position, convertView, parent);
 
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(  Context.LAYOUT_INFLATER_SERVICE );
-        View row = inflater.inflate(R.layout.categories_dropdown_item_layout, parent, false);
-        TextView label = (TextView)row.findViewById(R.id.tv_category_name);
+        View row = inflater.inflate(R.layout.pickup_type_dropdown_item_layout, parent, false);
+        TextView label = (TextView)row.findViewById(R.id.tv_pickup_type_name);
         label.setText(objects.get(position));
 
-        ImageView icon=(ImageView)row.findViewById(R.id.iv_category_icon);
+        ImageView icon=(ImageView)row.findViewById(R.id.iv_pickup_type_icon);
 
         if(position == getCount())
             icon.setImageResource(R.drawable.ic_action_dropdown);

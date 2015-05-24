@@ -19,7 +19,7 @@ public class InterceptScrollView extends ScrollView {
 
     /** Enables or disables ScrollView scroll */
     public void setScrollEnabled (boolean status) {
-        mDisableScrolling=!status;
+        mDisableScrolling=status;
     }
 
     @Override
