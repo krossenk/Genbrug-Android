@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import webservice.User;
@@ -30,6 +31,8 @@ public class CreateAccountActivity extends FragmentActivity{
     private EditText CreateUserName;
     private EditText CreatePassword;
     private EditText CreateRePassword;
+    private EditText CreateFirstName;
+    private EditText CreateLastName;
     private Button signUpBtn;
 
     private ServerService serverServiceCreate;
@@ -80,10 +83,19 @@ public class CreateAccountActivity extends FragmentActivity{
         signUpBtn.setEnabled(isEnabled);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+      
+    }
+
     private void setupVariables() {
         CreateUserName = (EditText) findViewById(R.id.createUsername);
         CreatePassword = (EditText) findViewById(R.id.createPassword);
         CreateRePassword = (EditText) findViewById(R.id.createRePassword);
+        CreateFirstName = (EditText) findViewById(R.id.createFirstName);
+        CreateLastName = (EditText) findViewById(R.id.createLastName);
     }
 
     // method for creating an account in DB
@@ -92,17 +104,27 @@ public class CreateAccountActivity extends FragmentActivity{
         String username;
         String password;
         String rePassword;
+        String firstName;
+        String lastName;
 
         username = CreateUserName.getText().toString();
         password = CreatePassword.getText().toString();
         rePassword = CreateRePassword.getText().toString();
+        firstName = CreateFirstName.getText().toString();
+        lastName = CreateLastName.getText().toString();
         Intent intent = new Intent(this, LoginActivity.class);
 
-        if(!password.isEmpty()&& !rePassword.isEmpty()&&password.equals(rePassword)&& validEmail(username))
+        if(!password.isEmpty()&& !rePassword.isEmpty()
+                &&password.equals(rePassword)&& validEmail(username)
+                && !firstName.isEmpty()&& !lastName.isEmpty()
+                && validateName(CreateFirstName.getText().toString())
+                &validateName(CreateLastName.getText().toString()))
         {
             user = new User();
             user.username = username;
             user.password = password;
+            user.firstname = firstName;
+            user.lastname = lastName;
 
             Toast.makeText(getApplicationContext(), "Account created!",
                     Toast.LENGTH_LONG).show();
@@ -112,6 +134,30 @@ public class CreateAccountActivity extends FragmentActivity{
         }
         else if (!validEmail(username)) {
             Toast.makeText(getApplicationContext(), "Wrong email address!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else  if (firstName.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(), "First Name is required!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else  if (lastName.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(), "Last Name is required!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else  if (validateName(CreateFirstName.getText().toString()) ==false)
+        {
+            Toast.makeText(getApplicationContext(), "Wrong First Name!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else  if (validateName(CreateLastName.getText().toString()) ==false)
+        {
+            Toast.makeText(getApplicationContext(), "Wrong Last Name!",
                     Toast.LENGTH_SHORT).show();
         }
         else { Toast.makeText(getApplicationContext(), "Wrong password!",
@@ -145,5 +191,21 @@ public class CreateAccountActivity extends FragmentActivity{
         Intent intent = new Intent(this, LoginActivity.class);
         this.startActivity(intent);
         finish();
+    }
+
+    private boolean validateName (String validate)
+    {
+        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+        Matcher matchValue = ps.matcher(validate);
+        boolean validator = matchValue.matches();
+
+        if (validator) {
+
+            return true;
+        }
+        else {
+            
+            return false;
+        }
     }
 }
