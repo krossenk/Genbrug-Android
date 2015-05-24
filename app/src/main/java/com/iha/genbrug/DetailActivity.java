@@ -31,7 +31,7 @@ public class DetailActivity extends Activity {
     SharedPreferences prefs;
     private int itemId;
     private ServerService serverServiceSubscribe;
-    private GlobalSettings globalSettings;
+    private GlobalSettings  globalSettings =GlobalSettings.getInstance();
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -81,15 +81,13 @@ public class DetailActivity extends Activity {
     // temporary logout function
     public void logOut(View v)
     {
-        prefs =PreferenceManager.getDefaultSharedPreferences(this);
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 
         //Reset all information from user
-
-        prefs.edit().putString("userObj", "").commit();
-        prefs.edit().putBoolean("Islogin", false).commit();
-        globalSettings.setUser(null);
-
-        //String json = prefs.getString("userObj", "");
+        globalSettings.sharedPreferences.edit().putString("userObj", "").commit();
+        globalSettings.sharedPreferences.edit().putBoolean("Islogin", false).commit();
+        globalSettings.setUser(new User());
 
         LoginManager.getInstance().logOut();
         Intent intent = new Intent(this,LoginActivity.class);
@@ -99,27 +97,17 @@ public class DetailActivity extends Activity {
 
     public void subscribe (View v){
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        int localUserId = prefs.getInt("localUserId", 0);
-        Long FBUserId = prefs.getLong("FBUserId", 0);
+        User user = globalSettings.getUserFromPref();
+        long  userId = user.id;
 
 
-        if (localUserId != 0)
+        if (userId != 0)
         {
-            serverServiceSubscribe.createSubscription(localUserId,itemId);
+            serverServiceSubscribe.createSubscription(userId,itemId);
             Toast.makeText(this,"The item with itemId: " + itemId + " is subscribed",Toast.LENGTH_SHORT).show();
         }
 
-        else if (FBUserId != 0)
-        {
-            Long FbUserVal = Long.valueOf(FBUserId);
-
-            //serverServiceSubscribe.createSubscription(FbUserVal,itemId);
-            Toast.makeText(this,"The item with itemId: " + itemId + " is subscribed",Toast.LENGTH_SHORT).show();
-        }
-
-        else
+             else
         {
             Toast.makeText(this,"No user to subscribe to",Toast.LENGTH_SHORT).show();
         }

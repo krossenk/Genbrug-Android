@@ -27,6 +27,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
+import webservice.User;
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -36,6 +39,7 @@ public class FBFragment extends Fragment {
     private CallbackManager mcallbackManager;
     private View view;
     LoginButton loginButton;
+    private GlobalSettings globalSettings;
 
     // Callback method for login with facebook
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
@@ -50,20 +54,24 @@ public class FBFragment extends Fragment {
                 Uri profilePictureUri = profile.getProfilePictureUri(400, 300);
                 loginButton.setVisibility(View.INVISIBLE);
 
+                 globalSettings = GlobalSettings.getInstance();
+                 User user = new User();
 
-                //saving userinfo in SharedPrefrences
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                prefs.edit().putBoolean("Islogin", true).commit();
-                prefs.edit().putString("FBUser", profile.getName()).commit();
-                prefs.edit().putLong("FBUserId", Long.parseLong(profile.getId())).commit();
+                user.id = Long.valueOf(profile.getId());
+                user.firstname = profile.getFirstName();
+                user.lastname = profile.getLastName();
 
+
+
+                globalSettings.saveUserToPref(user);
+                globalSettings.sharedPreferences.edit().putBoolean("Islogin", true).commit();
 
                 Toast.makeText(getActivity(), "Welcome " + profile.getId(),
                         Toast.LENGTH_SHORT).show();
 
                 try {
                     URL url = new URL(profilePictureUri.toString());
-                    prefs.edit().putString("ProfileURL", url.toString()).commit();
+                    globalSettings.sharedPreferences.edit().putString("ProfileURL", url.toString()).commit();
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }

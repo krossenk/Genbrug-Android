@@ -50,6 +50,7 @@ public class LoginActivity extends FragmentActivity {
     private Button loginBtn;
     private Button createBtn;
     private GlobalSettings globalSettings;
+    public static Context contextOfApplication;
 
 
     //method for connection to service
@@ -103,19 +104,12 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        contextOfApplication = getApplicationContext();
 
+         globalSettings = GlobalSettings.getInstance();
+        
           // get login status from shared preferences
-         loginStatusVariable = prefs.getBoolean("Islogin", false);
-
-
-
-        // Gson gson = new Gson();
-        //String json = Global.getSharedPreferences(this.getApplicationContext()).getString("userObj", "");
-    /*    String json = prefs.getString("userObj", "");
-
-        User obj = gson.fromJson(json, User.class);
-        globalSettings.setUser(obj);*/
+         loginStatusVariable = globalSettings.sharedPreferences.getBoolean("Islogin", false);
 
         if(loginStatusVariable && isNetworkAvailable(getApplicationContext()))
         {
@@ -124,6 +118,10 @@ public class LoginActivity extends FragmentActivity {
             startActivityForResult(i, 1);
 
         }
+    }
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
     }
 
     @Override
@@ -199,18 +197,11 @@ public class LoginActivity extends FragmentActivity {
 
                     loginStatusVariable =true;
 
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    globalSettings.saveUserToPref(user);
+                    globalSettings.setUser(globalSettings.getUserFromPref());
+
                     //islogin is a boolean value of your login status pushed to SharedPreferences
-
-                    globalSettings = GlobalSettings.getInstance();
-                    globalSettings.setUser(user);
-
-                    Gson gson = new Gson();
-                    String json = gson.toJson(user);
-
-
-                    prefs.edit().putString("userObj", json).commit();
-                    prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
+                    globalSettings.sharedPreferences.edit().putBoolean("Islogin", loginStatusVariable).commit();
 
 
                 }
