@@ -1,15 +1,45 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <android.support.v4.view.ViewPager
-        android:layout_height="match_parent"
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:id="@+id/pager">
+        android:layout_height="48dip"
+        android:background="@color/brown"
+        app:pstsShouldExpand="true"
+        app:pstsTextAllCaps="false"
+        app:pstsDeactivateTextColor="@color/secondary_text"
+        app:pstsActivateTextColor="@color/primary_text"
+        app:pstsTabSwitch="true"
+        app:pstsUnderlineColor="#00000000"
+        app:pstsScrollOffset="300dp"
+        app:pstsIndicatorColor="@color/primary_text"
+        app:pstsIndicatorHeight="2dp" />
 
-    </android.support.v4.view.ViewPager>
+    <android.support.v4.view.ViewPager
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/tabs"
+        android:id="@+id/pager" />
 
-</LinearLayout>
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/btn_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_add"
+        fab:fab_colorNormal="@color/light_brown"
+        fab:fab_colorPressed="@color/brown"
+        fab:fab_colorRipple="#c8c8c8"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"/>
+
+</RelativeLayout>

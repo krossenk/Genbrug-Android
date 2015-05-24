@@ -8,6 +8,11 @@
     KEY: gitem -->
     <string name="gitem_headline">Headline</string>
     <string name="gitem_description">Description</string>
+    <string name="title_activity_give">GiveActivity</string>
+
+    <string name="giveform_headline">Headline</string>
+    <string name="giveform_description">Description</string>
+
     <string name="title_activity_login">LoginActivity</string>
 
     <string name="hello_world">Hello world!</string>
@@ -17,5 +22,6 @@
     <string name="title_activity_create_account">CreateAccountActivity</string>
 
     <string name="app_id">759727107481424</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>

@@ -1,22 +1,17 @@
 package com.iha.genbrug;
 
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-
+import webservice.Publication;
 import webservice.RecycleWebService;
 import webservice.User;
+import webservice.getAllPublicationsResponse;
 
 /**
  * Created by Parsa on 16/05/2015.
@@ -25,10 +20,13 @@ public class ServerService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
     private RecycleWebService recycleService = new RecycleWebService();
-    private User validatetUser;
+    private User validatedUser;
     public static final String RESULT_RETURNED_FROM_SERVICE = "Result_Returned_From_Service";
+    public static final String ALL_PUBLICATIONS_RESULT = "Result_Returned_From_getAllPublications";
+    public static final String IMAGE_RETURN_URL = "Result_Returned_From_Saveimage";
     private Thread servicecallthread = null;
-
+    private getAllPublicationsResponse publicationsResponseList;
+    private String imageResponseURL;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -49,13 +47,13 @@ public class ServerService extends Service {
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.notify(NOTIFICATION_ID, builder.build());
     }
-
+    //method for validate user on DB
     public void validateUser(final String usrname, final String pass) throws Exception {
 
         servicecallthread = new Thread() {
             public void run() {
                 try {
-                    validatetUser = recycleService.validateUser(usrname, pass);
+                    validatedUser = recycleService.validateUser(usrname, pass);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -68,6 +66,7 @@ public class ServerService extends Service {
 
     }
 
+    // method for creating user on DB
     public void createUser(final User usr) throws Exception {
         servicecallthread = new Thread() {
             public void run() {
@@ -84,9 +83,82 @@ public class ServerService extends Service {
 
     }
 
+    //method to getValidatet user on activity
     public User getValidatedUser ()
     {
-        return validatetUser;
+        return validatedUser;
+    }
+
+    public void createSubscription(final int userId, final int publicationId)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    recycleService.createSubscription(userId,publicationId );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public void createPublication(final Publication pub)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    recycleService.createPublication(pub);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public void startGetAllPublications()
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                    publicationsResponseList = recycleService.getAllPublications();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Intent retint = new Intent(ALL_PUBLICATIONS_RESULT);
+                sendBroadcast(retint);
+//
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public getAllPublicationsResponse getAllPublications()
+    {
+        return publicationsResponseList;
+    }
+
+    public void startSavingImage(final String filename, final byte[] imgData, final int publicationId)
+    {
+        servicecallthread = new Thread() {
+            public void run() {
+                try {
+                   imageResponseURL = recycleService.saveImage(filename,imgData,publicationId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Intent retint = new Intent(IMAGE_RETURN_URL);
+                sendBroadcast(retint);
+//
+            }
+        };
+        this.servicecallthread.start();
+    }
+
+    public String getLatestImageURL()
+    {
+        return imageResponseURL;
     }
 
 

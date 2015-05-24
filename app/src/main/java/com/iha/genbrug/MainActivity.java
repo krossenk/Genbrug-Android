@@ -1,90 +1,53 @@
 package com.iha.genbrug;
 
 import android.app.ActionBar;
-import android.support.v4.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.View;
 
-import webservice.RecycleWebService;
+import com.astuetz.PagerSlidingTabStrip;
+import com.iha.genbrug.give.GiveActivity;
+import com.melnykov.fab.FloatingActionButton;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
     ViewPager viewPager = null;
-    ActionBar actionBar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getActionBar().setCustomView(R.layout.ab_layout);
+        fab = (FloatingActionButton) findViewById(R.id.btn_fab);
+        fab.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         viewPager.setAdapter(new MyAdapter(fragmentManager));
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        ActionBar.Tab tab1 = actionBar.newTab();
-        tab1.setText("Feed");
-        tab1.setTabListener(this);
-
-        ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("Takes");
-        tab2.setTabListener(this);
-
-        ActionBar.Tab tab3 = actionBar.newTab();
-        tab3.setText("Gives");
-        tab3.setTabListener(this);
-
-        actionBar.addTab(tab1);
-        actionBar.addTab(tab2);
-        actionBar.addTab(tab3);
-
+        // Bind the tabs to the ViewPager
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setViewPager(viewPager);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onBackPressed() {
+         moveTaskToBack(true);
     }
 
     @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        viewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
+    public void onClick(View view) {
+        if(view.getId() == R.id.btn_fab){
+            startActivity(new Intent(this, GiveActivity.class));
+        }
     }
 }
 
@@ -113,7 +76,6 @@ class MyAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        String title = new String();
         if(position == 0){
             return "Feed";
         }else if(position == 1){
@@ -123,4 +85,5 @@ class MyAdapter extends FragmentPagerAdapter {
         }
         return null;
     }
+
 }

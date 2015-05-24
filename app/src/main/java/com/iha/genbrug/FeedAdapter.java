@@ -1,17 +1,24 @@
 package com.iha.genbrug;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
     private ArrayList<GenbrugItem> mDataset;
-
+   private static int pos;
     // CONSTRUCTOR
     public FeedAdapter(ArrayList<GenbrugItem> myDataset) {
         mDataset = myDataset;
@@ -22,6 +29,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     public GenbrugItemViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
 
+
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.genbrug_item, parent, false);
 
@@ -30,16 +38,48 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(GenbrugItemViewHolder holder, int position) {
+    public void onBindViewHolder(GenbrugItemViewHolder holder,  final int position) {
         // Get element from dataset for given position
-        GenbrugItem gi = mDataset.get(position);
+        final GenbrugItem gi = mDataset.get(position);
 
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
         holder.ivPhoto.setImageDrawable(gi.getPhotoDrawable());
+
+
+
+
+        holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                pos = position;
+                String nameofImage = "img" + position;
+                String headline = gi.getHeadline();
+                String desc = gi.getDescription();
+                int itemId = gi.getItemId();
+                if(position == 0)
+                {
+                    nameofImage = "img";
+                }
+                String imageId = String.valueOf(v.getResources().getIdentifier(nameofImage, "drawable", "com.iha.genbrug"));
+
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                intent.putExtra("imageId", imageId);
+                intent.putExtra("headline", headline);
+                intent.putExtra("desc", desc);
+                intent.putExtra("itemId",itemId);
+                pos = position;
+                v.getContext().startActivity(intent);
+                ((Activity)v.getContext()).finish();
+            }
+        });
     }
 
+    public static int getPostion ()
+    {
+        return pos;
+    }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
@@ -57,6 +97,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             ivPhoto = (ImageView) v.findViewById(R.id.iv_photo);
+
         }
     }
 

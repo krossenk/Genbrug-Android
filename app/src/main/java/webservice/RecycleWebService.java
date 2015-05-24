@@ -195,6 +195,39 @@ public class RecycleWebService
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
+
+            public void createSubscription(final Integer userId,final Integer publicationId ) throws java.lang.Exception
+            {
+                execute(new IWcfMethod()
+                {
+                    @Override
+                    public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                        ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                        SoapObject __soapReq = new SoapObject("http://recycle/", "createSubscription");
+                        __envelope.setOutputSoapObject(__soapReq);
+
+                        PropertyInfo __info=null;
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="userId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(userId);
+                        __soapReq.addProperty(__info);
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="publicationId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(publicationId);
+                        __soapReq.addProperty(__info);
+                        return __envelope;
+                    }
+
+                    @Override
+                    public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                        return null;
+                    }
+                },"");
+            }
             
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
@@ -221,27 +254,28 @@ public class RecycleWebService
             }
         });
     }
-    
-    public String Hello(final String name ) throws java.lang.Exception
+
+    public Long createUser(final User user ) throws java.lang.Exception
     {
-        return (String)execute(new IWcfMethod()
+        return (Long)execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
-                SoapObject __soapReq = new SoapObject("http://recycle/", "Hello");
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                __envelope.addMapping("","user",new User().getClass());
+                SoapObject __soapReq = new SoapObject("http://recycle/", "createUser");
                 __envelope.setOutputSoapObject(__soapReq);
-                
+
                 PropertyInfo __info=null;
                 __info = new PropertyInfo();
                 __info.namespace="";
-                __info.name="name";
-                __info.type=PropertyInfo.STRING_CLASS;
-                __info.setValue(name!=null?name:SoapPrimitive.NullSkip);
+                __info.name="user";
+                __info.type=User.class;
+                __info.setValue(user!=null?user:SoapPrimitive.NullSkip);
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
-            
+
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
                 SoapObject __soap=(SoapObject)__result;
@@ -249,63 +283,23 @@ public class RecycleWebService
                 if (obj != null && obj.getClass().equals(SoapPrimitive.class))
                 {
                     SoapPrimitive j =(SoapPrimitive) obj;
-                    return j.toString();
+                    return new Long(j.toString());
                 }
-                else if (obj!= null && obj instanceof String){
-                    return (String)obj;
+                else if (obj!= null && obj instanceof Long){
+                    return (Long)obj;
                 }
                 return null;
             }
         },"");
     }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< String>> HelloAsync(final String name)
+
+    public android.os.AsyncTask< Void, Void, OperationResult< Long>> createUserAsync(final User user)
     {
-        return executeAsync(new Functions.IFunc< String>() {
-            public String Func() throws java.lang.Exception {
-                return Hello( name);
+        return executeAsync(new Functions.IFunc< Long>() {
+            public Long Func() throws java.lang.Exception {
+                return createUser( user);
             }
         });
-    }
-    
-    public void createUser(final User user ) throws java.lang.Exception
-    {
-        execute(new IWcfMethod()
-        {
-            @Override
-            public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
-                __envelope.addMapping("","user",new User().getClass());
-                SoapObject __soapReq = new SoapObject("http://recycle/", "createUser");
-                __envelope.setOutputSoapObject(__soapReq);
-                
-                PropertyInfo __info=null;
-                __info = new PropertyInfo();
-                __info.namespace="";
-                __info.name="user";
-                __info.type= User.class;
-                __info.setValue(user!=null?user:SoapPrimitive.NullSkip);
-                __soapReq.addProperty(__info);
-                return __envelope;
-            }
-            
-            @Override
-            public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
-                return null;
-            }
-        },"");
-    }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< Void>> createUserAsync(final User user)
-    {
-        return executeAsync(new Functions.IFunc< Void>()
-        {
-            @Override
-            public Void Func() throws java.lang.Exception {
-                createUser( user);
-                return null;
-            }
-        }) ;
     }
     
     public User validateUser(final String username,final String password ) throws java.lang.Exception
@@ -428,37 +422,98 @@ public class RecycleWebService
             }
         }) ;
     }
-    
-    public String getAllPublications( ) throws java.lang.Exception
+
+    public void createSubscription(final Integer userId,final Integer publicationId ) throws java.lang.Exception
     {
-/*This feature is available in Premium account, Check http://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account*/
-        return null;    
+        execute(new IWcfMethod()
+        {
+            @Override
+            public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                SoapObject __soapReq = new SoapObject("http://recycle/", "createSubscription");
+                __envelope.setOutputSoapObject(__soapReq);
+
+                PropertyInfo __info=null;
+                __info = new PropertyInfo();
+                __info.namespace="";
+                __info.name="userId";
+                __info.type=PropertyInfo.INTEGER_CLASS;
+                __info.setValue(userId);
+                __soapReq.addProperty(__info);
+                __info = new PropertyInfo();
+                __info.namespace="";
+                __info.name="publicationId";
+                __info.type=PropertyInfo.INTEGER_CLASS;
+                __info.setValue(publicationId);
+                __soapReq.addProperty(__info);
+                return __envelope;
+            }
+
+            @Override
+            public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                return null;
+            }
+        },"");
     }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< String>> getAllPublicationsAsync()
+
+    public getAllPublicationsResponse getAllPublications( ) throws java.lang.Exception
     {
-        return executeAsync(new Functions.IFunc< String>() {
-            public String Func() throws java.lang.Exception {
+        return (getAllPublicationsResponse)execute(new IWcfMethod()
+        {
+            @Override
+            public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                SoapObject __soapReq = new SoapObject("http://recycle/", "getAllPublications");
+                __envelope.setOutputSoapObject(__soapReq);
+
+                PropertyInfo __info=null;
+                return __envelope;
+            }
+
+            @Override
+            public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                return (getAllPublicationsResponse)getResult(getAllPublicationsResponse.class,__result,"getAllPublicationsResponse",__envelope);
+            }
+        },"");
+    }
+
+    public android.os.AsyncTask< Void, Void, OperationResult< getAllPublicationsResponse>> getAllPublicationsAsync()
+    {
+        return executeAsync(new Functions.IFunc< getAllPublicationsResponse>() {
+            public getAllPublicationsResponse Func() throws java.lang.Exception {
                 return getAllPublications( );
             }
         });
     }
-    
-    public void createSubscription(final String userId,final String publicationId ) throws java.lang.Exception
+
+    public getAllCategoriesResponse getAllCategories( ) throws java.lang.Exception
     {
-/*This feature is available in Premium account, Check http://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account*/
-    }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult< Void>> createSubscriptionAsync(final String userId,final String publicationId)
-    {
-        return executeAsync(new Functions.IFunc< Void>()
+        return (getAllCategoriesResponse)execute(new IWcfMethod()
         {
             @Override
-            public Void Func() throws java.lang.Exception {
-                createSubscription( userId,publicationId);
-                return null;
+            public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                SoapObject __soapReq = new SoapObject("http://recycle/", "getAllCategories");
+                __envelope.setOutputSoapObject(__soapReq);
+
+                PropertyInfo __info=null;
+                return __envelope;
             }
-        }) ;
+
+            @Override
+            public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                return (getAllCategoriesResponse)getResult(getAllCategoriesResponse.class,__result,"getAllCategoriesResponse",__envelope);
+            }
+        },"");
+    }
+
+    public android.os.AsyncTask< Void, Void, OperationResult<getAllCategoriesResponse>> getAllCategoriesAsync()
+    {
+        return executeAsync(new Functions.IFunc<getAllCategoriesResponse>() {
+            public getAllCategoriesResponse Func() throws java.lang.Exception {
+                return getAllCategories( );
+            }
+        });
     }
 
     
