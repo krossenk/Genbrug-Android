@@ -42,15 +42,15 @@ public class GlobalSettings {
       this.user = user;
     }
 
-    public User getUser ()
+   /* public User getUser ()
     {
         return user;
-    }
+    }*/
 
 
     public void saveUserToPref (User value)
     {
-       /* sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.getContextOfApplication());*/
+
         Gson gson = new Gson();
         String json = gson.toJson(value);
         sharedPreferences.edit().putString("userObj", json).commit();
