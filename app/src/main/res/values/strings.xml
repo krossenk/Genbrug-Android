@@ -27,5 +27,7 @@
     <string name="giveform_zipcode">Zip Code</string>
     <string name="giveform_city">City</string>
     <string name="giveform_country">Country</string>
+    <string name="giveform_radio_home">Home</string>
+    <string name="giveform_radio_street">Street</string>
 
 </resources>

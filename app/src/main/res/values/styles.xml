@@ -21,6 +21,20 @@
 
     </style>
 
+    <style name="give_form_field_style">
+        <item name="android:background">@drawable/form_field</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+
+        <item name="android:textColor">#cf636363</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColorHint">#cf636363</item>
+
+        <item name="android:layout_marginLeft">25dp</item>
+        <item name="android:layout_marginRight">25dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
 <!--
     <style name="MyActionBar" parent="android:Theme.Holo.Light.DarkActionBar">
         &lt;!&ndash; Customize your theme here. &ndash;&gt;

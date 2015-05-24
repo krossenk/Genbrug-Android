@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,10 +30,11 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.iha.genbrug.ServerService;
 
 import com.iha.genbrug.R;
+import com.iha.genbrug.ServerService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -41,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import webservice.Category;
 import webservice.Publication;
 
 
@@ -56,6 +59,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
     static final int DIALOG_ID = 0;
     int hour, minute;
+    private TouchImageViewState currentTouchImageViewState = TouchImageViewState.PICK_IMAGE;
 
     InterceptScrollView interceptScrollview;
     ImageButton btnCamPic;
@@ -120,7 +124,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
 
         // SPINNER CATEGORIES
-        List<String> Categories =  Arrays.asList("Jonas", "Bikes", "Furniture", "Clothes", "Books", "Select category");
+        List<String> Categories =  Arrays.asList("Bikes", "Furniture", "Clothes", "Books", "Select category");
         spinnerCategories = (Spinner) findViewById(R.id.spinner_category);
         ArrayAdapter<String> catAdapter = new CategoriesSpinnerAdapter(this, R.layout.categories_dropdown_item_layout, Categories);
         spinnerCategories.setAdapter(catAdapter);
@@ -351,7 +355,17 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             case R.id.btn_give:
                 if(populatePublication()){
                     try {
-                        serverService.createPublication(pub);
+                        //serverService.createPublication(pub);
+
+                        if(mDisplayedBitmap != null && currentTouchImageViewState == TouchImageViewState.SHOW_IMAGE){
+                            ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+                            mDisplayedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, oStream);
+                            byte[] byteArray = oStream.toByteArray();
+                            String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                            //serverService.startSavingImage("testFilename.jpeg", imageEncoded, pub.id);
+                            Toast.makeText(getBaseContext(), "Size: " + byteArray.length, Toast.LENGTH_LONG).show();
+                        }
                     }catch(Exception e){ }
                 }
                 break;
@@ -564,6 +578,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
         pub.title = etHeadline.getText().toString();
         pub.description = etDescription.getText().toString();
+        pub.categoryId = new Category();
+        pub.categoryId.setId(1);
 
         if( pub.title.length() > 0 && pub.description.length() > 0 &&
             pub.pickupStartime != null && pub.pickupEndtime != null )
@@ -606,6 +622,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private void setTouchImageViewState(final TouchImageViewState state) {
         switch (state){
             case PICK_IMAGE:
+                currentTouchImageViewState = TouchImageViewState.PICK_IMAGE;
                 layoutHorizontal.setVisibility(View.GONE);
                 layoutVertical.setVisibility(View.GONE);
                 btnCropImage.setVisibility(View.GONE);
@@ -618,6 +635,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 ivChosenImage.setEnabled(false);
                 break;
             case CROP_IMAGE:
+                currentTouchImageViewState = TouchImageViewState.CROP_IMAGE;
                 layoutHorizontal.setVisibility(View.VISIBLE);
                 layoutVertical.setVisibility(View.VISIBLE);
                 btnCropImage.setVisibility(View.VISIBLE);
@@ -628,6 +646,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 ivChosenImage.setEnabled(true);
                 break;
             case SHOW_IMAGE:
+                currentTouchImageViewState = TouchImageViewState.SHOW_IMAGE;
                 layoutHorizontal.setVisibility(View.GONE);
                 layoutVertical.setVisibility(View.GONE);
                 btnCropImage.setVisibility(View.GONE);
