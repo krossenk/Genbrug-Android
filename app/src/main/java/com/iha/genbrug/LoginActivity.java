@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.google.gson.Gson;
 
 import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
@@ -48,6 +49,7 @@ public class LoginActivity extends FragmentActivity {
     ConnectionFragment conFragment = new ConnectionFragment();
     private Button loginBtn;
     private Button createBtn;
+    private GlobalSettings globalSettings;
 
 
     //method for connection to service
@@ -91,7 +93,7 @@ public class LoginActivity extends FragmentActivity {
             fragmentTransaction.add(R.id.container, conFragment);
             fragmentTransaction.commit();
         }
-        //loginStatusVariable = false;
+
 
         final Button btn = (Button) findViewById(R.id.loginBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -101,10 +103,19 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
           // get login status from shared preferences
-        loginStatusVariable = prefs.getBoolean("Islogin", false);
+         loginStatusVariable = prefs.getBoolean("Islogin", false);
+
+
+
+        // Gson gson = new Gson();
+        //String json = Global.getSharedPreferences(this.getApplicationContext()).getString("userObj", "");
+    /*    String json = prefs.getString("userObj", "");
+
+        User obj = gson.fromJson(json, User.class);
+        globalSettings.setUser(obj);*/
 
         if(loginStatusVariable && isNetworkAvailable(getApplicationContext()))
         {
@@ -177,10 +188,10 @@ public class LoginActivity extends FragmentActivity {
 
             if (intent.getAction().compareTo(ServerService.RESULT_RETURNED_FROM_SERVICE)==0)
             {
-                  user = serverService.getValidatedUser();
+                user = serverService.getValidatedUser();
 
 
-               if( isNetworkAvailable(context)&&user != null )
+                if( isNetworkAvailable(context)&&user != null )
 
                 {
                     startActivity(mainIntent);
@@ -188,24 +199,23 @@ public class LoginActivity extends FragmentActivity {
 
                     loginStatusVariable =true;
 
-                    // to store  if user has tried log in
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     //islogin is a boolean value of your login status pushed to SharedPreferences
+
+                    globalSettings = GlobalSettings.getInstance();
+                    globalSettings.setUser(user);
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(user);
+
+
+                    prefs.edit().putString("userObj", json).commit();
                     prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
-                    prefs.edit().putInt ("localUserId", user.id).commit();
 
 
-                    if (user.firstname !=null && user.lastname !=null)
-                    {
-                        prefs.edit().putString("UserName", user.firstname + " " + user.lastname).commit();
+                }
 
-                    }
-                    else {
-                        prefs.edit().putString("UserName", user.username).commit();
-                    }
-
-                } else {
-
+                else {
                     Toast.makeText(getApplicationContext(), "Wrong username or password!",
                             Toast.LENGTH_SHORT).show();
                 }
