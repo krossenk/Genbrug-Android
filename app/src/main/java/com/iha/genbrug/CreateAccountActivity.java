@@ -83,6 +83,13 @@ public class CreateAccountActivity extends FragmentActivity{
         signUpBtn.setEnabled(isEnabled);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+      
+    }
+
     private void setupVariables() {
         CreateUserName = (EditText) findViewById(R.id.createUsername);
         CreatePassword = (EditText) findViewById(R.id.createPassword);
