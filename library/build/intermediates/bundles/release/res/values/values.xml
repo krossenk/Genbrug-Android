@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/Gladiator%20HelmetFace/Documents/Genbrug-Android.git/library/res/values/colors.xml -->
+    <!-- From: file:/C:/Genbrug-Android/library/res/values/colors.xml -->
     <eat-comment/>
     <color name="activate_text_color">#FF666666</color>
     <color name="background_tab_pressed">#6633B5E5</color>
