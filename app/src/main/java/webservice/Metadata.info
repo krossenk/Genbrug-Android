@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<EasyWSDL>
+  <Info>
+    <Version>4.1.5.5</Version>
+    <AccountType>Basic</AccountType>
+    <LibrariesFolder>libs/easywsdl</LibrariesFolder>
+  </Info>
+  <Settings>
+    <Url>http://localhost:8080/RecycleWebService/RecycleWebService?wsdl</Url>
+    <ClassPrefix/>
+    <PackageName>webservice</PackageName>
+    <AddDocumentation>false</AddDocumentation>
+    <EnableAdvancedFeatures>false</EnableAdvancedFeatures>
+    <EnableMTOM>false</EnableMTOM>
+    <EncodeIllegalCharacters>true</EncodeIllegalCharacters>
+    <GenerateAsyncOperations>true</GenerateAsyncOperations>
+    <ImplementSerializable>false</ImplementSerializable>
+    <InitializeCollections>true</InitializeCollections>
+    <UseJodaTime>false</UseJodaTime>
+  </Settings>
+  <Files>
+    <File>MEDaddress.java</File>
+    <File>MEDcategory.java</File>
+    <File>MEDExtendedSoapSerializationEnvelope.java</File>
+    <File>MEDFunctions.java</File>
+    <File>MEDgetAllPublicationsResponse.java</File>
+    <File>MEDgetPublicationSubscriptionsResponse.java</File>
+    <File>MEDgetUserSubscriptionsResponse.java</File>
+    <File>MEDHelper.java</File>
+    <File>MEDIServiceEvents.java</File>
+    <File>MEDMarshalDate.java</File>
+    <File>MEDMarshalGuid.java</File>
+    <File>MEDOperationResult.java</File>
+    <File>MEDpublication.java</File>
+    <File>MEDRecycleWebServicePortBinding.java</File>
+    <File>MEDsubscription.java</File>
+    <File>MEDuser.java</File>
+  </Files>
+  <Libraries>
+    <File>ksoap2-android-assembly-3.4.0-jar-with-dependencies.jar</File>
+  </Libraries>
+</EasyWSDL>
