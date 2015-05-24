@@ -1,7 +1,11 @@
 package com.iha.genbrug;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.google.gson.Gson;
 
 import webservice.User;
 
@@ -12,11 +16,13 @@ public class GlobalSettings {
 
     private static GlobalSettings globalSettings;
     private User user;
-    private SharedPreferences sharedPreferences;
+    public SharedPreferences sharedPreferences;
+    public Context context;
 
 
   private GlobalSettings ()
   {
+      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.getContextOfApplication());
 
   }
 
@@ -36,18 +42,27 @@ public class GlobalSettings {
       this.user = user;
     }
 
-    public User getUser ()
+   /* public User getUser ()
     {
         return user;
+    }*/
+
+
+    public void saveUserToPref (User value)
+    {
+
+        Gson gson = new Gson();
+        String json = gson.toJson(value);
+        sharedPreferences.edit().putString("userObj", json).commit();
     }
 
+    public User getUserFromPref ()
+    {
 
-    //StaticUser staticUser = new StaticUser();
-    // you have to pass the context to it. In your case:
-// this is inside a public class
-    public static SharedPreferences getSharedPreferences (Context ctxt) {
-        return ctxt.getSharedPreferences("FILE", 0);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("userObj", "");
+        User obj = gson.fromJson(json, User.class);
+        return obj;
+
     }
-
-    
 }
