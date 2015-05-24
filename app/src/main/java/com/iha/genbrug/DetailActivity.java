@@ -8,9 +8,9 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,12 +19,11 @@ import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class DetailActivity extends Activity {
 
+    Intent intent;
+    Button infoBtn;
     Button logOutBtn;
     SharedPreferences prefs;
     private int itemId;
@@ -67,14 +66,15 @@ public class DetailActivity extends Activity {
         descTextView.setText(desc);
 
         logOutBtn = (Button) findViewById(R.id.Logout);
-
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
+        Toast.makeText(this,prefs.getString("LocalUser", ""),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,prefs.getString("FBUser", ""),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,prefs.getString("ProfileURL", ""),Toast.LENGTH_SHORT).show();
     }
 
     // temporary logout function
