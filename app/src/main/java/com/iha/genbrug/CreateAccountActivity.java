@@ -1,19 +1,15 @@
 package com.iha.genbrug;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Patterns;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -55,6 +51,9 @@ public class CreateAccountActivity extends FragmentActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
+
         setContentView(R.layout.activity_create_account);
 
         setupVariables();
@@ -68,7 +67,7 @@ public class CreateAccountActivity extends FragmentActivity{
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             FBFragment fragment = new FBFragment();
-            fragmentTransaction.add(R.id.container2, fragment);
+            fragmentTransaction.add(R.id.fl_fb_fragment_container_create_acc, fragment);
 
             ConnectionFragment conFragment = new ConnectionFragment();
             fragmentTransaction.add(R.id.container2, conFragment);
