@@ -72,9 +72,9 @@ public class DetailActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
-        Toast.makeText(this,prefs.getString("LocalUser", ""),Toast.LENGTH_SHORT).show();
+      /*  Toast.makeText(this,prefs.getString("LocalUser", ""),Toast.LENGTH_SHORT).show();
         Toast.makeText(this,prefs.getString("FBUser", ""),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,prefs.getString("ProfileURL", ""),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,prefs.getString("ProfileURL", ""),Toast.LENGTH_SHORT).show();*/
     }
 
     // temporary logout function
