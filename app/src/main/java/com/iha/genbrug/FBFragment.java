@@ -60,6 +60,7 @@ public class FBFragment extends Fragment {
                 user.id = Long.valueOf(profile.getId());
                 user.firstname = profile.getFirstName();
                 user.lastname = profile.getLastName();
+                user.profileimageURL = profilePictureUri.toString();
 
 
 
@@ -69,12 +70,6 @@ public class FBFragment extends Fragment {
                 Toast.makeText(getActivity(), "Welcome " + profile.getId(),
                         Toast.LENGTH_SHORT).show();
 
-                try {
-                    URL url = new URL(profilePictureUri.toString());
-                    globalSettings.sharedPreferences.edit().putString("ProfileURL", url.toString()).commit();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
                 startActivity(intent);
                 getActivity().finish();
 
