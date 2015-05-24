@@ -19,15 +19,22 @@
     <UseJodaTime>false</UseJodaTime>
   </Settings>
   <Files>
-    <File>PFOExtendedSoapSerializationEnvelope.java</File>
-    <File>PFOFunctions.java</File>
-    <File>PFOHelper.java</File>
-    <File>PFOIServiceEvents.java</File>
-    <File>PFOMarshalDate.java</File>
-    <File>PFOMarshalGuid.java</File>
-    <File>PFOOperationResult.java</File>
-    <File>PFORecycleWebServicePortBinding.java</File>
-    <File>PFOuser.java</File>
+    <File>MEDaddress.java</File>
+    <File>MEDcategory.java</File>
+    <File>MEDExtendedSoapSerializationEnvelope.java</File>
+    <File>MEDFunctions.java</File>
+    <File>MEDgetAllPublicationsResponse.java</File>
+    <File>MEDgetPublicationSubscriptionsResponse.java</File>
+    <File>MEDgetUserSubscriptionsResponse.java</File>
+    <File>MEDHelper.java</File>
+    <File>MEDIServiceEvents.java</File>
+    <File>MEDMarshalDate.java</File>
+    <File>MEDMarshalGuid.java</File>
+    <File>MEDOperationResult.java</File>
+    <File>MEDpublication.java</File>
+    <File>MEDRecycleWebServicePortBinding.java</File>
+    <File>MEDsubscription.java</File>
+    <File>MEDuser.java</File>
   </Files>
   <Libraries>
     <File>ksoap2-android-assembly-3.4.0-jar-with-dependencies.jar</File>

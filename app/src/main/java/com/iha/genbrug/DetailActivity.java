@@ -8,9 +8,9 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,17 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
+import webservice.User;
 
 
 public class DetailActivity extends Activity {
 
+    Intent intent;
+    Button infoBtn;
     Button logOutBtn;
     SharedPreferences prefs;
     private int itemId;
     private ServerService serverServiceSubscribe;
+    private GlobalSettings globalSettings;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -67,8 +70,6 @@ public class DetailActivity extends Activity {
         descTextView.setText(desc);
 
         logOutBtn = (Button) findViewById(R.id.Logout);
-
-
     }
 
     @Override
@@ -83,11 +84,12 @@ public class DetailActivity extends Activity {
         prefs =PreferenceManager.getDefaultSharedPreferences(this);
 
         //Reset all information from user
+
+        prefs.edit().putString("userObj", "").commit();
         prefs.edit().putBoolean("Islogin", false).commit();
-        prefs.edit().putString("UserName", "").commit();
-        prefs.edit().putInt("localUserId", 0).commit();
-        prefs.edit().putString("FBUser", "").commit();
-        prefs.edit().putLong("FBUserId", 0).commit();
+        globalSettings.setUser(null);
+
+        //String json = prefs.getString("userObj", "");
 
         LoginManager.getInstance().logOut();
         Intent intent = new Intent(this,LoginActivity.class);
