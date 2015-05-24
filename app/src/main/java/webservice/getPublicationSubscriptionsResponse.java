@@ -16,12 +16,12 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 
-public class getAllPublicationsResponse extends Vector<Publication> implements KvmSerializable
+public class getPublicationSubscriptionsResponse extends Vector<Subscription> implements KvmSerializable
 {
     
-    public getAllPublicationsResponse(){}
+    public getPublicationSubscriptionsResponse(){}
     
-    public getAllPublicationsResponse(java.lang.Object inObj, ExtendedSoapSerializationEnvelope __envelope)
+    public getPublicationSubscriptionsResponse(java.lang.Object inObj, ExtendedSoapSerializationEnvelope __envelope)
     {
         if (inObj == null)
             return;
@@ -33,7 +33,7 @@ public class getAllPublicationsResponse extends Vector<Publication> implements K
             if (obj!=null && obj instanceof AttributeContainer)
             {
                 AttributeContainer j =(AttributeContainer) soapObject.getProperty(i0);
-                Publication j1= (Publication)__envelope.get(j, Publication.class);
+                Subscription j1= (Subscription)__envelope.get(j, Subscription.class);
                 add(j1);
             }
         }
@@ -52,7 +52,7 @@ public class getAllPublicationsResponse extends Vector<Publication> implements K
     @Override
     public void getPropertyInfo(int index, @SuppressWarnings("rawtypes") Hashtable arg1, PropertyInfo info) {
         info.name = "return";
-        info.type = Publication.class;
+        info.type = Subscription.class;
     	info.namespace= "";
     }
     

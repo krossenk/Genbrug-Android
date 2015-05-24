@@ -13,18 +13,20 @@ package webservice;
 import java.util.Hashtable;
 import org.ksoap2.serialization.*;
 
-public class Category extends AttributeContainer implements KvmSerializable
+public class Subscription extends AttributeContainer implements KvmSerializable
 {
     
-    public String categoryname;
+    public Long id;
     
-    public Integer id;
+    public Publication publicationId;
+    
+    public User userId;
 
-    public Category()
+    public Subscription()
     {
     }
 
-    public Category(java.lang.Object paramObj, ExtendedSoapSerializationEnvelope __envelope)
+    public Subscription(java.lang.Object paramObj, ExtendedSoapSerializationEnvelope __envelope)
     {
 	    
 	    if (paramObj == null)
@@ -33,21 +35,6 @@ public class Category extends AttributeContainer implements KvmSerializable
 
 
         SoapObject soapObject=(SoapObject)inObj;  
-        if (soapObject.hasProperty("categoryname"))
-        {	
-	        java.lang.Object obj = soapObject.getProperty("categoryname");
-            if (obj != null && obj.getClass().equals(SoapPrimitive.class))
-            {
-                SoapPrimitive j =(SoapPrimitive) obj;
-                if(j.toString()!=null)
-                {
-                    this.categoryname = j.toString();
-                }
-	        }
-	        else if (obj!= null && obj instanceof String){
-                this.categoryname = (String)obj;
-            }    
-        }
         if (soapObject.hasProperty("id"))
         {	
 	        java.lang.Object obj = soapObject.getProperty("id");
@@ -56,12 +43,22 @@ public class Category extends AttributeContainer implements KvmSerializable
                 SoapPrimitive j =(SoapPrimitive) obj;
                 if(j.toString()!=null)
                 {
-                    this.id = Integer.parseInt(j.toString());
+                    this.id = new Long(j.toString());
                 }
 	        }
-	        else if (obj!= null && obj instanceof Integer){
-                this.id = (Integer)obj;
+	        else if (obj!= null && obj instanceof Long){
+                this.id = (Long)obj;
             }    
+        }
+        if (soapObject.hasProperty("publicationId"))
+        {	
+	        java.lang.Object j = soapObject.getProperty("publicationId");
+	        this.publicationId = (Publication)__envelope.get(j, Publication.class);
+        }
+        if (soapObject.hasProperty("userId"))
+        {	
+	        java.lang.Object j = soapObject.getProperty("userId");
+	        this.userId = (User)__envelope.get(j, User.class);
         }
 
 
@@ -73,11 +70,15 @@ public class Category extends AttributeContainer implements KvmSerializable
         //!!!!! You can find a correct version in Lib folder from generated zip file!!!!!
         if(propertyIndex==0)
         {
-            return this.categoryname!=null?this.categoryname:SoapPrimitive.NullSkip;
+            return this.id!=null?this.id:SoapPrimitive.NullSkip;
         }
         if(propertyIndex==1)
         {
-            return this.id!=null?this.id:SoapPrimitive.NullSkip;
+            return this.publicationId!=null?this.publicationId:SoapPrimitive.NullSkip;
+        }
+        if(propertyIndex==2)
+        {
+            return this.userId!=null?this.userId:SoapPrimitive.NullSkip;
         }
         return null;
     }
@@ -85,7 +86,7 @@ public class Category extends AttributeContainer implements KvmSerializable
 
     @Override
     public int getPropertyCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -93,14 +94,20 @@ public class Category extends AttributeContainer implements KvmSerializable
     {
         if(propertyIndex==0)
         {
-            info.type = PropertyInfo.STRING_CLASS;
-            info.name = "categoryname";
+            info.type = PropertyInfo.LONG_CLASS;
+            info.name = "id";
             info.namespace= "";
         }
         if(propertyIndex==1)
         {
-            info.type = PropertyInfo.INTEGER_CLASS;
-            info.name = "id";
+            info.type = Publication.class;
+            info.name = "publicationId";
+            info.namespace= "";
+        }
+        if(propertyIndex==2)
+        {
+            info.type = User.class;
+            info.name = "userId";
             info.namespace= "";
         }
     }
