@@ -57,7 +57,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 String nameofImage = "img" + position;
                 String headline = gi.getHeadline();
                 String desc = gi.getDescription();
-                int itemId = gi.getItemId();
+                long itemId = gi.getItemId();
                 if(position == 0)
                 {
                     nameofImage = "img";

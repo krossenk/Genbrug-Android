@@ -18,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
+
+import webservice.User;
 
 
 public class DetailActivity extends Activity {
@@ -28,6 +31,7 @@ public class DetailActivity extends Activity {
     SharedPreferences prefs;
     private int itemId;
     private ServerService serverServiceSubscribe;
+    private GlobalSettings globalSettings;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -72,9 +76,6 @@ public class DetailActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
-      /*  Toast.makeText(this,prefs.getString("LocalUser", ""),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,prefs.getString("FBUser", ""),Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,prefs.getString("ProfileURL", ""),Toast.LENGTH_SHORT).show();*/
     }
 
     // temporary logout function
@@ -83,11 +84,12 @@ public class DetailActivity extends Activity {
         prefs =PreferenceManager.getDefaultSharedPreferences(this);
 
         //Reset all information from user
+
+        prefs.edit().putString("userObj", "").commit();
         prefs.edit().putBoolean("Islogin", false).commit();
-        prefs.edit().putString("UserName", "").commit();
-        prefs.edit().putInt("localUserId", 0).commit();
-        prefs.edit().putString("FBUser", "").commit();
-        prefs.edit().putLong("FBUserId", 0).commit();
+        globalSettings.setUser(null);
+
+        //String json = prefs.getString("userObj", "");
 
         LoginManager.getInstance().logOut();
         Intent intent = new Intent(this,LoginActivity.class);
