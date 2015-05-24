@@ -1,29 +1,24 @@
 package com.iha.genbrug;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.os.IBinder;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
+import com.google.gson.Gson;
 
-import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
@@ -36,7 +31,7 @@ public class LoginActivity extends FragmentActivity {
 
     private EditText Localusername;
     private EditText password;
-    private static boolean loginStatusVariable =false;
+    private boolean  loginStatusVariable = false;
     private ServerService serverService;
     private User user;
     private ServiceMessagesReceiver serviceMessagesReceiver;
@@ -45,7 +40,10 @@ public class LoginActivity extends FragmentActivity {
     ConnectionFragment conFragment = new ConnectionFragment();
     private Button loginBtn;
     private Button createBtn;
+    private GlobalSettings globalSettings;
 
+
+    //method for connection to service
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -75,6 +73,7 @@ public class LoginActivity extends FragmentActivity {
         IntentFilter intentFilter = new IntentFilter(ServerService.RESULT_RETURNED_FROM_SERVICE);
         registerReceiver(serviceMessagesReceiver,intentFilter);
 
+        // call FB and Connections fragments in Activity
         if (savedInstanceState == null) {
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -85,7 +84,7 @@ public class LoginActivity extends FragmentActivity {
             fragmentTransaction.add(R.id.container, conFragment);
             fragmentTransaction.commit();
         }
-        loginStatusVariable = false;
+
 
         final Button btn = (Button) findViewById(R.id.loginBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +94,27 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+          // get login status from shared preferences
+         loginStatusVariable = prefs.getBoolean("Islogin", false);
+
+
+
+        // Gson gson = new Gson();
+        //String json = Global.getSharedPreferences(this.getApplicationContext()).getString("userObj", "");
+    /*    String json = prefs.getString("userObj", "");
+
+        User obj = gson.fromJson(json, User.class);
+        globalSettings.setUser(obj);*/
+
+        if(loginStatusVariable && isNetworkAvailable(getApplicationContext()))
+        {
+        //condition true means user is already login
+            Intent i = new Intent(this, MainActivity.class);
+            startActivityForResult(i, 1);
+
+        }
     }
 
     @Override
@@ -105,7 +124,8 @@ public class LoginActivity extends FragmentActivity {
         unregisterReceiver(serviceMessagesReceiver);
     }
 
-    //Local Log in
+    //Local Log in method
+
 
     public void authenticateLogin(View view)  {
 
@@ -123,61 +143,70 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
-    public static Boolean loginStatus()
-    {
-        return loginStatusVariable;
-    }
-
     private void setupVariables() {
         Localusername = (EditText) findViewById(R.id.usernameET);
         password = (EditText) findViewById(R.id.passwordET);
 
     }
 
+    //method for enablation of buttons
     public void enabledState(boolean isEnabled)
     {
         loginBtn = (Button) findViewById(R.id.loginBtn);
         createBtn = (Button) findViewById(R.id.signUpBtn);
         loginBtn.setEnabled(isEnabled);
         createBtn.setEnabled(isEnabled);
+
     }
 
+    //method to call createAccountActivity
     public void callCreateAccount(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
         finish();
     }
 
+    // method for checking if networkConnection is available
     public static boolean isNetworkAvailable(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
+    // a broadcastReciever to recieve action from serverservice for validation of user
     private class ServiceMessagesReceiver extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
             if (intent.getAction().compareTo(ServerService.RESULT_RETURNED_FROM_SERVICE)==0)
             {
-                  user = serverService.getValidatedUser();
+                user = serverService.getValidatedUser();
 
-                if (!isNetworkAvailable(context)) {
 
-                    Toast.makeText(getApplicationContext(), "Check Your connection!",
-                            Toast.LENGTH_SHORT).show();
-                }
+                if( isNetworkAvailable(context)&&user != null )
 
-               else if(user != null)
                 {
                     startActivity(mainIntent);
                     finish();
 
-                    //loginStatusVariable =true;
+                    loginStatusVariable =true;
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    //islogin is a boolean value of your login status pushed to SharedPreferences
+
+                    globalSettings = GlobalSettings.getInstance();
+                    globalSettings.setUser(user);
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(user);
+
+
+                    prefs.edit().putString("userObj", json).commit();
+                    prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
+
+
                 }
 
-                else{
-
+                else {
                     Toast.makeText(getApplicationContext(), "Wrong username or password!",
                             Toast.LENGTH_SHORT).show();
                 }

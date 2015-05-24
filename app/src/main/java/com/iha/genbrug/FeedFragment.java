@@ -2,6 +2,7 @@ package com.iha.genbrug;
 
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,10 +11,12 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ import webservice.getAllPublicationsResponse;
  * A simple {@link Fragment} subclass.
  */
 public class FeedFragment extends Fragment {
+
     private RecyclerView fRecyclerView;
     private RecyclerView.Adapter fAdapter;
     private RecyclerView.LayoutManager fLayoutManager;
@@ -50,6 +54,8 @@ public class FeedFragment extends Fragment {
 
         }
     };
+
+
 
     public FeedFragment() {
         // Required empty public constructor
@@ -91,30 +97,43 @@ public class FeedFragment extends Fragment {
         // specify an adapter (see also next example)
         fAdapter = new FeedAdapter(genbrugList);
         fRecyclerView.setAdapter(fAdapter);*/
+
+
         if(responseList != null)
         {
             ArrayList<GenbrugItem> list = new ArrayList<>();
 
             for (Publication pub : responseList)
             {
-                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                 list.add(item);
             }
 
             fAdapter = new FeedAdapter(list);
             fRecyclerView.setAdapter(fAdapter);
-        }
+
+  }
+
+        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(serviceConnection);
+        getActivity().unregisterReceiver(receiver);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
 
     private class PublicationMessagesReceiver extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -127,7 +146,7 @@ public class FeedFragment extends Fragment {
 
                 for (Publication pub : responseList)
                 {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                     list.add(item);
                 }
 

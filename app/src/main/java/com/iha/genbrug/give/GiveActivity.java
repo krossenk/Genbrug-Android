@@ -180,9 +180,13 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnPickEndTime.setOnClickListener(this);
 
         setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
+    }
 
-        //Typeface font = Typeface.createFromAsset(getAssets(), "Sketchetik-Bold.otf");
-        //btnCropImage.setTypeface(font);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+        //unregisterReceiver(serviceMessagesReceiver);
     }
 
     @Override
@@ -579,7 +583,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         pub.title = etHeadline.getText().toString();
         pub.description = etDescription.getText().toString();
         pub.categoryId = new Category();
-        pub.categoryId.setId(1);
+        pub.categoryId.id = 1;
 
         if( pub.title.length() > 0 && pub.description.length() > 0 &&
             pub.pickupStartime != null && pub.pickupEndtime != null )

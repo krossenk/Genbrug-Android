@@ -9,11 +9,13 @@ public class GenbrugItem {
     private String headline;
     private String description;
     private Drawable photoDrawable;
+    private long itemId;
 
-    public GenbrugItem(String newItemName, String newDescription, Drawable newPhotoDrawable) {
+    public GenbrugItem(String newItemName, String newDescription, Drawable newPhotoDrawable, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
         this.photoDrawable = newPhotoDrawable;
+        this.itemId = itemId;
 
 
     }
@@ -40,6 +42,10 @@ public class GenbrugItem {
 
     public void setPhotoDrawable(Drawable newPhotoDrawable) {
         this.photoDrawable = newPhotoDrawable;
+    }
+
+    public long getItemId() {
+        return itemId;
     }
 }
 

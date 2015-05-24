@@ -2,8 +2,10 @@ package com.iha.genbrug;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -33,8 +35,9 @@ public class FBFragment extends Fragment {
 
     private CallbackManager mcallbackManager;
     private View view;
-    public static boolean loggedIn;
+    LoginButton loginButton;
 
+    // Callback method for login with facebook
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -44,13 +47,23 @@ public class FBFragment extends Fragment {
             Profile profile = Profile.getCurrentProfile();
             if (profile != null) {
 
-                Uri profilePictureUri = profile.getProfilePictureUri(400,300);
+                Uri profilePictureUri = profile.getProfilePictureUri(400, 300);
+                loginButton.setVisibility(View.INVISIBLE);
+
+
+                //saving userinfo in SharedPrefrences
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                prefs.edit().putBoolean("Islogin", true).commit();
+                prefs.edit().putString("FBUser", profile.getName()).commit();
+                prefs.edit().putLong("FBUserId", Long.parseLong(profile.getId())).commit();
+
 
                 Toast.makeText(getActivity(), "Welcome " + profile.getId(),
                         Toast.LENGTH_SHORT).show();
 
                 try {
                     URL url = new URL(profilePictureUri.toString());
+                    prefs.edit().putString("ProfileURL", url.toString()).commit();
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -80,14 +93,17 @@ public class FBFragment extends Fragment {
         mcallbackManager = CallbackManager.Factory.create();
 
 
+
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setFragment(this);
         loginButton.registerCallback(mcallbackManager, mCallback);
+
+
 
     }
 

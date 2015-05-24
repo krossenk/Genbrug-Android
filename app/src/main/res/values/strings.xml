@@ -29,5 +29,5 @@
     <string name="giveform_country">Country</string>
     <string name="giveform_radio_home">Home</string>
     <string name="giveform_radio_street">Street</string>
-
+    <string name="title_activity_take_item">TakeItem</string>
 </resources>
