@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,7 @@ public class LoginActivity extends FragmentActivity {
     private Button createBtn;
 
 
+    //method for connection to service
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -78,6 +80,7 @@ public class LoginActivity extends FragmentActivity {
         IntentFilter intentFilter = new IntentFilter(ServerService.RESULT_RETURNED_FROM_SERVICE);
         registerReceiver(serviceMessagesReceiver,intentFilter);
 
+        // call FB and Connections fragments in Activity
         if (savedInstanceState == null) {
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -103,7 +106,7 @@ public class LoginActivity extends FragmentActivity {
           // get login status from shared preferences
         loginStatusVariable = prefs.getBoolean("Islogin", false);
 
-        if(loginStatusVariable)
+        if(loginStatusVariable && isNetworkAvailable(getApplicationContext()))
         {
         //condition true means user is already login
             Intent i = new Intent(this, MainActivity.class);
@@ -119,7 +122,8 @@ public class LoginActivity extends FragmentActivity {
         unregisterReceiver(serviceMessagesReceiver);
     }
 
-    //Local Log in
+    //Local Log in method
+
 
     public void authenticateLogin(View view)  {
 
@@ -143,6 +147,7 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
+    //method for enablation of buttons
     public void enabledState(boolean isEnabled)
     {
         loginBtn = (Button) findViewById(R.id.loginBtn);
@@ -152,18 +157,20 @@ public class LoginActivity extends FragmentActivity {
 
     }
 
+    //method to call createAccountActivity
     public void callCreateAccount(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
         finish();
     }
 
+    // method for checking if networkConnection is available
     public static boolean isNetworkAvailable(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
+    // a broadcastReciever to recieve action from serverservice for validation of user
     private class ServiceMessagesReceiver extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -185,13 +192,16 @@ public class LoginActivity extends FragmentActivity {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     //islogin is a boolean value of your login status pushed to SharedPreferences
                     prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
+                    prefs.edit().putLong ("localUserId", user.id).commit();
+
 
                     if (user.firstname !=null && user.lastname !=null)
                     {
-                        prefs.edit().putString("LocalUser", user.firstname + " " + user.lastname).commit();
+                        prefs.edit().putString("UserName", user.firstname + " " + user.lastname).commit();
+
                     }
                     else {
-                        prefs.edit().putString("LocalUser", user.username).commit();
+                        prefs.edit().putString("UserName", user.username).commit();
                     }
 
                 } else {

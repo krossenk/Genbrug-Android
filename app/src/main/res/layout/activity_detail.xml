@@ -86,16 +86,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Info"
-            android:id="@+id/info"
-            android:onClick="showInfo"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/Logout"
-            android:layout_toEndOf="@+id/Logout" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Logout"
             android:id="@+id/Logout"
             android:layout_alignParentBottom="true"
@@ -109,11 +99,13 @@
             android:layout_height="30dp"
             android:text="Sub"
             android:textColor="@android:color/white"
-            android:id="@+id/subBtn"
+            android:id="@+id/subscribBtn"
             android:layout_gravity="center"
+            android:layout_alignTop="@+id/Logout"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/info" />
+            android:layout_alignParentBottom="true"
+            android:onClick="subscribe"/>
 
     </RelativeLayout>
 

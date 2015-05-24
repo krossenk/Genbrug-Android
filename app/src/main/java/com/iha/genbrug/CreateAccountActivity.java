@@ -86,6 +86,7 @@ public class CreateAccountActivity extends FragmentActivity{
         CreateRePassword = (EditText) findViewById(R.id.createRePassword);
     }
 
+    // method for creating an account in DB
     public void authenticateSignUp (View view){
 
         String username;
@@ -130,11 +131,14 @@ public class CreateAccountActivity extends FragmentActivity{
         }
 
     }
+
+    //method to validate emailadress
     private boolean validEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
     }
 
+    // To logingActivity onBackPressed
        @Override
     public void onBackPressed() {
         super.onBackPressed();

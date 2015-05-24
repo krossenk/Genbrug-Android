@@ -37,7 +37,7 @@ public class FBFragment extends Fragment {
     private View view;
     LoginButton loginButton;
 
-
+    // Callback method for login with facebook
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -47,12 +47,16 @@ public class FBFragment extends Fragment {
             Profile profile = Profile.getCurrentProfile();
             if (profile != null) {
 
-                Uri profilePictureUri = profile.getProfilePictureUri(400,300);
+                Uri profilePictureUri = profile.getProfilePictureUri(400, 300);
                 loginButton.setVisibility(View.INVISIBLE);
 
+
+                //saving userinfo in SharedPrefrences
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 prefs.edit().putBoolean("Islogin", true).commit();
                 prefs.edit().putString("FBUser", profile.getName()).commit();
+                prefs.edit().putLong("FBUserId", Long.parseLong(profile.getId())).commit();
+
 
                 Toast.makeText(getActivity(), "Welcome " + profile.getId(),
                         Toast.LENGTH_SHORT).show();

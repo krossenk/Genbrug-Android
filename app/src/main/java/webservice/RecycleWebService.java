@@ -184,6 +184,39 @@ public class RecycleWebService
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
+
+            public void createSubscription(final Integer userId,final Integer publicationId ) throws java.lang.Exception
+            {
+                execute(new IWcfMethod()
+                {
+                    @Override
+                    public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
+                        ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                        SoapObject __soapReq = new SoapObject("http://recycle/", "createSubscription");
+                        __envelope.setOutputSoapObject(__soapReq);
+
+                        PropertyInfo __info=null;
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="userId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(userId);
+                        __soapReq.addProperty(__info);
+                        __info = new PropertyInfo();
+                        __info.namespace="";
+                        __info.name="publicationId";
+                        __info.type=PropertyInfo.INTEGER_CLASS;
+                        __info.setValue(publicationId);
+                        __soapReq.addProperty(__info);
+                        return __envelope;
+                    }
+
+                    @Override
+                    public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
+                        return null;
+                    }
+                },"");
+            }
             
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
@@ -220,7 +253,7 @@ public class RecycleWebService
               ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
                 SoapObject __soapReq = new SoapObject("http://recycle/", "getUserSubscriptions");
                 __envelope.setOutputSoapObject(__soapReq);
-                
+
                 PropertyInfo __info=null;
                 __info = new PropertyInfo();
                 __info.namespace="";
@@ -230,7 +263,7 @@ public class RecycleWebService
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
-            
+
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
                 return (getUserSubscriptionsResponse)getResult(getUserSubscriptionsResponse.class,__result,"getUserSubscriptionsResponse",__envelope);

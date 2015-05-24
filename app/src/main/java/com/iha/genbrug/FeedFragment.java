@@ -97,22 +97,32 @@ public class FeedFragment extends Fragment {
         // specify an adapter (see also next example)
         fAdapter = new FeedAdapter(genbrugList);
         fRecyclerView.setAdapter(fAdapter);*/
+
+
         if(responseList != null)
         {
             ArrayList<GenbrugItem> list = new ArrayList<>();
 
             for (Publication pub : responseList)
             {
-                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                 list.add(item);
             }
 
             fAdapter = new FeedAdapter(list);
             fRecyclerView.setAdapter(fAdapter);
 
-        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
-
   }
+
+        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(serviceConnection);
+        getActivity().unregisterReceiver(receiver);
+
     }
 
     @Override
@@ -136,7 +146,7 @@ public class FeedFragment extends Fragment {
 
                 for (Publication pub : responseList)
                 {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null);
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
                     list.add(item);
                 }
 
