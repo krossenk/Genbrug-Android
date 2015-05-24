@@ -310,7 +310,7 @@ public class ServerService extends Service {
 
 
     public class LocalBinder extends Binder {
-        ServerService getService() {
+        public ServerService getService() {
             // Return this instance of LocalService so clients can call public methods
             return ServerService.this;
         }

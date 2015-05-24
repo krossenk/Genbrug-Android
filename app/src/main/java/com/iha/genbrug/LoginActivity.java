@@ -1,6 +1,5 @@
 package com.iha.genbrug;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,26 +7,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 
-import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 

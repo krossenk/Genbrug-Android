@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.iha.genbrug.give.InterceptRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/give_background"
 
         tools:context="com.iha.genbrug.give.GiveActivity">
 
@@ -74,10 +75,10 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_rotate_pic"
                 android:visibility="gone"
-                android:src="@drawable/ic_action_cancel"
+                android:src="@drawable/ic_action_turn_right"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
                 android:background="@null"
@@ -161,8 +162,8 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:background="#d8d8d8"
+        <com.iha.genbrug.give.InterceptLinearLayout
+            android:background="@drawable/give_background_2"
             android:id="@+id/linFormWrapper"
             android:orientation="vertical"
             android:layout_below="@+id/rel_image_wrapper"
@@ -172,41 +173,141 @@
 
             <Spinner
                 android:id="@+id/spinner_category"
-                android:background="@drawable/form_field"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
+                style="@style/give_form_field_style"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:padding="5dp"
                 />
 
             <EditText
                 android:id="@+id/et_headline"
-                android:background="@drawable/form_field"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
+                style="@style/give_form_field_style"
                 android:padding="5dp"
-
                 android:hint="@string/giveform_headline"
-                android:textColor="#939393"
+                android:layout_marginBottom="10dp"
                 />
 
             <EditText
-                android:background="@drawable/form_field"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
+                android:id="@+id/et_description"
+                style="@style/give_form_field_style"
+                android:layout_height="80dp"
                 android:padding="5dp"
                 android:inputType="textMultiLine"
                 android:gravity="top"
-
                 android:hint="@string/giveform_description"
-                android:textColor="#939393"
+            />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:textColor="#ffffff"
+                android:textSize="14dp"
+                android:text="WHEN can the item be picked up?"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_pick_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/form_field"
+                    android:textSize="14dp"
+                    android:textColor="#cf636363"
+                    android:text="From"/>
+
+                <Button
+                    android:id="@+id/btn_pick_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/form_field"
+                    android:textSize="14dp"
+                    android:textColor="#cf636363"
+                    android:text="To"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:textColor="#ffffff"
+                android:textSize="14dp"
+                android:text="WHERE can the item be picked up?"/>
+
+            <Spinner
+                android:id="@+id/spinner_pickup_type"
+                style="@style/give_form_field_style"
+                android:padding="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:textColor="#ffffff"
+                android:textSize="14dp"
+                android:text="At what address?"/>
+
+            <EditText
+                android:id="@+id/et_street"
+                style="@style/give_form_field_style"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_address"
+                />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_zipcode"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:layout_marginRight="5dp"
+                android:textSize="14dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_zipcode"
+                />
+
+            <EditText
+                android:id="@+id/et_city"
+                android:background="@drawable/form_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:textSize="14dp"
+                android:padding="5dp"
+                android:hint="@string/giveform_city"
+                />
+
+        </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_country"
+                style="@style/give_form_field_style"
+                android:padding="5dp"
+                android:hint="@string/giveform_country"
                 />
 
             <Button
@@ -216,36 +317,10 @@
                 android:textColor="#ffffff"
                 android:textSize="25dp"
                 android:text="Give"
-                android:background="@color/action_bar"/>
+                android:background="@color/brown"/>
 
-        </LinearLayout>
+        </com.iha.genbrug.give.InterceptLinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/tv_image_size"
-            android:textColor="#F44"
-            android:layout_below="@+id/linFormWrapper"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/tv_update"
-            android:textColor="#F44"
-            android:layout_below="@+id/tv_image_size"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_update"
-            android:layout_below="@id/tv_update"
-            android:text="update"/>
-    </RelativeLayout>
+    </com.iha.genbrug.give.InterceptRelativeLayout>
 
 </com.iha.genbrug.give.InterceptScrollView>
