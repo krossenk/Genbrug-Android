@@ -192,7 +192,7 @@ public class LoginActivity extends FragmentActivity {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     //islogin is a boolean value of your login status pushed to SharedPreferences
                     prefs.edit().putBoolean("Islogin", loginStatusVariable).commit();
-                    prefs.edit().putInt ("localUserId", user.id).commit();
+                    prefs.edit().putLong ("localUserId", user.id).commit();
 
 
                     if (user.firstname !=null && user.lastname !=null)

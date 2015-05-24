@@ -9,9 +9,9 @@ public class GenbrugItem {
     private String headline;
     private String description;
     private Drawable photoDrawable;
-    private int itemId;
+    private long itemId;
 
-    public GenbrugItem(String newItemName, String newDescription, Drawable newPhotoDrawable, int itemId) {
+    public GenbrugItem(String newItemName, String newDescription, Drawable newPhotoDrawable, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
         this.photoDrawable = newPhotoDrawable;
@@ -44,7 +44,7 @@ public class GenbrugItem {
         this.photoDrawable = newPhotoDrawable;
     }
 
-    public int getItemId() {
+    public long getItemId() {
         return itemId;
     }
 }
