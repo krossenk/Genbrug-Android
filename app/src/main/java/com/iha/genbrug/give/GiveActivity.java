@@ -3,9 +3,11 @@ package com.iha.genbrug.give;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,6 +48,7 @@ import java.util.List;
 
 import webservice.Category;
 import webservice.Publication;
+import webservice.User;
 
 
 public class GiveActivity extends Activity implements View.OnClickListener {
@@ -88,6 +92,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private String mCurrentPhotoPath;
     private Bitmap mDisplayedBitmap;
     private ServerService serverService;
+    private CreatePublicationReceiver createPublicationReceiver;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -109,6 +114,13 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
         Intent intent = new Intent(this,ServerService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        // RECEIVER
+        createPublicationReceiver = new CreatePublicationReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ServerService.START_CREATE_PUBLICATION_RESULT);
+        intentFilter.addAction(ServerService.IMAGE_RETURN_URL);
+        registerReceiver(createPublicationReceiver, intentFilter);
 
         interceptScrollview = (InterceptScrollView) findViewById(R.id.intercept_scrollview);
 
@@ -359,17 +371,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             case R.id.btn_give:
                 if(populatePublication()){
                     try {
-                        //serverService.createPublication(pub);
-
-                        if(mDisplayedBitmap != null && currentTouchImageViewState == TouchImageViewState.SHOW_IMAGE){
-                            ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-                            mDisplayedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, oStream);
-                            byte[] byteArray = oStream.toByteArray();
-                            String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                            //serverService.startSavingImage("testFilename.jpeg", imageEncoded, pub.id);
-                            Toast.makeText(getBaseContext(), "Size: " + byteArray.length, Toast.LENGTH_LONG).show();
-                        }
+                        serverService.startCreatePublication(pub);
                     }catch(Exception e){ }
                 }
                 break;
@@ -584,13 +586,17 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         pub.description = etDescription.getText().toString();
         pub.categoryId = new Category();
         pub.categoryId.id = 1;
+        pub.userId = new User();
+        pub.userId.id = Long.valueOf(1);
 
-        if( pub.title.length() > 0 && pub.description.length() > 0 &&
-            pub.pickupStartime != null && pub.pickupEndtime != null )
+        if( true )
         {
+            Log.d("FUCK YOU", "fuck you again.");
             return true;
         }
-        return false;
+        else{
+            return false;
+        }
     }
 
     private boolean publishImage(){
@@ -660,5 +666,30 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    private class CreatePublicationReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().compareTo(ServerService.START_CREATE_PUBLICATION_RESULT)==0)
+            {
+                long pubId = serverService.getReturnedPublicationId();
+                if(pubId != -1){
+                    if(mDisplayedBitmap != null && currentTouchImageViewState == TouchImageViewState.SHOW_IMAGE){
+                        ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+                        mDisplayedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, oStream);
+                        byte[] byteArray = oStream.toByteArray();
+                        String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                        serverService.startSavingImage("testFilename.jpeg", imageEncoded, pubId);
+                        //Toast.makeText(getBaseContext(), "Size: " + byteArray.length, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+            else if(intent.getAction().compareTo(ServerService.IMAGE_RETURN_URL)==0){
+
+            }
+        }
+    }
 
 }
