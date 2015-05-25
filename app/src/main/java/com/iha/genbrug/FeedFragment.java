@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,6 +41,7 @@ public class FeedFragment extends Fragment {
     private ServerService serverService;
     private PublicationMessagesReceiver receiver;
     private getAllPublicationsResponse responseList;
+    private SwipeRefreshLayout swipeContainer;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -61,10 +63,23 @@ public class FeedFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                serverService.startGetAllPublications();
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
+                android.R.color.holo_blue_light,
+                android.R.color.holo_purple);
 
         Activity parentAct = getActivity();
 
@@ -105,7 +120,7 @@ public class FeedFragment extends Fragment {
 
             for (Publication pub : responseList)
             {
-                GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
+                GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
                 list.add(item);
             }
 
@@ -146,12 +161,13 @@ public class FeedFragment extends Fragment {
 
                 for (Publication pub : responseList)
                 {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, null,pub.id);
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
                     list.add(item);
                 }
 
                 fAdapter = new FeedAdapter(list);
                 fRecyclerView.setAdapter(fAdapter);
+                swipeContainer.setRefreshing(false);
             }
         }
     }
