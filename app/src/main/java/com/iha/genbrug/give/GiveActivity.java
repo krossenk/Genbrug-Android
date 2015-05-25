@@ -198,7 +198,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
-        //unregisterReceiver(serviceMessagesReceiver);
+        unregisterReceiver(createPublicationReceiver);
     }
 
     @Override

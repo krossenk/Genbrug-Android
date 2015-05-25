@@ -8,13 +8,13 @@ import android.graphics.drawable.Drawable;
 public class GenbrugItem {
     private String headline;
     private String description;
-    private Drawable photoDrawable;
+    private String imgURL;
     private long itemId;
 
-    public GenbrugItem(String newItemName, String newDescription, Drawable newPhotoDrawable, long itemId) {
+    public GenbrugItem(String newItemName, String newDescription, String imageURL, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
-        this.photoDrawable = newPhotoDrawable;
+        this.imgURL = imageURL;
         this.itemId = itemId;
 
 
@@ -36,12 +36,12 @@ public class GenbrugItem {
         this.headline = newDescreption;
     }
 
-    public Drawable getPhotoDrawable() {
-        return photoDrawable;
+    public String getImageURL() {
+        return imgURL;
     }
 
-    public void setPhotoDrawable(Drawable newPhotoDrawable) {
-        this.photoDrawable = newPhotoDrawable;
+    public void setImageURL(String imageUrl) {
+        this.imgURL = imageUrl;
     }
 
     public long getItemId() {
