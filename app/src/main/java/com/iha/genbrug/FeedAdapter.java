@@ -14,11 +14,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.NetworkImageView;
+
 import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
     private ArrayList<GenbrugItem> mDataset;
-   private static int pos;
+    private static int pos;
+    private ImageLoader imgLoader;
+    private RequestQueue requestQueue;
+
     // CONSTRUCTOR
     public FeedAdapter(ArrayList<GenbrugItem> myDataset) {
         mDataset = myDataset;
@@ -45,7 +55,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
-        holder.ivPhoto.setImageDrawable(gi.getPhotoDrawable());
+
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
+        holder.ivPhoto.setImageUrl(gi.getImageURL(), imgLoader);
 
 
 
@@ -90,13 +102,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     public static class GenbrugItemViewHolder extends RecyclerView.ViewHolder {
         protected TextView tvHeadline;
         protected TextView tvDesc;
-        protected ImageView ivPhoto;
+        protected NetworkImageView ivPhoto;
 
         public GenbrugItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
-            ivPhoto = (ImageView) v.findViewById(R.id.iv_photo);
+            ivPhoto = (NetworkImageView) v.findViewById(R.id.iv_photo);
 
         }
     }
