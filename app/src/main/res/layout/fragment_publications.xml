@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:background="#DD6677" android:layout_height="match_parent" tools:context="com.iha.genbrug.PublicationsFragment">
+    android:background="@drawable/welcome_pic_cropped" android:layout_height="match_parent" tools:context="com.iha.genbrug.PublicationsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcview_pub"

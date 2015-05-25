@@ -1,14 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.iha.genbrug.FBFragment">
+    android:layout_height="wrap_content" tools:context="com.iha.genbrug.FBFragment">
 
     <com.facebook.login.widget.LoginButton
+        xmlns:fb="http://schemas.android.com/apk/res-auto"
+        fb:login_text="Sign in with Facebook"
+        android:drawableLeft="@drawable/fb_logo_blue"
+        android:background="@drawable/facebook_button"
         android:id="@+id/login_button"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="144dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="18dp"
+        android:textStyle="normal"/>
 
 </FrameLayout>

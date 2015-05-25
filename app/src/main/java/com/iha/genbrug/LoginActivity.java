@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -58,10 +59,12 @@ public class LoginActivity extends FragmentActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
+
         setContentView(R.layout.activity_login);
         setupVariables();
         mainIntent = new Intent(this,MainActivity.class);
@@ -80,7 +83,7 @@ public class LoginActivity extends FragmentActivity {
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            fragmentTransaction.add(R.id.container, fbFragment);
+            fragmentTransaction.add(R.id.fl_fb_fragment_container, fbFragment);
 
             fragmentTransaction.add(R.id.container, conFragment);
             fragmentTransaction.commit();
