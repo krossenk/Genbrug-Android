@@ -66,18 +66,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             public void onClick(View v) {
 
                 pos = position;
-                String nameofImage = "img" + position;
+                String imageUrl = gi.getImageURL();
                 String headline = gi.getHeadline();
                 String desc = gi.getDescription();
                 long itemId = gi.getItemId();
-                if(position == 0)
-                {
-                    nameofImage = "img";
-                }
-                String imageId = String.valueOf(v.getResources().getIdentifier(nameofImage, "drawable", "com.iha.genbrug"));
 
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                intent.putExtra("imageId", imageId);
+                intent.putExtra("imageUrl", imageUrl);
                 intent.putExtra("headline", headline);
                 intent.putExtra("desc", desc);
                 intent.putExtra("itemId",itemId);

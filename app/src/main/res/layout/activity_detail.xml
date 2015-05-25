@@ -34,11 +34,11 @@
     android:weightSum="1"
     android:id="@+id/linearLayout2">
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="300dp"
         android:background="#777777"
-        android:id="@+id/item_photo" />
+        android:id="@+id/itemPhoto" />
 
 
 </LinearLayout>

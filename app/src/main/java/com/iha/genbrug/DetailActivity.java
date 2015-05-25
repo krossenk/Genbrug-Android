@@ -1,9 +1,11 @@
 package com.iha.genbrug;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.login.LoginManager;
 import webservice.Subscription;
 import webservice.User;
@@ -24,16 +28,26 @@ import webservice.getUserSubscriptionsResponse;
 public class DetailActivity extends Activity {
 
     Button logOutBtn;
-    private long itemId;
+    private long publicationId;
+    private ImageLoader imgLoader;
     private ServerService serverServiceSubscribe;
-    private getUserSubscriptionsResponse subscriptionsResponse;
+    private UserSubscriptionReceiver  receiver;
+    private getUserSubscriptionsResponse userSubscriptionsResponseList;
     private GlobalSettings  globalSettings =GlobalSettings.getInstance();
+    long  userId;
+    boolean itemSubscribedCheck = false;
+    String header;
+    String imageUrl;
+    String desc;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
+            User user = globalSettings.getUserFromPref();
+            userId = user.id;
             serverServiceSubscribe = binder.getService();
+            serverServiceSubscribe.startGetUserSubscriptions(1);
         }
 
         @Override
@@ -50,15 +64,20 @@ public class DetailActivity extends Activity {
 
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        receiver = new UserSubscriptionReceiver();
+        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_USERSUBSRIPTIONS_RESULT);
+        this.registerReceiver(receiver, intentFilter);
+
         //getting iteminfo from Feedadapter
         Bundle bundle = getIntent().getExtras();
-        String imageId =(bundle.getString("imageId"));
-        String header = (bundle.getString("headline"));
-        String desc = (bundle.getString("desc"));
-        itemId = (bundle.getLong("itemId"));
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), Integer.parseInt(imageId));
-        ImageView imageView = (ImageView) findViewById(R.id.item_photo);
-        imageView.setImageBitmap(bm);
+        imageUrl =(bundle.getString("imageUrl"));
+        header = (bundle.getString("headline"));
+        desc = (bundle.getString("desc"));
+        publicationId = (bundle.getLong("itemId"));
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
+
+        NetworkImageView imageView = (NetworkImageView) findViewById(R.id.itemPhoto);
+        imageView.setImageUrl(imageUrl, imgLoader);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         TextView headerTextView = (TextView) findViewById(R.id.headlineTextView);
         TextView descTextView = (TextView) findViewById(R.id.descTextView);
@@ -72,6 +91,7 @@ public class DetailActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
+        unregisterReceiver(receiver);
     }
 
     // temporary logout function
@@ -91,26 +111,30 @@ public class DetailActivity extends Activity {
 
     public void subscribe (View v){
 
-        User user = globalSettings.getUserFromPref();
-        long  userId = user.id;
-
-        //getUserSubscriptionsResponse list;
-        //list = serverServiceSubscribe.getUserSubscriptions();
-
         if (userId != 0)
         {
 
-            if(subscriptionsResponse != null) {
-                for (Subscription sub : subscriptionsResponse) {
-                    if (itemId != sub.publicationId.id)
-                        serverServiceSubscribe.createSubscription(userId, itemId);
-                    Toast.makeText(this, "The item with itemId: " + itemId + " is subscribed", Toast.LENGTH_SHORT).show();
+            if(userSubscriptionsResponseList!= null) {
+                for (Subscription sub : userSubscriptionsResponseList) {
+                    if (sub.publicationId.id == publicationId) {
+                        itemSubscribedCheck = true;
+                    }
+                }
+
+                if(itemSubscribedCheck)
+                {
+                    Toast.makeText(this, header + " is already subscribed", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    serverServiceSubscribe.createSubscription(userId, publicationId);
+                    Toast.makeText(this, header+ " is subscribed", Toast.LENGTH_SHORT).show();
+                    itemSubscribedCheck= true;
                 }
             }
-            else{
+            else {
 
-                serverServiceSubscribe.createSubscription(userId, itemId);
-                Toast.makeText(this, "The item with itemId: " + itemId + " is subscribed", Toast.LENGTH_SHORT).show();
+                serverServiceSubscribe.createSubscription(userId, publicationId);
+                Toast.makeText(this, header + " is subscribed", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -137,5 +161,17 @@ public class DetailActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         callMainActivity();
+    }
+
+    private class UserSubscriptionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().compareTo(ServerService.ALL_USERSUBSRIPTIONS_RESULT)==0)
+            {
+                userSubscriptionsResponseList = serverServiceSubscribe.getUserSubscriptions();
+            }
+        }
     }
 }
