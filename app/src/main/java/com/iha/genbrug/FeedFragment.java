@@ -42,6 +42,7 @@ public class FeedFragment extends Fragment {
     private PublicationMessagesReceiver receiver;
     public static getAllPublicationsResponse responseList;
     private SwipeRefreshLayout swipeContainer;
+    private int scrollPosition = 0;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -69,28 +70,8 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                serverService.startGetAllPublications();
-            }
-        });
-
-        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
-                android.R.color.holo_blue_light,
-                android.R.color.holo_purple);
 
         Activity parentAct = getActivity();
-
-        Intent intent = new Intent(parentAct, ServerService.class);
-
-        parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        receiver = new PublicationMessagesReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
-        parentAct.registerReceiver(receiver, intentFilter);
-
         fRecyclerView = (RecyclerView) getView().findViewById(R.id.rcview_feed);
 
         // use this setting to improve performance if you know that changes
@@ -100,6 +81,32 @@ public class FeedFragment extends Fragment {
         // use a linear layout manager
         fLayoutManager = new LinearLayoutManager(getActivity());
         fRecyclerView.setLayoutManager(fLayoutManager);
+
+        
+        scrollPosition = FeedAdapter.getPostion();
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                serverService.startGetAllPublications();
+                scrollPosition = 0;
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
+                android.R.color.holo_blue_light,
+                android.R.color.holo_purple);
+
+
+
+        Intent intent = new Intent(parentAct, ServerService.class);
+
+        parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        receiver = new PublicationMessagesReceiver();
+        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
+        parentAct.registerReceiver(receiver, intentFilter);
+
 
         // Create fake dataset
         /*
@@ -129,7 +136,7 @@ public class FeedFragment extends Fragment {
 
   }
 
-        fLayoutManager.scrollToPosition(FeedAdapter.getPostion());
+
     }
 
     @Override
@@ -167,6 +174,7 @@ public class FeedFragment extends Fragment {
 
                         fAdapter = new FeedAdapter(list);
                         fRecyclerView.setAdapter(fAdapter);
+                        fLayoutManager.scrollToPosition(scrollPosition);
                         swipeContainer.setRefreshing(false);
                     }
         }
