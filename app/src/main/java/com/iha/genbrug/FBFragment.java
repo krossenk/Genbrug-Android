@@ -35,6 +35,7 @@ public class FBFragment extends Fragment {
     private GlobalSettings globalSettings;
     private ProfileTracker mProfileTracker;
 
+
     // Callback method for login with facebook.
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
@@ -43,31 +44,38 @@ public class FBFragment extends Fragment {
             mProfileTracker = new ProfileTracker() {
                 @Override
                 protected void onCurrentProfileChanged(Profile profile1, Profile profile) {
-                    if(profile != null) {
-                        Uri profilePictureUri = profile.getProfilePictureUri(400, 300);
-                        loginButton.setVisibility(View.INVISIBLE);
 
-                        globalSettings = GlobalSettings.getInstance();
-                        User user = new User();
-
-                        user.id = Long.valueOf(profile.getId());
-                        user.firstname = profile.getFirstName();
-                        user.lastname = profile.getLastName();
-                        user.profileimageURL = profilePictureUri.toString();
-
-                        globalSettings.saveUserToPref(user);
-                        globalSettings.sharedPreferences.edit().putBoolean("Islogin", true).commit();
-
-                        Toast.makeText(getActivity(), "Welcome " + profile.getName(),
-                                Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(getActivity(),MainActivity.class);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
                     mProfileTracker.stopTracking();
                 }
             };
+
+            mProfileTracker.startTracking();
+
+            Profile currentProfile = Profile.getCurrentProfile();
+
+            if(currentProfile != null) {
+                Uri profilePictureUri = currentProfile.getProfilePictureUri(400, 300);
+                loginButton.setVisibility(View.INVISIBLE);
+
+                globalSettings = GlobalSettings.getInstance();
+                User user = new User();
+
+                user.id = Long.valueOf(currentProfile.getId());
+                user.firstname = currentProfile.getFirstName();
+                user.lastname = currentProfile.getLastName();
+                user.profileimageURL = profilePictureUri.toString();
+
+                globalSettings.saveUserToPref(user);
+                globalSettings.sharedPreferences.edit().putBoolean("Islogin", true).commit();
+
+                Toast.makeText(getActivity(), "Welcome " + currentProfile.getName(),
+                        Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getActivity(),MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+
         }
 
 
@@ -99,6 +107,7 @@ public class FBFragment extends Fragment {
         loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setFragment(this);
         loginButton.registerCallback(mcallbackManager, mCallback);
+
 
        // loginButton.setBackgroundResource(R.drawable.facebook_button);
         //loginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
@@ -132,7 +141,9 @@ public class FBFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mcallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (mcallbackManager.onActivityResult(requestCode, resultCode, data))
+            return;
+
     }
 
 
