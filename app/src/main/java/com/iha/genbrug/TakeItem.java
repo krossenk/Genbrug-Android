@@ -11,14 +11,14 @@ public class TakeItem  {
 
     private String headline;
     private String description;
-    private Drawable photoDrawable;
-    private int itemId;
+    private String imgURL;
+    private long itemId;
 
 
-    public TakeItem(String newItemName, String newDescription, Drawable photoDrawable, int itemId) {
+    public TakeItem(String newItemName, String newDescription, String imageURL, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
-        this.photoDrawable = photoDrawable;
+        this.imgURL = imageURL;
         this.itemId = itemId;
     }
 
@@ -31,11 +31,11 @@ public class TakeItem  {
         return description;
     }
 
-    public Drawable getPhotoDrawable() {
-        return photoDrawable;
+    public String getImageURL() {
+        return imgURL;
     }
 
-     public int getItemId() {
+     public long getItemId() {
         return itemId;
     }
 

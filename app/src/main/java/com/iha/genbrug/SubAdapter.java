@@ -23,6 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,11 +36,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolder> {
+public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolder>  {
 
 
     private ArrayList<TakeItem> mDataset;
-   public Drawable drawable;
+    private ImageLoader imgLoader;
+
 
     public SubAdapter(ArrayList<TakeItem> myDataset) {
         mDataset = myDataset;
@@ -50,28 +56,23 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_take_item, parent, false);
 
-        drawable = v.getResources().getDrawable(R.drawable.img1);
-
         return new SubItemViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(SubItemViewHolder holder,  final int position) {
+    public void onBindViewHolder(final SubItemViewHolder holder,  final int position) {
         // Get element from dataset for given position
         final TakeItem gi = mDataset.get(position);
-
 
 
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
-       /* BitmapDrawable test = (BitmapDrawable)gi.getPhotoDrawable();*/
-        BitmapDrawable testImage = (BitmapDrawable) drawable;
 
-        Drawable testDrawable = new BitmapDrawable(getCroppedBitmap(testImage.getBitmap(), 300));
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
+        holder.takePhoto.setImageUrl(gi.getImageURL(),imgLoader);
 
-        holder.ivPhoto.setImageDrawable(testDrawable);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -83,43 +84,14 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
     public static class SubItemViewHolder extends RecyclerView.ViewHolder {
         protected TextView tvHeadline;
         protected TextView tvDesc;
-        protected ImageView ivPhoto;
+        protected NetworkImageView takePhoto;
 
         public SubItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
-            ivPhoto = (ImageView) v.findViewById(R.id.imageView1);
+            takePhoto = (NetworkImageView) v.findViewById(R.id.take_photo);
 
         }
-    }
-
-
-    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
-        Bitmap sbmp;
-        if(bmp.getWidth() != radius || bmp.getHeight() != radius)
-            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
-        else
-            sbmp = bmp;
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(),
-                sbmp.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
-
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(sbmp.getWidth() / 2+0.7f, sbmp.getHeight() / 2+0.7f,
-                sbmp.getWidth() / 2+0.1f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(sbmp, rect, rect, paint);
-
-
-        return output;
     }
 }

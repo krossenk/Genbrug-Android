@@ -1,14 +1,10 @@
 package com.iha.genbrug;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -16,13 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.login.LoginManager;
+import java.util.ArrayList;
+import java.util.List;
 import webservice.Subscription;
 import webservice.User;
-import webservice.getUserSubscriptionsResponse;
+
 
 
 public class DetailActivity extends Activity {
@@ -31,23 +28,22 @@ public class DetailActivity extends Activity {
     private long publicationId;
     private ImageLoader imgLoader;
     private ServerService serverServiceSubscribe;
-    private UserSubscriptionReceiver  receiver;
-    private getUserSubscriptionsResponse userSubscriptionsResponseList;
     private GlobalSettings  globalSettings =GlobalSettings.getInstance();
     long  userId;
     boolean itemSubscribedCheck = false;
     String header;
     String imageUrl;
     String desc;
+    List<Subscription> subList;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
-            User user = globalSettings.getUserFromPref();
-            userId = user.id;
+
+
             serverServiceSubscribe = binder.getService();
-            serverServiceSubscribe.startGetUserSubscriptions(1);
+            serverServiceSubscribe.startGetUserSubscriptions(userId);
         }
 
         @Override
@@ -64,10 +60,10 @@ public class DetailActivity extends Activity {
 
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        receiver = new UserSubscriptionReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_USERSUBSRIPTIONS_RESULT);
-        this.registerReceiver(receiver, intentFilter);
 
+
+        User user = globalSettings.getUserFromPref();
+        userId = user.id;
         //getting iteminfo from Feedadapter
         Bundle bundle = getIntent().getExtras();
         imageUrl =(bundle.getString("imageUrl"));
@@ -83,6 +79,7 @@ public class DetailActivity extends Activity {
         TextView descTextView = (TextView) findViewById(R.id.descTextView);
         headerTextView.setText(header);
         descTextView.setText(desc);
+        subList = new ArrayList<>();
 
         logOutBtn = (Button) findViewById(R.id.Logout);
     }
@@ -91,7 +88,7 @@ public class DetailActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
-        unregisterReceiver(receiver);
+
     }
 
     // temporary logout function
@@ -99,9 +96,8 @@ public class DetailActivity extends Activity {
     {
 
         //Reset all information from user
-        globalSettings.sharedPreferences.edit().putString("userObj", "").commit();
         globalSettings.sharedPreferences.edit().putBoolean("Islogin", false).commit();
-        globalSettings.setUser(new User());
+        globalSettings.saveUserToPref(new User());
 
         LoginManager.getInstance().logOut();
         Intent intent = new Intent(this,LoginActivity.class);
@@ -113,9 +109,10 @@ public class DetailActivity extends Activity {
 
         if (userId != 0)
         {
+            subList = SubscriptionsFragment.userSubscriptionsResponseList;
 
-            if(userSubscriptionsResponseList!= null) {
-                for (Subscription sub : userSubscriptionsResponseList) {
+            if(subList!= null) {
+                for (Subscription sub : subList) {
                     if (sub.publicationId.id == publicationId) {
                         itemSubscribedCheck = true;
                     }
@@ -161,17 +158,5 @@ public class DetailActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         callMainActivity();
-    }
-
-    private class UserSubscriptionReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().compareTo(ServerService.ALL_USERSUBSRIPTIONS_RESULT)==0)
-            {
-                userSubscriptionsResponseList = serverServiceSubscribe.getUserSubscriptions();
-            }
-        }
     }
 }

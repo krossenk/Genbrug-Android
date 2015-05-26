@@ -40,7 +40,7 @@ public class FeedFragment extends Fragment {
     private RecyclerView.LayoutManager fLayoutManager;
     private ServerService serverService;
     private PublicationMessagesReceiver receiver;
-    private getAllPublicationsResponse responseList;
+    public static getAllPublicationsResponse responseList;
     private SwipeRefreshLayout swipeContainer;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -150,25 +150,25 @@ public class FeedFragment extends Fragment {
 
     private class PublicationMessagesReceiver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
+                @Override
+                public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONS_RESULT)==0)
-            {
-                responseList = serverService.getAllPublications();
+                    if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONS_RESULT)==0)
+                    {
+                        responseList = serverService.getAllPublications();
 
-                ArrayList<GenbrugItem> list = new ArrayList<>();
+                        ArrayList<GenbrugItem> list = new ArrayList<>();
 
-                for (Publication pub : responseList)
-                {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
-                    list.add(item);
-                }
+                        for (Publication pub : responseList)
+                        {
+                            GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
+                            list.add(item);
+                        }
 
-                fAdapter = new FeedAdapter(list);
-                fRecyclerView.setAdapter(fAdapter);
-                swipeContainer.setRefreshing(false);
-            }
+                        fAdapter = new FeedAdapter(list);
+                        fRecyclerView.setAdapter(fAdapter);
+                        swipeContainer.setRefreshing(false);
+                    }
         }
     }
 }
