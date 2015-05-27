@@ -9,10 +9,10 @@
         android:orientation="horizontal"
         android:background="#e9ffffff">
 
-        <ImageView
+        <com.iha.genbrug.RoundedNetworkImagView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/imageView1"
+            android:id="@+id/give_photo"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"

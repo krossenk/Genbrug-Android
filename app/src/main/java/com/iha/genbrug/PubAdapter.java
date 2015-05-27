@@ -19,6 +19,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -30,7 +33,8 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
 
 
     private ArrayList<GiveItem> mDataset;
-    public Drawable drawable;
+    private ImageLoader imgLoader;
+
 
     public PubAdapter(ArrayList<GiveItem> myDataset) {
         mDataset = myDataset;
@@ -45,7 +49,6 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_give_item, parent, false);
 
-        drawable = v.getResources().getDrawable(R.drawable.img);
 
         return new PubItemViewHolder(v);
     }
@@ -60,9 +63,9 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
 
-        BitmapDrawable testDrawable = (BitmapDrawable) drawable;
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
+        holder.givePhoto.setImageUrl(gi.getImageURL(),imgLoader);
 
-        holder.ivPhoto.setImageDrawable(new BitmapDrawable( getCroppedBitmap(testDrawable.getBitmap(),300)));
 
     }
 
@@ -76,43 +79,16 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
     public static class PubItemViewHolder extends RecyclerView.ViewHolder {
         protected TextView tvHeadline;
         protected TextView tvDesc;
-        protected ImageView ivPhoto;
+        protected NetworkImageView givePhoto;
 
         public PubItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
-            ivPhoto = (ImageView) v.findViewById(R.id.imageView1);
+            givePhoto = (NetworkImageView) v.findViewById(R.id.give_photo);
 
         }
     }
 
 
-    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
-        Bitmap sbmp;
-        if(bmp.getWidth() != radius || bmp.getHeight() != radius)
-            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
-        else
-            sbmp = bmp;
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(),
-                sbmp.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
-
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(sbmp.getWidth() / 2+0.7f, sbmp.getHeight() / 2+0.7f,
-                sbmp.getWidth() / 2+0.1f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(sbmp, rect, rect, paint);
-
-
-        return output;
-    }
 }

@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import webservice.Publication;
+import webservice.User;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +23,9 @@ public class PublicationsFragment extends Fragment{
     private RecyclerView pubRecyclerView;
     private RecyclerView.Adapter pubAdapter;
     private RecyclerView.LayoutManager pubLayoutManager;
+    private GlobalSettings  globalSettings =GlobalSettings.getInstance();
+    long  userId;
+    long publicationUserId;
 
 
     public PublicationsFragment() {
@@ -39,17 +45,37 @@ public class PublicationsFragment extends Fragment{
         pubLayoutManager = new LinearLayoutManager(getActivity());
         pubRecyclerView.setLayoutManager(pubLayoutManager);
 
-
+        User user = globalSettings.getUserFromPref();
+        userId = user.id;
         final ArrayList<GiveItem> GiveList = new ArrayList<>();
 
-        for(int i = 0; i < 3; i++){
+        if(FeedFragment.responseList != null)
+        {
 
-            GiveList.add(new GiveItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item",null,(i+1)));
+
+            for (Publication pub : FeedFragment.responseList)
+            {
+                publicationUserId = pub.userId.id;
+                if(publicationUserId == userId)
+                {
+                    GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id);
+
+                    GiveList.add(giveItem);
+                }
+            }
+
         }
 
         // specify an adapter (see also next example)
         pubAdapter = new PubAdapter(GiveList);
         pubRecyclerView.setAdapter(pubAdapter);
+
+
+
+      /*  for(int i = 0; i < 3; i++){
+
+            GiveList.add(new GiveItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item",null,(i+1)));
+        }*/
 
 
     }
