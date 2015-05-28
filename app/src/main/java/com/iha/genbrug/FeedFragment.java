@@ -166,16 +166,25 @@ public class FeedFragment extends Fragment {
 
                         ArrayList<GenbrugItem> list = new ArrayList<>();
 
-                        for (Publication pub : responseList)
+                        if(responseList != null)
                         {
-                            GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
-                            list.add(item);
+                            for (Publication pub : responseList)
+                            {
+                                GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
+                                list.add(item);
+                            }
+
+                            fAdapter = new FeedAdapter(list);
+                            fRecyclerView.setAdapter(fAdapter);
+                            fLayoutManager.scrollToPosition(scrollPosition);
+                            swipeContainer.setRefreshing(false);
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity().getApplicationContext(), "No internet Connection, please check your settings", Toast.LENGTH_LONG);
                         }
 
-                        fAdapter = new FeedAdapter(list);
-                        fRecyclerView.setAdapter(fAdapter);
-                        fLayoutManager.scrollToPosition(scrollPosition);
-                        swipeContainer.setRefreshing(false);
+
                     }
         }
     }

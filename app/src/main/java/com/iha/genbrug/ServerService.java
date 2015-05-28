@@ -158,6 +158,8 @@ public class ServerService extends Service {
 
     public void startCreatePublication(final Publication pub)
     {
+        publicationId = -1;
+
         servicecallthread = new Thread() {
             public void run() {
                 try {

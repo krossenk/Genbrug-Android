@@ -147,24 +147,27 @@ public class SubscriptionsFragment extends Fragment {
                 userSubscriptionsResponseList = serverService.getUserSubscriptions();
 
                 ArrayList<TakeItem> list = new ArrayList<>();
-
-                for (Subscription subscription : userSubscriptionsResponseList)
+                if(userSubscriptionsResponseList != null)
                 {
-                    long publicationId = subscription.publicationId.id;
-                    for (Publication publication : FeedFragment.responseList)
+                    for (Subscription subscription : userSubscriptionsResponseList)
                     {
+                        long publicationId = subscription.publicationId.id;
+                        for (Publication publication : FeedFragment.responseList)
+                        {
 
-                       if(publication.id == publicationId )
-                       {
-                           TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
-                           list.add(item);
-                       }
+                            if(publication.id == publicationId )
+                            {
+                                TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
+                                list.add(item);
+                            }
+                        }
+
+                    }
+
+                    subAdapter = new SubAdapter(list);
+                    subRecyclerView.setAdapter(subAdapter);
                 }
 
-                }
-
-                subAdapter = new SubAdapter(list);
-                subRecyclerView.setAdapter(subAdapter);
             }
         }
     }
