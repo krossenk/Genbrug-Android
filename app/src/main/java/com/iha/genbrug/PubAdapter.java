@@ -1,5 +1,7 @@
 package com.iha.genbrug;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -34,6 +37,10 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
 
     private ArrayList<GiveItem> mDataset;
     private ImageLoader imgLoader;
+    long itemId;
+    View vTest;
+
+    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
 
 
     public PubAdapter(ArrayList<GiveItem> myDataset) {
@@ -46,11 +53,10 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
                                                     int viewType) {
 
 
-        View v = LayoutInflater.from(parent.getContext())
+        vTest = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_give_item, parent, false);
 
-
-        return new PubItemViewHolder(v);
+            return new PubItemViewHolder(vTest);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -58,15 +64,61 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
     public void onBindViewHolder(PubItemViewHolder holder,  final int position) {
         // Get element from dataset for given position
         final GiveItem gi = mDataset.get(position);
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
 
         // Insert the contents of the current element into the view
-        holder.tvHeadline.setText(gi.getHeadline());
-        holder.tvDesc.setText(gi.getDescription());
 
-        imgLoader = VolleySingleton.getInstance().getImageLoader();
-        holder.givePhoto.setImageUrl(gi.getImageURL(),imgLoader);
+        if(gi.getHeadline() != null)
+        {
+            holder.tvHeadline.setText(gi.getHeadline());
+        }
+
+        if(gi.getDescription() != null)
+        {
+            holder.tvDesc.setText(gi.getDescription());
+        }
+        if(gi.getImageURL() != null)
+        {
+
+            holder.givePhoto.setImageUrl(gi.getImageURL(), imgLoader);
+        }
+        else {
+            holder.givePhoto.setImageUrl(avator,imgLoader);
+        }
 
 
+
+
+
+       /* holder.givePhoto.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), TakersActivity.class);
+                itemId = gi.getItemId();
+
+                intent.putExtra("itemId", itemId);
+
+                v.getContext().startActivity(intent);
+                ((Activity) v.getContext()).finish();
+
+            }
+        });*/
+
+      holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                itemId = gi.getItemId();
+                Intent intent = new Intent(v.getContext(), TakersActivity.class);
+
+                intent.putExtra("itemId", itemId);
+
+                v.getContext().startActivity(intent);
+                ((Activity) v.getContext()).finish();
+
+            }
+        });
     }
 
 
@@ -80,15 +132,17 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         protected TextView tvHeadline;
         protected TextView tvDesc;
         protected NetworkImageView givePhoto;
+        protected View itemView;
+
 
         public PubItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             givePhoto = (NetworkImageView) v.findViewById(R.id.give_photo);
+            itemView = v.findViewById(R.id.pub_layout);
 
         }
     }
-
 
 }

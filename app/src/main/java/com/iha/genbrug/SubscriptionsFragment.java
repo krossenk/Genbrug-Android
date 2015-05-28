@@ -112,12 +112,16 @@ public class SubscriptionsFragment extends Fragment {
                 long publicationId = subscription.publicationId.id;
                 for (Publication publication : FeedFragment.responseList)
                 {
-                    if(publication.id == publicationId)
+                    if(FeedFragment.responseList != null)
                     {
-                        TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
-                        list.add(item);
-                    }
 
+
+                        if(publication.id == publicationId)
+                            {
+                                 TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
+                                    list.add(item);
+                            }
+                    }
                 }
             }
 
@@ -148,19 +152,28 @@ public class SubscriptionsFragment extends Fragment {
 
                 ArrayList<TakeItem> list = new ArrayList<>();
 
-                for (Subscription subscription : userSubscriptionsResponseList)
+                if(userSubscriptionsResponseList != null)
                 {
-                    long publicationId = subscription.publicationId.id;
-                    for (Publication publication : FeedFragment.responseList)
+
+                    for (Subscription subscription : userSubscriptionsResponseList)
                     {
+                        long publicationId = subscription.publicationId.id;
+                        if(FeedFragment.responseList != null)
+                        {
 
-                       if(publication.id == publicationId )
-                       {
-                           TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
-                           list.add(item);
-                       }
-                }
 
+                            for (Publication publication : FeedFragment.responseList)
+                                {
+
+                                    if(publication.id == publicationId )
+                                    {
+                                        TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
+                                        list.add(item);
+                                    }
+                                }
+                        }
+
+                    }
                 }
 
                 subAdapter = new SubAdapter(list);
