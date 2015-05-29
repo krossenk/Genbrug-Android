@@ -6,19 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -30,7 +28,7 @@ public class LoginActivity extends FragmentActivity {
 
     //Local Log in
 
-    private EditText Localusername;
+    private EditText localUsername;
     private EditText password;
     private boolean  loginStatusVariable = false;
     private ServerService serverService;
@@ -39,8 +37,10 @@ public class LoginActivity extends FragmentActivity {
     private Intent mainIntent;
     FBFragment fbFragment = new FBFragment();
     ConnectionFragment conFragment = new ConnectionFragment();
-    private Button loginBtn;
-    private Button createBtn;
+
+    private Button btnLogin;
+    private Button btnCreate;
+
     private GlobalSettings globalSettings;
     public static Context contextOfApplication;
 
@@ -51,7 +51,7 @@ public class LoginActivity extends FragmentActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
             serverService = binder.getService();
-                   }
+        }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -90,27 +90,34 @@ public class LoginActivity extends FragmentActivity {
         }
 
 
-        final Button btn = (Button) findViewById(R.id.loginBtn);
-        btn.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 authenticateLogin(v);
             }
         });
 
+        password.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int actionId, KeyEvent event) {
+                if((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    authenticateUser();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         contextOfApplication = getApplicationContext();
+        globalSettings = GlobalSettings.getInstance();
 
-         globalSettings = GlobalSettings.getInstance();
-        
-          // get login status from shared preferences
-         loginStatusVariable = globalSettings.sharedPreferences.getBoolean("Islogin", false);
-
+        // get login status from shared preferences
+        loginStatusVariable = globalSettings.sharedPreferences.getBoolean("Islogin", false);
         if(loginStatusVariable && isNetworkAvailable(getApplicationContext()))
         {
         //condition true means user is already login
             Intent i = new Intent(this, MainActivity.class);
             startActivityForResult(i, 1);
-
         }
     }
 
@@ -129,11 +136,12 @@ public class LoginActivity extends FragmentActivity {
 
 
     public void authenticateLogin(View view)  {
+        authenticateUser();
+    }
 
-
+    private void authenticateUser() {
         try {
-            serverService.validateUser(Localusername.getText().toString(), password.getText().toString());
-
+            serverService.validateUser(localUsername.getText().toString(), password.getText().toString());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
@@ -141,22 +149,20 @@ public class LoginActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void setupVariables() {
-        Localusername = (EditText) findViewById(R.id.usernameET);
-        password = (EditText) findViewById(R.id.passwordET);
-
+        localUsername = (EditText) findViewById(R.id.et_username);
+        password = (EditText) findViewById(R.id.et_password);
+        btnCreate = (Button) findViewById(R.id.btn_sign_up);
+        btnLogin = (Button) findViewById(R.id.btn_login);
     }
 
     //method for enablation of buttons
     public void enabledState(boolean isEnabled)
     {
-        loginBtn = (Button) findViewById(R.id.loginBtn);
-        createBtn = (Button) findViewById(R.id.signUpBtn);
-        loginBtn.setEnabled(isEnabled);
-        createBtn.setEnabled(isEnabled);
+        btnLogin.setEnabled(isEnabled);
+        btnCreate.setEnabled(isEnabled);
 
     }
 
