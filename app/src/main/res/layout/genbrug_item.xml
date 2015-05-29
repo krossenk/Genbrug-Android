@@ -2,65 +2,89 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#ffffff"
     android:layout_height="match_parent">
 
 
     <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_photo"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="#777777"
-        android:id="@+id/iv_photo" />
+        android:background="#777777" />
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#d8d8d8">
+        android:paddingBottom="10dp"
+        android:background="#ffffff">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="4">
+        <ImageButton
+            android:id="@+id/ib_feed_subscribe"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="fitXY"
+            android:layout_marginRight="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:src="@drawable/ic_sub_not_selected"
+            android:layout_gravity="center" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="4dp"
-                android:paddingLeft="16dp"
-                android:textSize="18sp"
-                android:textColor="#484a4f"
-                android:text="@string/gitem_headline"
-                android:id="@+id/tv_headline"/>
+        <TextView
+            android:id="@+id/tv_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/ib_feed_subscribe"
+            android:layout_toLeftOf="@id/ib_feed_subscribe"
+            android:singleLine="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:textSize="20sp"
+            android:textColor="#484a4f"
+            android:text="@string/gitem_headline"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/gitem_description"
-                android:textSize="12sp"
-                android:paddingTop="4dp"
-                android:paddingBottom="20dp"
-                android:paddingLeft="16dp"
-                android:textColor="#abaeb3"
-                android:id="@+id/tv_desc" />
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_below="@id/tv_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/ib_feed_subscribe"
+            android:layout_toLeftOf="@id/ib_feed_subscribe"
+            android:text="@string/gitem_description"
+            android:textSize="12sp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="#abaeb3" />
 
-            </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_pickup_type_feed"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/tv_desc"
+            android:layout_marginLeft="13dp"
+            android:src="@drawable/ic_action_action_home"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+        <TextView
+            android:id="@+id/tv_pickup_time_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Man. 13-17"
+            android:layout_toRightOf="@id/iv_pickup_type_feed"
+            android:layout_below="@id/tv_desc"
+            android:layout_marginLeft="5dp"/>
 
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:text="Sub"
-                    android:textColor="@android:color/white"
-                    android:id="@+id/button4"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_pickup_addr_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gammel Munkegade 1, 8000 Aarhus C"
+            android:layout_toRightOf="@id/iv_pickup_type_feed"
+            android:layout_below="@id/tv_pickup_time_feed"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/link_color"/>
+    </RelativeLayout>
 
 </LinearLayout>
