@@ -115,7 +115,6 @@ public class SubscriptionsFragment extends Fragment {
                     if(FeedFragment.responseList != null)
                     {
 
-
                         if(publication.id == publicationId)
                             {
                                  TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);

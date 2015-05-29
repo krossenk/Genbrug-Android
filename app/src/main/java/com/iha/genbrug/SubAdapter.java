@@ -42,6 +42,7 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
     private ArrayList<TakeItem> mDataset;
     private ImageLoader imgLoader;
     String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    long itemId;
 
 
     public SubAdapter(ArrayList<TakeItem> myDataset) {
@@ -85,6 +86,21 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
             holder.takePhoto.setImageUrl(avator,imgLoader);
         }
 
+        holder.subItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                itemId = gi.getItemId();
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+
+                intent.putExtra("itemId", itemId);
+                v.getContext().startActivity(intent);
+                ((Activity) v.getContext()).finish();
+
+            }
+        });
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -97,12 +113,14 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         protected TextView tvHeadline;
         protected TextView tvDesc;
         protected NetworkImageView takePhoto;
+        protected View subItemView;
 
         public SubItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             takePhoto = (NetworkImageView) v.findViewById(R.id.take_photo);
+            subItemView = v.findViewById(R.id.sub_layout);
 
         }
     }

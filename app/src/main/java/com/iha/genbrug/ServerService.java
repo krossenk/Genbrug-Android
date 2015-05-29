@@ -28,6 +28,7 @@ public class ServerService extends Service {
     public static final String ALL_USERSUBSRIPTIONS_RESULT = "Result_Returned_From_getUserSubscriptions";
     public static final String ALL_CATEGORIES_RESULT = "Result_Returned_From_getAllCategories";
     public static final String IMAGE_RETURN_URL = "Result_Returned_From_Saveimage";
+    public static final String PUBLICATIONRESULT = "Result_Returned_From_getPublication";
 
     private Thread servicecallthread = null;
     private final IBinder mBinder = new LocalBinder();
@@ -187,7 +188,7 @@ public class ServerService extends Service {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Intent retint = new Intent();
+                Intent retint = new Intent(PUBLICATIONRESULT);
                 sendBroadcast(retint);
 
             }
