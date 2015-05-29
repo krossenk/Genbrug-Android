@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.iha.genbrug.TakeItem" android:orientation="vertical"
+    tools:context="com.iha.genbrug.TakeItem"
     android:id="@+id/sub_layout" >
 
 
@@ -9,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#e9ffffff">
+        android:background="@color/transparent_item_bg">
 
         <com.iha.genbrug.RoundedNetworkImagView
             android:layout_width="0dp"
@@ -18,8 +19,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <LinearLayout
             android:orientation="vertical"
