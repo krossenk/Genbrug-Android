@@ -7,14 +7,14 @@ public class GiveItem {
 
     private String headline;
     private String description;
-    private Drawable photoDrawable;
-    private int itemId;
+    private String imageURL;
+    private long itemId;
 
 
-    public GiveItem(String newItemName, String newDescription, Drawable photoDrawable, int itemId) {
+    public GiveItem(String newItemName, String newDescription, String imageURL, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
-        this.photoDrawable = photoDrawable;
+        this.imageURL = imageURL;
         this.itemId = itemId;
     }
 
@@ -27,11 +27,11 @@ public class GiveItem {
         return description;
     }
 
-    public Drawable getPhotoDrawable() {
-        return photoDrawable;
+    public String getImageURL() {
+        return imageURL;
     }
 
-     public int getItemId() {
+     public long getItemId() {
         return itemId;
     }
 

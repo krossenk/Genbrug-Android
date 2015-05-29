@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/takerContainer" android:layout_width="match_parent"
+    android:layout_height="match_parent"  android:orientation="vertical" android:background="@drawable/welcome_pic_cropped"
+
+    tools:context="com.iha.genbrug.TakersActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="  ←  Takers"
+        android:textColor="#FFFFFF"
+        android:background="#af906d"
+        android:id="@+id/takersBackBtn"
+        android:onClick="callMainActivityClick"
+        android:textSize="15dp"
+        android:gravity="left|center_vertical"/>
+</LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcview_takers"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
+</LinearLayout>

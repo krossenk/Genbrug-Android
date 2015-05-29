@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.iha.genbrug.GiveItem" android:orientation="vertical"
-    android:id="@+id/pub_layout">
+    tools:context="com.iha.genbrug.TakerItem" android:orientation="vertical"
+    >
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,10 +14,10 @@
         <com.iha.genbrug.RoundedNetworkImagView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/give_photo"
+            android:id="@+id/taker_photo"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             />
 
@@ -35,7 +36,7 @@
                 android:textSize="18sp"
                 android:textColor="#484a4f"
                 android:text="@string/gitem_headline"
-                android:id="@+id/tv_headline"/>
+                android:id="@+id/dateView"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -46,7 +47,7 @@
                 android:paddingBottom="20dp"
                 android:paddingLeft="16dp"
                 android:textColor="#abaeb3"
-                android:id="@+id/tv_desc" />
+                android:id="@+id/timeView" />
 
         </LinearLayout>
 
@@ -58,5 +59,4 @@
         android:layout_height="2dip"
         android:layout_centerVertical ="true"
         android:layout_alignParentTop="true"/>
-
 </LinearLayout>

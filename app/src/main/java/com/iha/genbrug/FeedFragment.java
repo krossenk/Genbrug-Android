@@ -37,6 +37,10 @@ public class FeedFragment extends Fragment {
     public static getAllPublicationsResponse responseList;
     private SwipeRefreshLayout swipeContainer;
     private int scrollPosition = 0;
+    private  Activity parentAct;
+    private boolean fragmentValidation =false;
+    private Intent intent;
+    private IntentFilter intentFilter;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -57,9 +61,27 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        parentAct= getActivity();
+        intent = new Intent(parentAct, ServerService.class);
+
+        //parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        receiver = new PublicationMessagesReceiver();
+        intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
+
+       // parentAct.registerReceiver(receiver, intentFilter);
+       // parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        fragmentValidation = true;
+
+
+    }
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Activity parentAct = getActivity();
+
+
         fRecyclerView = (RecyclerView) getView().findViewById(R.id.rcview_feed);
 
         // use this setting to improve performance if you know that changes
@@ -84,13 +106,8 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_blue_light,
                 android.R.color.holo_purple);
 
-        Intent intent = new Intent(parentAct, ServerService.class);
 
-        parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        receiver = new PublicationMessagesReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
-        parentAct.registerReceiver(receiver, intentFilter);
+       // parentAct.registerReceiver(receiver, intentFilter);
 
         if(responseList != null) {
             ArrayList<GenbrugItem> list = new ArrayList<>();
@@ -106,12 +123,27 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unbindService(serviceConnection);
-        getActivity().unregisterReceiver(receiver);
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
 
+
+        if(isVisibleToUser&&fragmentValidation)
+        {
+            parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            parentAct.registerReceiver(receiver, intentFilter);
+
+            fragmentValidation = false;
+
+        }
+
+        else if (isVisibleToUser == false && fragmentValidation ==true ) {
+            parentAct.unbindService(serviceConnection);
+            parentAct.unregisterReceiver(receiver);
+
+        }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,6 +173,14 @@ public class FeedFragment extends Fragment {
                 swipeContainer.setRefreshing(false);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        parentAct.unbindService(serviceConnection);
+        parentAct.unregisterReceiver(receiver);
+
     }
 }
 

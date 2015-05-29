@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.iha.genbrug.GlobalSettings;
 import com.iha.genbrug.R;
 import com.iha.genbrug.ServerService;
 
@@ -93,6 +94,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private Bitmap mDisplayedBitmap;
     private ServerService serverService;
     private CreatePublicationReceiver createPublicationReceiver;
+    private GlobalSettings globalSettings =GlobalSettings.getInstance();
+    User  savedUser;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -192,6 +195,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnPickEndTime.setOnClickListener(this);
 
         setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
+        savedUser = globalSettings.getUserFromPref();
+
     }
 
     @Override
@@ -586,8 +591,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         pub.description = etDescription.getText().toString();
         pub.categoryId = new Category();
         pub.categoryId.id = 1;
-        pub.userId = new User();
-        pub.userId.id = Long.valueOf(1);
+        pub.userId = savedUser;
+        pub.userId.id = savedUser.id;
 
         if( true )
         {

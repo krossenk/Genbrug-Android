@@ -70,6 +70,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 String desc = gi.getDescription();
                 long itemId = gi.getItemId();
 
+
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
                 intent.putExtra("imageUrl", imageUrl);
                 intent.putExtra("headline", headline);
