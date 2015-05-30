@@ -393,7 +393,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             case R.id.btn_pick_start_time:
                 final Dialog pstDialog = new Dialog(this);
                 pstDialog.setTitle("Select earliest pickup time");
-                pstDialog.setContentView(R.layout.custom_dialog_date_time);
+                pstDialog.setContentView(R.layout.dialog_date_time);
                 pstDialog.show();
 
                 // ---------------------------------------------------------------------------------
@@ -470,7 +470,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             case R.id.btn_pick_end_time:
                 final Dialog petDialog = new Dialog(this);
                 petDialog.setTitle("Select latest pickup time");
-                petDialog.setContentView(R.layout.custom_dialog_date_time);
+                petDialog.setContentView(R.layout.dialog_date_time);
                 petDialog.show();
 
                 // ---------------------------------------------------------------------------------

@@ -31,4 +31,9 @@
     <string name="giveform_radio_street">Street</string>
     <string name="title_activity_take_item">TakeItem</string>
     <string name="title_activity_takers">TakersActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_out">Sign out</string>
+    <string name="submit">Submit</string>
+    <string name="options">Options</string>
 </resources>

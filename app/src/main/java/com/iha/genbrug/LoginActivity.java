@@ -159,11 +159,9 @@ public class LoginActivity extends FragmentActivity {
     }
 
     //method for enablation of buttons
-    public void enabledState(boolean isEnabled)
-    {
+    public void enabledState(boolean isEnabled) {
         btnLogin.setEnabled(isEnabled);
         btnCreate.setEnabled(isEnabled);
-
     }
 
     //method to call createAccountActivity
@@ -184,14 +182,9 @@ public class LoginActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().compareTo(ServerService.RESULT_RETURNED_FROM_SERVICE)==0)
-            {
+            if (intent.getAction().compareTo(ServerService.RESULT_RETURNED_FROM_SERVICE)==0) {
                 user = serverService.getValidatedUser();
-
-
-                if( isNetworkAvailable(context)&&user != null )
-
-                {
+                if(isNetworkAvailable(context)&&user != null) {
                     startActivity(mainIntent);
                     finish();
 
@@ -202,10 +195,6 @@ public class LoginActivity extends FragmentActivity {
 
                     //islogin is a boolean value of your login status pushed to SharedPreferences
                     globalSettings.sharedPreferences.edit().putBoolean("Islogin", loginStatusVariable).commit();
-
-                }
-
-                else {
                     Toast.makeText(getApplicationContext(), "Wrong username or password!",
                             Toast.LENGTH_SHORT).show();
                 }
