@@ -83,18 +83,18 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:text="Sub"
-            android:textColor="@android:color/white"
-            android:id="@+id/subscribBtn"
-            android:layout_gravity="center"
-            android:layout_alignTop="@+id/Logout"
+        <ImageButton
+            android:id="@+id/detail_subscribe"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="fitXY"
+            android:layout_marginRight="16dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+            android:background="@null"
+            android:src="@drawable/ic_sub_not_selected"
+            android:layout_gravity="center"
             android:onClick="subscribe"/>
+
 
     </RelativeLayout>
 
