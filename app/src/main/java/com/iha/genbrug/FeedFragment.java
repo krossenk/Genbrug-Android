@@ -117,7 +117,7 @@ public class FeedFragment extends Fragment {
                 list.add(item);
             }
 
-            fAdapter = new FeedAdapter(list);
+            fAdapter = new FeedAdapter(list,this.getActivity());
             fRecyclerView.setAdapter(fAdapter);
         }
     }
@@ -167,7 +167,7 @@ public class FeedFragment extends Fragment {
                     list.add(item);
                 }
 
-                fAdapter = new FeedAdapter(list);
+                fAdapter = new FeedAdapter(list,getActivity());
                 fRecyclerView.setAdapter(fAdapter);
                 fLayoutManager.scrollToPosition(scrollPosition);
                 swipeContainer.setRefreshing(false);

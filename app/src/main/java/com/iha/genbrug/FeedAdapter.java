@@ -1,26 +1,59 @@
 package com.iha.genbrug;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-
 import java.util.ArrayList;
+import java.util.List;
+import webservice.Subscription;
+import webservice.User;
+
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
     private ArrayList<GenbrugItem> mDataset;
     private static int pos;
     private ImageLoader imgLoader;
+    private ServerService serverService;
+    private GlobalSettings  globalSettings =GlobalSettings.getInstance();
+    long  userId;
+    List<Subscription> subList;
+    boolean itemSubscribedCheck = false;
+    private Context ctx;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
+            serverService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     // CONSTRUCTOR
-    public FeedAdapter(ArrayList<GenbrugItem> myDataset) {
+    public FeedAdapter(ArrayList<GenbrugItem> myDataset, Context context) {
+
+        this.ctx = context;
         mDataset = myDataset;
     }
 
@@ -28,10 +61,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     @Override
     public GenbrugItemViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
+        User user = globalSettings.getUserFromPref();
+        userId = user.id;
 
+
+        Intent intent = new Intent(ctx, ServerService.class);
+        ctx.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.genbrug_item, parent, false);
+        subList = SubscriptionsFragment.userSubscriptionsResponseList;
 
         return new GenbrugItemViewHolder(v);
     }
@@ -46,6 +85,33 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
 
+
+        if (userId != 0)
+        {
+            if(subList!= null) {
+                for (Subscription sub : subList) {
+                    if (sub.publicationId.id == gi.getItemId()) {
+                        itemSubscribedCheck = true;
+                        holder.ibSubscribe.setPressed(true);
+                    }
+
+                    //itemSubscribedCheck = false;
+                }
+
+                if(itemSubscribedCheck)
+                {
+                    holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
+
+                }
+                else {
+
+                    holder.ibSubscribe.setImageResource(R.drawable.ic_sub_not_selected);
+
+                }
+            }
+        }
+
+
         // Parsa: Get current state of item (item from feed) and do:
         // holder.ibSubscribe.setPressed(true); if already subscribed.
 
@@ -54,6 +120,43 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             public void onClick(View view) {
                 if (view.getId() == R.id.ib_feed_subscribe) {
                     //If user clicks on subscribe button.
+                    if (userId != 0)
+                    {
+
+                        if(subList!= null) {
+                            for (Subscription sub : subList) {
+                                if (sub.publicationId.id == gi.getItemId()) {
+                                    itemSubscribedCheck = true;
+                                }
+                            }
+
+                            if(itemSubscribedCheck)
+                            {
+                                Toast.makeText(ctx, gi.getHeadline() + " is already subscribed", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                serverService.createSubscription(userId, gi.getItemId());
+                                Toast.makeText(ctx, gi.getHeadline()+ " is subscribed", Toast.LENGTH_SHORT).show();
+                                itemSubscribedCheck= true;
+                            }
+                        }
+                        else {
+
+                            serverService.createSubscription(userId, gi.getItemId());
+                            Toast.makeText(ctx, gi.getHeadline() + " is subscribed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    else
+                    {
+                        Toast.makeText(ctx,"No user to subscribe to",Toast.LENGTH_SHORT).show();
+                    }
+
+              /*      else
+                    {
+                        Toast.makeText(ctx,"No user to subscribe to",Toast.LENGTH_SHORT).show();
+                    }*/
+
                 }
             }
         });
@@ -123,5 +226,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
         }
     }
+
 
 }

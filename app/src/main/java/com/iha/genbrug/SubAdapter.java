@@ -71,10 +71,22 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
 
         // Insert the contents of the current element into the view
 
-        if(gi.getHeadline() != null && gi.getDescription() != null)
+        if(gi.getHeadline() != null)
         {
             holder.tvHeadline.setText(gi.getHeadline());
+
+        }
+        else {
+            holder.tvHeadline.setText("No Headline!");
+        }
+
+        if(gi.getDescription() != null)
+        {
             holder.tvDesc.setText(gi.getDescription());
+        }
+
+        else {
+            holder.tvDesc.setText("No Description!");
         }
 
         if(gi.getImageURL() != null)

@@ -37,16 +37,6 @@ public class GlobalSettings {
         return globalSettings;
     }
 
-    public void setUser (User user)
-    {
-      this.user = user;
-    }
-
-   /* public User getUser ()
-    {
-        return user;
-    }*/
-
 
     public void saveUserToPref (User value)
     {

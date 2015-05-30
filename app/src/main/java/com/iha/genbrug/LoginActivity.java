@@ -198,11 +198,10 @@ public class LoginActivity extends FragmentActivity {
                     loginStatusVariable =true;
 
                     globalSettings.saveUserToPref(user);
-                    globalSettings.setUser(globalSettings.getUserFromPref());
+
 
                     //islogin is a boolean value of your login status pushed to SharedPreferences
                     globalSettings.sharedPreferences.edit().putBoolean("Islogin", loginStatusVariable).commit();
-
 
                 }
 

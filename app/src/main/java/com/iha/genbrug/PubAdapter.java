@@ -72,10 +72,16 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         {
             holder.tvHeadline.setText(gi.getHeadline());
         }
+        else {
+            holder.tvHeadline.setText("No Headline");
+        }
 
         if(gi.getDescription() != null)
         {
             holder.tvDesc.setText(gi.getDescription());
+        }
+        else {
+            holder.tvDesc.setText("No description!");
         }
 
     /*    if(gi.getAmount() != 0)
