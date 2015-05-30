@@ -84,17 +84,6 @@
             android:layout_alignParentEnd="true" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:id="@+id/Logout"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:onClick="logOut"/>
-
-
-        <Button
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:text="Sub"

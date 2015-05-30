@@ -11,12 +11,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.facebook.login.LoginManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +49,6 @@ public class DetailActivity extends Activity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
-
-
             serverServiceSubscribe = binder.getService();
             serverServiceSubscribe.startGetUserSubscriptions(userId);
             Bundle bundle = getIntent().getExtras();
@@ -67,16 +65,11 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         Intent intent = new Intent(this,ServerService.class);
-
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         receiver = new DetailsMessagesReceiver();
         IntentFilter intentFilter = new IntentFilter(ServerService.PUBLICATIONRESULT);
         registerReceiver(receiver, intentFilter);
-
-
-
         User user = globalSettings.getUserFromPref();
         userId = user.id;
         imgLoader = VolleySingleton.getInstance().getImageLoader();
@@ -94,20 +87,6 @@ public class DetailActivity extends Activity {
         unbindService(serviceConnection);
         unregisterReceiver(receiver);
 
-    }
-
-    // temporary logout function
-    public void logOut(View v)
-    {
-
-        //Reset all information from user
-        globalSettings.sharedPreferences.edit().putBoolean("Islogin", false).commit();
-        globalSettings.saveUserToPref(new User());
-
-        LoginManager.getInstance().logOut();
-        Intent intent = new Intent(this,LoginActivity.class);
-        this.startActivity(intent);
-        finish();
     }
 
     public void subscribe (View v){
