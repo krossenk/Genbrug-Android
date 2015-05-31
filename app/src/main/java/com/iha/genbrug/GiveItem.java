@@ -7,15 +7,18 @@ public class GiveItem {
 
     private String headline;
     private String description;
-    private Drawable photoDrawable;
-    private int itemId;
+    private String imageURL;
+    private long itemId;
+    private int amount;
 
 
-    public GiveItem(String newItemName, String newDescription, Drawable photoDrawable, int itemId) {
+    public GiveItem(String newItemName, String newDescription, String imageURL, long itemId,int amount) {
         this.headline = newItemName;
         this.description = newDescription;
-        this.photoDrawable = photoDrawable;
+        this.imageURL = imageURL;
         this.itemId = itemId;
+        this.amount = amount;
+
     }
 
     public String getHeadline() {
@@ -27,12 +30,16 @@ public class GiveItem {
         return description;
     }
 
-    public Drawable getPhotoDrawable() {
-        return photoDrawable;
+    public String getImageURL() {
+        return imageURL;
     }
 
-     public int getItemId() {
+     public long getItemId() {
         return itemId;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
 }

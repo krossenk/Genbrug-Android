@@ -41,6 +41,8 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
 
     private ArrayList<TakeItem> mDataset;
     private ImageLoader imgLoader;
+    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    long itemId;
 
 
     public SubAdapter(ArrayList<TakeItem> myDataset) {
@@ -64,14 +66,51 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
     public void onBindViewHolder(final SubItemViewHolder holder,  final int position) {
         // Get element from dataset for given position
         final TakeItem gi = mDataset.get(position);
+        imgLoader = VolleySingleton.getInstance().getImageLoader();
 
 
         // Insert the contents of the current element into the view
-        holder.tvHeadline.setText(gi.getHeadline());
-        holder.tvDesc.setText(gi.getDescription());
 
-        imgLoader = VolleySingleton.getInstance().getImageLoader();
-        holder.takePhoto.setImageUrl(gi.getImageURL(),imgLoader);
+        if(gi.getHeadline() != null)
+        {
+            holder.tvHeadline.setText(gi.getHeadline());
+
+        }
+        else {
+            holder.tvHeadline.setText("No Headline!");
+        }
+
+        if(gi.getDescription() != null)
+        {
+            holder.tvDesc.setText(gi.getDescription());
+        }
+
+        else {
+            holder.tvDesc.setText("No Description!");
+        }
+
+        if(gi.getImageURL() != null)
+        {
+
+            holder.takePhoto.setImageUrl(gi.getImageURL(),imgLoader);
+        }
+        else {
+            holder.takePhoto.setImageUrl(avator,imgLoader);
+        }
+
+        holder.subItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                itemId = gi.getItemId();
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+
+                intent.putExtra("itemId", itemId);
+                v.getContext().startActivity(intent);
+
+            }
+        });
 
     }
 
@@ -85,12 +124,14 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
         protected TextView tvHeadline;
         protected TextView tvDesc;
         protected NetworkImageView takePhoto;
+        protected View subItemView;
 
         public SubItemViewHolder( View v ) {
             super(v);
             tvHeadline = (TextView) v.findViewById(R.id.tv_headline);
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             takePhoto = (NetworkImageView) v.findViewById(R.id.take_photo);
+            subItemView = v.findViewById(R.id.sub_layout);
 
         }
     }

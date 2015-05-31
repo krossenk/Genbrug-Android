@@ -19,8 +19,6 @@ import com.android.volley.toolbox.NetworkImageView;
  */
 public class RoundedNetworkImagView extends NetworkImageView {
 
-    private Paint _Paint;
-    private RectF	_RectF;
     public RoundedNetworkImagView(Context context) {
         super(context);
     }

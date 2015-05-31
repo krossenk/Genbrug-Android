@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.ImageLoader;
-
 import java.util.ArrayList;
 
 import webservice.Publication;
 import webservice.Subscription;
 import webservice.User;
-import webservice.getAllPublicationsResponse;
 import webservice.getUserSubscriptionsResponse;
 
 
@@ -42,7 +37,7 @@ public class SubscriptionsFragment extends Fragment {
     private SubscriptionMessagesReceiver  receiver;
     public static getUserSubscriptionsResponse userSubscriptionsResponseList;
 
-    private GlobalSettings  globalSettings =GlobalSettings.getInstance();
+    private GlobalSettings  globalSettings = GlobalSettings.getInstance();
     long  userId;
 
 
@@ -54,8 +49,7 @@ public class SubscriptionsFragment extends Fragment {
             userId = user.id;
             serverService = binder.getService();
             serverService.startGetUserSubscriptions(userId);
-
-                   }
+        }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -112,12 +106,15 @@ public class SubscriptionsFragment extends Fragment {
                 long publicationId = subscription.publicationId.id;
                 for (Publication publication : FeedFragment.responseList)
                 {
-                    if(publication.id == publicationId)
+                    if(FeedFragment.responseList != null)
                     {
-                        TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
-                        list.add(item);
-                    }
 
+                        if(publication.id == publicationId)
+                            {
+                                 TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
+                                    list.add(item);
+                            }
+                    }
                 }
             }
 
@@ -147,27 +144,33 @@ public class SubscriptionsFragment extends Fragment {
                 userSubscriptionsResponseList = serverService.getUserSubscriptions();
 
                 ArrayList<TakeItem> list = new ArrayList<>();
+
                 if(userSubscriptionsResponseList != null)
                 {
+
                     for (Subscription subscription : userSubscriptionsResponseList)
                     {
                         long publicationId = subscription.publicationId.id;
-                        for (Publication publication : FeedFragment.responseList)
+                        if(FeedFragment.responseList != null)
                         {
 
-                            if(publication.id == publicationId )
-                            {
-                                TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
-                                list.add(item);
-                            }
+
+                            for (Publication publication : FeedFragment.responseList)
+                                {
+
+                                    if(publication.id == publicationId )
+                                    {
+                                        TakeItem item = new TakeItem(publication.title, publication.description, publication.imageURL ,publication.id);
+                                        list.add(item);
+                                    }
+                                }
                         }
 
                     }
-
-                    subAdapter = new SubAdapter(list);
-                    subRecyclerView.setAdapter(subAdapter);
                 }
 
+                subAdapter = new SubAdapter(list);
+                subRecyclerView.setAdapter(subAdapter);
             }
         }
     }

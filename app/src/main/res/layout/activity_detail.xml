@@ -1,32 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.iha.genbrug.DetailActivity"
     android:weightSum="1">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_alignParentTop="true"
-    android:background="#af906d"
-    android:id="@+id/linearLayout">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="  ←  Details"
-        android:textColor="#FFFFFF"
-        android:background="#af906d"
-        android:id="@+id/detailsBackBtn"
-        android:onClick="callFeedActivity"
-        android:textSize="15dp"
-        android:gravity="left|center_vertical"/>
-</LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="320dp"
-    android:layout_below="@+id/linearLayout"
+    android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
     android:layout_alignParentRight="true"
@@ -39,8 +21,6 @@
         android:layout_height="300dp"
         android:background="#777777"
         android:id="@+id/itemPhoto" />
-
-
 </LinearLayout>
 
     <RelativeLayout
@@ -83,30 +63,17 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:id="@+id/Logout"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:onClick="logOut"/>
-
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:text="Sub"
-            android:textColor="@android:color/white"
-            android:id="@+id/subscribBtn"
-            android:layout_gravity="center"
-            android:layout_alignTop="@+id/Logout"
+        <ImageButton
+            android:id="@+id/detail_subscribe"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+            android:background="@null"
+            android:src="@drawable/ic_sub_not_selected"
+            android:layout_gravity="center"
             android:onClick="subscribe"/>
-
     </RelativeLayout>
-
 </RelativeLayout>

@@ -2,7 +2,6 @@ package com.iha.genbrug;
 
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,21 +10,17 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import webservice.Category;
 import webservice.Publication;
 import webservice.getAllPublicationsResponse;
 
@@ -34,7 +29,6 @@ import webservice.getAllPublicationsResponse;
  * A simple {@link Fragment} subclass.
  */
 public class FeedFragment extends Fragment {
-
     private RecyclerView fRecyclerView;
     private RecyclerView.Adapter fAdapter;
     private RecyclerView.LayoutManager fLayoutManager;
@@ -43,6 +37,10 @@ public class FeedFragment extends Fragment {
     public static getAllPublicationsResponse responseList;
     private SwipeRefreshLayout swipeContainer;
     private int scrollPosition = 0;
+    private  Activity parentAct;
+    private boolean fragmentValidation =false;
+    private Intent intent;
+    private IntentFilter intentFilter;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -58,20 +56,32 @@ public class FeedFragment extends Fragment {
         }
     };
 
-
-
     public FeedFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        parentAct= getActivity();
+        intent = new Intent(parentAct, ServerService.class);
+
+        //parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        receiver = new PublicationMessagesReceiver();
+        intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
+
+       // parentAct.registerReceiver(receiver, intentFilter);
+       // parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        fragmentValidation = true;
 
 
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
 
-        Activity parentAct = getActivity();
         fRecyclerView = (RecyclerView) getView().findViewById(R.id.rcview_feed);
 
         // use this setting to improve performance if you know that changes
@@ -82,7 +92,6 @@ public class FeedFragment extends Fragment {
         fLayoutManager = new LinearLayoutManager(getActivity());
         fRecyclerView.setLayoutManager(fLayoutManager);
 
-        
         scrollPosition = FeedAdapter.getPostion();
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -98,53 +107,38 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_purple);
 
 
+       // parentAct.registerReceiver(receiver, intentFilter);
 
-        Intent intent = new Intent(parentAct, ServerService.class);
-
-        parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        receiver = new PublicationMessagesReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
-        parentAct.registerReceiver(receiver, intentFilter);
-
-
-        // Create fake dataset
-        /*
-        final ArrayList<GenbrugItem> genbrugList = new ArrayList<GenbrugItem>();
-        for(int i = 1; i < 10; i++){
-
-            genbrugList.add(new GenbrugItem("Genbrug #" + (i+1), "Genbrug #" + (i+1) + " is an interesting item", getResources().getDrawable(R.drawable.img+i)));
-        }
-
-        // specify an adapter (see also next example)
-        fAdapter = new FeedAdapter(genbrugList);
-        fRecyclerView.setAdapter(fAdapter);*/
-
-
-        if(responseList != null)
-        {
+        if(responseList != null) {
             ArrayList<GenbrugItem> list = new ArrayList<>();
 
-            for (Publication pub : responseList)
-            {
+            for (Publication pub : responseList) {
                 GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
                 list.add(item);
             }
 
-            fAdapter = new FeedAdapter(list);
+            fAdapter = new FeedAdapter(list,this.getActivity());
             fRecyclerView.setAdapter(fAdapter);
-
-  }
-
-
+        }
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unbindService(serviceConnection);
-        getActivity().unregisterReceiver(receiver);
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
 
+
+        if(isVisibleToUser&&fragmentValidation)
+        {
+            parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            parentAct.registerReceiver(receiver, intentFilter);
+
+            fragmentValidation = false;
+
+        } else if (isVisibleToUser == false && fragmentValidation ==true ) {
+            parentAct.unbindService(serviceConnection);
+            parentAct.unregisterReceiver(receiver);
+
+        }
     }
 
     @Override
@@ -156,37 +150,31 @@ public class FeedFragment extends Fragment {
     }
 
     private class PublicationMessagesReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-                @Override
-                public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONS_RESULT)==0) {
+                responseList = serverService.getAllPublications();
 
-                    if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONS_RESULT)==0)
-                    {
-                        responseList = serverService.getAllPublications();
+                ArrayList<GenbrugItem> list = new ArrayList<>();
 
-                        ArrayList<GenbrugItem> list = new ArrayList<>();
+                for (Publication pub : responseList) {
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
+                    list.add(item);
+                }
 
-                        if(responseList != null)
-                        {
-                            for (Publication pub : responseList)
-                            {
-                                GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
-                                list.add(item);
-                            }
-
-                            fAdapter = new FeedAdapter(list);
-                            fRecyclerView.setAdapter(fAdapter);
-                            fLayoutManager.scrollToPosition(scrollPosition);
-                            swipeContainer.setRefreshing(false);
-                        }
-                        else
-                        {
-                            Toast.makeText(getActivity().getApplicationContext(), "No internet Connection, please check your settings", Toast.LENGTH_LONG);
-                        }
-
-
-                    }
+                fLayoutManager.scrollToPosition(scrollPosition);
+                fRecyclerView.setAdapter(fAdapter);
+                swipeContainer.setRefreshing(false);
+            }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        parentAct.unbindService(serviceConnection);
+        parentAct.unregisterReceiver(receiver);
     }
 }
 

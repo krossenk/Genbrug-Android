@@ -5,7 +5,8 @@
     android:theme="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/welcome_pic_cropped">
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_below="@id/tabs"
-        android:id="@+id/pager" />
+        android:id="@+id/pager"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/btn_fab"

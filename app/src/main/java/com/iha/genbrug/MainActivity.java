@@ -1,6 +1,7 @@
 package com.iha.genbrug;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,25 +10,39 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.facebook.login.LoginManager;
 import com.iha.genbrug.give.GiveActivity;
 import com.melnykov.fab.FloatingActionButton;
 
+import webservice.User;
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     ViewPager viewPager = null;
     FloatingActionButton fab;
+    private ImageButton mIbOptions;
+    private Button mBtnCancelOptions;
+    private Button mBtnSignOut;
+    private Dialog mDialog;
+    private GlobalSettings  globalSettings = GlobalSettings.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewPager = (ViewPager) findViewById(R.id.pager);
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setCustomView(R.layout.ab_layout);
+
+        mIbOptions = (ImageButton) findViewById(R.id.ib_options);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         fab = (FloatingActionButton) findViewById(R.id.btn_fab);
+
+        mIbOptions.setOnClickListener(this);
         fab.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -45,8 +60,36 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.btn_fab){
-            startActivity(new Intent(this, GiveActivity.class));
+        switch (view.getId()) {
+            case R.id.btn_fab:
+                startActivity(new Intent(this, GiveActivity.class));
+                break;
+
+            case R.id.ib_options:
+                mDialog = new Dialog(this);
+                mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                mDialog.setContentView(R.layout.dialog_options);
+                mBtnCancelOptions = (Button) mDialog.findViewById(R.id.btn_cancel_options);
+                mBtnSignOut = (Button) mDialog.findViewById(R.id.btn_sign_out_options);
+                mBtnCancelOptions.setOnClickListener(this);
+                mBtnSignOut.setOnClickListener(this);
+                mDialog.show();
+                break;
+
+            case R.id.btn_cancel_options:
+                mDialog.dismiss();
+                break;
+
+            case R.id.btn_sign_out_options:
+                //Reset all information from user
+                globalSettings.sharedPreferences.edit().putBoolean("Islogin", false).commit();
+                globalSettings.saveUserToPref(new User());
+                LoginManager.getInstance().logOut();
+                finish();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                break;
         }
     }
 }

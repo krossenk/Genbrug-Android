@@ -9,4 +9,6 @@
     <color name="primary_text">#ffffff</color>
     <color name="secondary_text">#d4d4d4</color>
     <color name="link_color">#2f63f8</color>
+    <color name="transparent_item_bg">#e9ffffff</color>
+    <color name="white">#FFFFFF</color>
 </resources>
