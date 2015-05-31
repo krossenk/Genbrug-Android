@@ -210,8 +210,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnPickEndTime.setOnClickListener(this);
 
         setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
-        savedUser = globalSettings.getUserFromPref();
-
     }
 
     @Override
