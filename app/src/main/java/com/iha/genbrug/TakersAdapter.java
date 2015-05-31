@@ -3,6 +3,8 @@ package com.iha.genbrug;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +22,9 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
 
     private ArrayList<TakerItem> mDataset;
     private ImageLoader imgLoader;
-    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    //String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    //String avator = "@/drawable/"
+    private View v;
 
 
     public TakersAdapter(ArrayList<TakerItem> myDataset) {
@@ -33,7 +37,7 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
                                                     int viewType) {
 
 
-        View v = LayoutInflater.from(parent.getContext())
+        v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_taker_item, parent, false);
 
         return new TakerItemViewHolder(v);
@@ -59,7 +63,8 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
                  holder.takerPhoto.setImageUrl(gi.getImageURL(),imgLoader);*/
             }
         else {
-                holder.takerPhoto.setImageUrl(avator,imgLoader);
+                //holder.takerPhoto.setImageUrl(avator,imgLoader);
+                holder.takerPhoto.setImageBitmap(BitmapFactory.decodeResource(v.getResources(), R.drawable.avator2));
             }
 
     }
@@ -73,13 +78,13 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
     public static class TakerItemViewHolder extends RecyclerView.ViewHolder {
         protected TextView dateView;
         protected TextView timeView;
-        protected NetworkImageView takerPhoto;
+        protected RoundedNetworkImagView takerPhoto;
 
         public TakerItemViewHolder( View v ) {
             super(v);
             dateView = (TextView) v.findViewById(R.id.dateView);
             timeView = (TextView) v.findViewById(R.id.timeView);
-            takerPhoto = (NetworkImageView) v.findViewById(R.id.taker_photo);
+            takerPhoto = (RoundedNetworkImagView) v.findViewById(R.id.taker_photo);
 
         }
     }

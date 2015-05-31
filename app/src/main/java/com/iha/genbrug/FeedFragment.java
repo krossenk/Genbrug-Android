@@ -117,7 +117,7 @@ public class FeedFragment extends Fragment {
                 list.add(item);
             }
 
-            fAdapter = new FeedAdapter(list,this.getActivity());
+            fAdapter = new FeedAdapter(list,this.getActivity(),serviceConnection);
             fRecyclerView.setAdapter(fAdapter);
         }
     }
@@ -162,7 +162,7 @@ public class FeedFragment extends Fragment {
                     GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
                     list.add(item);
                 }
-                fAdapter = new FeedAdapter(list, getActivity());
+                fAdapter = new FeedAdapter(list, getActivity(), serviceConnection);
                 fLayoutManager.scrollToPosition(scrollPosition);
                 fRecyclerView.setAdapter(fAdapter);
                 swipeContainer.setRefreshing(false);

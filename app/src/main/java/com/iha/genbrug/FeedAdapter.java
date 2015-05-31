@@ -1,5 +1,7 @@
 package com.iha.genbrug;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,7 +27,7 @@ import webservice.Subscription;
 import webservice.User;
 
 
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder>{
     private ArrayList<GenbrugItem> mDataset;
     private ImageLoader imgLoader;
     private static int pos;
@@ -37,24 +39,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     long publicationId;
     ServerService serverService;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
-            serverService = binder.getService();
-        }
+    private ServiceConnection serviceConnection;
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
     // CONSTRUCTOR
-    public FeedAdapter(ArrayList<GenbrugItem> myDataset, Context context) {
+    public FeedAdapter(ArrayList<GenbrugItem> myDataset, Context context, ServiceConnection serviceConnection) {
 
         this.ctx = context;
         mDataset = myDataset;
+        this.serviceConnection = serviceConnection;
     }
 
     // Create new views (invoked by the layout manager)
@@ -72,6 +65,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
         return new GenbrugItemViewHolder(v);
     }
+
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override

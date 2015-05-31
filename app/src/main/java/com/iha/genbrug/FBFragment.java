@@ -40,16 +40,7 @@ public class FBFragment extends Fragment {
     private FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            // Creates profile tracker to get the newest profile information.
-            mProfileTracker = new ProfileTracker() {
-                @Override
-                protected void onCurrentProfileChanged(Profile profile1, Profile profile) {
 
-                    mProfileTracker.stopTracking();
-                }
-            };
-
-            mProfileTracker.startTracking();
 
             Profile currentProfile = Profile.getCurrentProfile();
 
@@ -76,8 +67,41 @@ public class FBFragment extends Fragment {
                 getActivity().finish();
             }
 
-        }
 
+
+            // Creates profile tracker to get the newest profile information.
+            mProfileTracker = new ProfileTracker() {
+                @Override
+                protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                    if (newProfile != null) {
+                        Uri profilePictureUri = newProfile.getProfilePictureUri(400, 300);
+                        loginButton.setVisibility(View.INVISIBLE);
+
+                        globalSettings = GlobalSettings.getInstance();
+                        User user = new User();
+
+                        user.id = Long.valueOf(newProfile.getId());
+                        user.firstname = newProfile.getFirstName();
+                        user.lastname = newProfile.getLastName();
+                        user.profileimageURL = profilePictureUri.toString();
+
+                        globalSettings.saveUserToPref(user);
+                        globalSettings.sharedPreferences.edit().putBoolean("Islogin", true).commit();
+
+                        if(getActivity() != null) {
+                            Toast.makeText(getActivity(), "Welcome " + newProfile.getName(),
+                                    Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }
+                    mProfileTracker.stopTracking();
+                }
+            };
+
+        }
 
         @Override
         public void onCancel() {
@@ -108,14 +132,6 @@ public class FBFragment extends Fragment {
         loginButton.setFragment(this);
         loginButton.registerCallback(mcallbackManager, mCallback);
 
-
-       // loginButton.setBackgroundResource(R.drawable.facebook_button);
-        //loginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        //loginButton.setCompoundDrawablePadding(0);
-        //loginButton.setPadding(0, 0, 0, 0);
-        //loginButton.setText("");
-
-
     }
 
 
@@ -141,10 +157,10 @@ public class FBFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mcallbackManager.onActivityResult(requestCode, resultCode, data);
+
         if (mcallbackManager.onActivityResult(requestCode, resultCode, data))
             return;
-
     }
-
 
 }
