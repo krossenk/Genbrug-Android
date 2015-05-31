@@ -15,17 +15,17 @@ import webservice.User;
 public class GlobalSettings {
 
     private static GlobalSettings globalSettings;
-    private User user;
     public SharedPreferences sharedPreferences;
     public Context context;
 
-
+// Private Constructor
   private GlobalSettings ()
   {
       sharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.getContextOfApplication());
 
   }
 
+    //Creating an instance of the Class
     public static GlobalSettings getInstance()
 
     {
@@ -37,15 +37,16 @@ public class GlobalSettings {
         return globalSettings;
     }
 
-
+    // Method to save a userobject in SharedPrefrences
     public void saveUserToPref (User value)
     {
-
+        // Using Gson to save an object in sharedPreferences
         Gson gson = new Gson();
         String json = gson.toJson(value);
         sharedPreferences.edit().putString("userObj", json).commit();
     }
 
+    // Method to get userobject from SharedPrefrences
     public User getUserFromPref ()
     {
 

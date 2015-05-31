@@ -35,6 +35,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     boolean itemSubscribedCheck = false;
     private Context ctx;
     long publicationId;
+    ServerService serverService;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -142,17 +143,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
         holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String imageUrl = gi.getImageURL();
-                String headline = gi.getHeadline();
-                String desc = gi.getDescription();
                 long itemId = gi.getItemId();
                 pos = position;
-
-
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                intent.putExtra("imageUrl", imageUrl);
-                intent.putExtra("headline", headline);
-                intent.putExtra("desc", desc);
+
                 intent.putExtra("itemId",itemId);
                 v.getContext().startActivity(intent);
             }

@@ -135,13 +135,6 @@ public class DetailActivity extends Activity {
         }
     }
 
-    public void callMainActivity() {
-        finish();
-    }
-
-    private void callFeedActivity(View view) {
-        callMainActivity();
-    }
 
     @Override
     public void onBackPressed() {
