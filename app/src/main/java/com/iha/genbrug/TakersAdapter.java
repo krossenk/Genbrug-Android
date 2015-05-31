@@ -22,7 +22,7 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
 
     private ArrayList<TakerItem> mDataset;
     private ImageLoader imgLoader;
-    //String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
     //String avator = "@/drawable/"
     private View v;
 
@@ -63,8 +63,8 @@ public class TakersAdapter extends RecyclerView.Adapter<TakersAdapter.TakerItemV
                  holder.takerPhoto.setImageUrl(gi.getImageURL(),imgLoader);*/
             }
         else {
-                //holder.takerPhoto.setImageUrl(avator,imgLoader);
-                holder.takerPhoto.setImageBitmap(BitmapFactory.decodeResource(v.getResources(), R.drawable.avator2));
+                holder.takerPhoto.setImageUrl(avator,imgLoader);
+
             }
 
     }
