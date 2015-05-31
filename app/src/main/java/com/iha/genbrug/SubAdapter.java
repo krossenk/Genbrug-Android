@@ -41,7 +41,7 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
 
     private ArrayList<TakeItem> mDataset;
     private ImageLoader imgLoader;
-    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/testFilename1432768150187.jpeg";
+    String avator = "http://vmi19372.iry.dk:8880/RecycleWebService/images/publicationImg1433100816895.jpg";
     long itemId;
 
 
