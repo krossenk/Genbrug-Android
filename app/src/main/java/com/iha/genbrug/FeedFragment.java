@@ -162,7 +162,7 @@ public class FeedFragment extends Fragment {
                     GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
                     list.add(item);
                 }
-
+                fAdapter = new FeedAdapter(list, getActivity());
                 fLayoutManager.scrollToPosition(scrollPosition);
                 fRecyclerView.setAdapter(fAdapter);
                 swipeContainer.setRefreshing(false);
