@@ -93,9 +93,7 @@ public class PublicationsFragment extends Fragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         parentActivity = getActivity();
-
         Intent intent = new Intent(parentActivity, ServerService.class);
 
         parentActivity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -117,49 +115,32 @@ public class PublicationsFragment extends Fragment{
         userId = user.id;
         final ArrayList<GiveItem> GiveList = new ArrayList<>();
 
-        if(FeedFragment.responseList != null)
-        {
-
-
-            for (Publication pub : FeedFragment.responseList)
-            {
+        if(FeedFragment.responseList != null) {
+            for (Publication pub : FeedFragment.responseList) {
                 amount = 0;
                 publicationUserId = pub.userId.id;
-                if(publicationUserId == userId)
-                {
-                   if(publicationSubscriptionsResponseList != null)
-                    for(Subscription sub: publicationSubscriptionsResponseList)
-                    {
-                        publicationId = sub.publicationId.id;
+                if(publicationUserId == userId) {
+                    if(publicationSubscriptionsResponseList != null) {
+                       for (Subscription sub : publicationSubscriptionsResponseList) {
+                           publicationId = sub.publicationId.id;
 
-                        for(long pubId : amountList)
-                        {
-                            if(sub.publicationId.id == pubId)
-                            {
-                                amount ++;
-                            }
-                        }
-
+                           for (long pubId : amountList) {
+                               if (sub.publicationId.id == pubId) {
+                                   amount++;
+                               }
+                           }
+                       }
                     }
-                    //amount = publicationSubscriptionsResponseList.size();
-
                     GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id,amount);
-
                     GiveList.add(giveItem);
-
                 }
-
             }
-
         }
 
         // specify an adapter (see also next example)
         pubAdapter = new PubAdapter(GiveList);
         pubRecyclerView.setAdapter(pubAdapter);
-
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -169,19 +150,12 @@ public class PublicationsFragment extends Fragment{
     }
 
     private class AmountMessageReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONSUBSRIPTIONS_RESULT) == 0) {
-
                 final ArrayList<GiveItem> GiveList = new ArrayList<>();
-
-                if(FeedFragment.responseList != null)
-                {
-
-                    for (Publication pub : FeedFragment.responseList)
-                    {
+                if(FeedFragment.responseList != null) {
+                    for (Publication pub : FeedFragment.responseList) {
                         amount = 0;
                         publicationUserId = pub.userId.id;
                         if(publicationUserId == userId)
@@ -190,7 +164,6 @@ public class PublicationsFragment extends Fragment{
                             for(Subscription sub: publicationSubscriptionsResponseList)
                             {
                                 publicationId = sub.publicationId.id;
-
                                 for(long pubId : amountList)
                                 {
                                     if(sub.publicationId.id == pubId)
@@ -201,20 +174,12 @@ public class PublicationsFragment extends Fragment{
 
                             }
                             //amount = publicationSubscriptionsResponseList.size();
-
                             GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id,amount);
-
                             GiveList.add(giveItem);
-
                         }
-
                     }
-
                 }
-
             }
         }
-
     }
-
 }

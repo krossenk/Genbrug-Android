@@ -1,6 +1,5 @@
 package com.iha.genbrug;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +15,8 @@ import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
     private ArrayList<GenbrugItem> mDataset;
-    private static int pos;
     private ImageLoader imgLoader;
+    private static int pos;
 
     // CONSTRUCTOR
     public FeedAdapter(ArrayList<GenbrugItem> myDataset) {
@@ -28,8 +27,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     @Override
     public GenbrugItemViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-
-
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.genbrug_item, parent, false);
 
@@ -63,12 +60,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
         holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                pos = position;
                 String imageUrl = gi.getImageURL();
                 String headline = gi.getHeadline();
                 String desc = gi.getDescription();
                 long itemId = gi.getItemId();
+                pos = position;
 
 
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
@@ -76,9 +72,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 intent.putExtra("headline", headline);
                 intent.putExtra("desc", desc);
                 intent.putExtra("itemId",itemId);
-                pos = position;
                 v.getContext().startActivity(intent);
-                ((Activity)v.getContext()).finish();
             }
         });
     }

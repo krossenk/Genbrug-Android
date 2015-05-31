@@ -134,16 +134,12 @@ public class FeedFragment extends Fragment {
 
             fragmentValidation = false;
 
-        }
-
-        else if (isVisibleToUser == false && fragmentValidation ==true ) {
+        } else if (isVisibleToUser == false && fragmentValidation ==true ) {
             parentAct.unbindService(serviceConnection);
             parentAct.unregisterReceiver(receiver);
 
         }
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -167,9 +163,9 @@ public class FeedFragment extends Fragment {
                     list.add(item);
                 }
 
+                fLayoutManager.scrollToPosition(scrollPosition);
                 fAdapter = new FeedAdapter(list);
                 fRecyclerView.setAdapter(fAdapter);
-                fLayoutManager.scrollToPosition(scrollPosition);
                 swipeContainer.setRefreshing(false);
             }
         }
@@ -180,7 +176,6 @@ public class FeedFragment extends Fragment {
         super.onDestroy();
         parentAct.unbindService(serviceConnection);
         parentAct.unregisterReceiver(receiver);
-
     }
 }
 

@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,15 +59,19 @@ public class DetailActivity extends Activity {
 
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        // Bind service and register reciever
         Intent intent = new Intent(this,ServerService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         receiver = new DetailsMessagesReceiver();
         IntentFilter intentFilter = new IntentFilter(ServerService.PUBLICATIONRESULT);
         registerReceiver(receiver, intentFilter);
+
         User user = globalSettings.getUserFromPref();
         userId = user.id;
         imgLoader = VolleySingleton.getInstance().getImageLoader();
@@ -82,31 +85,36 @@ public class DetailActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         publicationId = (bundle.getLong("itemId"));
 
-        if(userId != 0)
-        {
-            if(subList != null)
-            {
+        if(userId != 0) {
+            if(subList != null) {
                 for (Subscription sub : subList) {
                     if (sub.publicationId.id == publicationId) {
                         itemSubscribedCheck = true;
                     }
                 }
 
-                if(itemSubscribedCheck)
-                {
+                if(itemSubscribedCheck) {
                     subscribeBtn.setImageResource(R.drawable.ic_sub_selected);
-
-                }
-                else {
+                } else {
                     subscribeBtn.setImageResource(R.drawable.ic_sub_not_selected);
                 }
-            }
-
-            else {
+            } else {
                 itemSubscribedCheck = false;
             }
         }
 
+        // Square the background image dynamically
+        // SOURCE: http://stackoverflow.com/questions/9798392/imageview-have-height-match-width
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                android.view.ViewGroup.LayoutParams mParams;
+                mParams = imageView.getLayoutParams();
+                mParams.height = imageView.getWidth();
+                imageView.setLayoutParams(mParams);
+                imageView.postInvalidate();
+            }
+        });
     }
 
     @Override
@@ -114,36 +122,24 @@ public class DetailActivity extends Activity {
         super.onDestroy();
         unbindService(serviceConnection);
         unregisterReceiver(receiver);
-
     }
 
-    public void subscribe (View v){
-
-
-        if(itemSubscribedCheck)
-        {
+    public void subscribe (View v) {
+        if(itemSubscribedCheck) {
             Toast.makeText(this, header + " is already subscribed", Toast.LENGTH_SHORT).show();
-
-        }
-
-        else
-        {
+        } else {
             serverServiceSubscribe.createSubscription(userId, publicationId);
             Toast.makeText(this, header+ " is subscribed", Toast.LENGTH_SHORT).show();
             subscribeBtn.setImageResource(R.drawable.ic_sub_selected);
             itemSubscribedCheck = true;
         }
-
     }
 
     public void callMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        this.startActivity(intent);
         finish();
     }
 
-
-    public void callFeedActivity(View view) {
+    private void callFeedActivity(View view) {
         callMainActivity();
     }
 
@@ -154,7 +150,6 @@ public class DetailActivity extends Activity {
     }
 
     private class DetailsMessagesReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -162,9 +157,7 @@ public class DetailActivity extends Activity {
 
                 getPublicationResponse = serverServiceSubscribe.getReturnedPublication();
 
-                if(getPublicationResponse != null)
-                {
-
+                if(getPublicationResponse != null) {
                     header = getPublicationResponse.title;
                     desc = getPublicationResponse.description;
                     imageUrl = getPublicationResponse.imageURL;
@@ -172,11 +165,7 @@ public class DetailActivity extends Activity {
                     descTextView.setText(desc);
                     imageView.setImageUrl(imageUrl,imgLoader);
                 }
-
             }
         }
-
     }
-
-
 }

@@ -38,7 +38,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setCustomView(R.layout.ab_layout);
 
-
         mIbOptions = (ImageButton) findViewById(R.id.ib_options);
         viewPager = (ViewPager) findViewById(R.id.pager);
         fab = (FloatingActionButton) findViewById(R.id.btn_fab);
@@ -86,9 +85,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 globalSettings.sharedPreferences.edit().putBoolean("Islogin", false).commit();
                 globalSettings.saveUserToPref(new User());
                 LoginManager.getInstance().logOut();
-                Intent intent = new Intent(this,LoginActivity.class);
-                this.startActivity(intent);
                 finish();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 break;
         }
     }

@@ -186,10 +186,7 @@ public class LoginActivity extends FragmentActivity {
                 user = serverService.getValidatedUser();
                 if(isNetworkAvailable(context)&&user != null) {
                     startActivity(mainIntent);
-                    finish();
-
                     loginStatusVariable =true;
-
                     globalSettings.saveUserToPref(user);
                     globalSettings.setUser(globalSettings.getUserFromPref());
 

@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +41,8 @@
         </activity>
         <activity
             android:name=".give.GiveActivity"
-            android:label="@string/title_activity_give"
+            android:label="@string/give"
+            android:icon="@android:color/transparent"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
@@ -61,7 +63,12 @@
 
         <activity
             android:name=".DetailActivity"
-            android:label="@string/title_activity_detail" >
+            android:label="@string/details"
+            android:icon="@android:color/transparent"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".TakersActivity"
