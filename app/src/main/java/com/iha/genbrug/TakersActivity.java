@@ -139,7 +139,7 @@ public class TakersActivity extends Activity {
                         ArrayList<TakerItem> list = new ArrayList<>();
 
                         for (Subscription subscription : publicationSubscriptionsResponseList) {
-                            long pubId = subscription.userId.id;
+                            long pubId = subscription.publicationId.id;
 
                             if(FeedFragment.responseList != null)
                             {
