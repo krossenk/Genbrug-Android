@@ -99,23 +99,6 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         }
 
 
-
-
-
-       /* holder.givePhoto.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), TakersActivity.class);
-                itemId = gi.getItemId();
-
-                intent.putExtra("itemId", itemId);
-
-                v.getContext().startActivity(intent);
-                ((Activity) v.getContext()).finish();
-
-            }
-        });*/
-
       holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +110,7 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
                 intent.putExtra("itemId", itemId);
 
                 v.getContext().startActivity(intent);
-                ((Activity) v.getContext()).finish();
+
 
             }
         });

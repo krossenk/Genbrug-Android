@@ -175,20 +175,12 @@ public class TakersActivity extends Activity {
         }
 
 
-    public void callMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        this.startActivity(intent);
-        finish();
-    }
-
-
     public void callMainActivityClick(View view) {
-        callMainActivity();
+       finish();
     }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-       callMainActivity();
         finish();
 
     }

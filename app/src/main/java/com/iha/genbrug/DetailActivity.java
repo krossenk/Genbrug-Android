@@ -137,20 +137,21 @@ public class DetailActivity extends Activity {
     }
 
     public void callMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        this.startActivity(intent);
-        finish();
+        //Intent intent = new Intent(this,MainActivity.class);
+        //this.startActivity(intent);
+        //finish();
     }
 
 
     public void callFeedActivity(View view) {
-        callMainActivity();
+        finish();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        callMainActivity();
+
+        finish();
     }
 
     private class DetailsMessagesReceiver extends BroadcastReceiver {

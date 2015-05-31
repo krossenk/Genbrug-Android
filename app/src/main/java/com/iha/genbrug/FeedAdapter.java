@@ -36,6 +36,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     List<Subscription> subList;
     boolean itemSubscribedCheck = false;
     private Context ctx;
+    long publicationId;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -84,30 +85,32 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
+        publicationId = gi.getItemId();
 
 
-        if (userId != 0)
+        if(userId != 0)
         {
-            if(subList!= null) {
+            if(subList != null)
+            {
                 for (Subscription sub : subList) {
-                    if (sub.publicationId.id == gi.getItemId()) {
+                    if (sub.publicationId.id == publicationId) {
                         itemSubscribedCheck = true;
-                        holder.ibSubscribe.setPressed(true);
                     }
 
-                    //itemSubscribedCheck = false;
                 }
 
                 if(itemSubscribedCheck)
                 {
-                    holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
+                   holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
 
                 }
                 else {
-
                     holder.ibSubscribe.setImageResource(R.drawable.ic_sub_not_selected);
-
                 }
+            }
+
+            else {
+                itemSubscribedCheck = false;
             }
         }
 
@@ -120,43 +123,20 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             public void onClick(View view) {
                 if (view.getId() == R.id.ib_feed_subscribe) {
                     //If user clicks on subscribe button.
-                    if (userId != 0)
+
+                    if(itemSubscribedCheck)
                     {
+                        Toast.makeText(ctx, gi.getHeadline() + " is already subscribed", Toast.LENGTH_SHORT).show();
 
-                        if(subList!= null) {
-                            for (Subscription sub : subList) {
-                                if (sub.publicationId.id == gi.getItemId()) {
-                                    itemSubscribedCheck = true;
-                                }
-                            }
-
-                            if(itemSubscribedCheck)
-                            {
-                                Toast.makeText(ctx, gi.getHeadline() + " is already subscribed", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                serverService.createSubscription(userId, gi.getItemId());
-                                Toast.makeText(ctx, gi.getHeadline()+ " is subscribed", Toast.LENGTH_SHORT).show();
-                                itemSubscribedCheck= true;
-                            }
-                        }
-                        else {
-
-                            serverService.createSubscription(userId, gi.getItemId());
-                            Toast.makeText(ctx, gi.getHeadline() + " is subscribed", Toast.LENGTH_SHORT).show();
-                        }
                     }
 
                     else
                     {
-                        Toast.makeText(ctx,"No user to subscribe to",Toast.LENGTH_SHORT).show();
+                        serverService.createSubscription(userId, publicationId);
+                        Toast.makeText(ctx, gi.getHeadline()+ " is subscribed", Toast.LENGTH_SHORT).show();
+                        holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
+                        itemSubscribedCheck = true;
                     }
-
-              /*      else
-                    {
-                        Toast.makeText(ctx,"No user to subscribe to",Toast.LENGTH_SHORT).show();
-                    }*/
-
                 }
             }
         });

@@ -108,7 +108,6 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubItemViewHolde
 
                 intent.putExtra("itemId", itemId);
                 v.getContext().startActivity(intent);
-                ((Activity) v.getContext()).finish();
 
             }
         });
