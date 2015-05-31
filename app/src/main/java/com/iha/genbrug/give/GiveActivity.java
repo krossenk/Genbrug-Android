@@ -42,14 +42,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import webservice.Address;
 import webservice.Category;
 import webservice.Publication;
 import webservice.User;
+import webservice.getAllCategoriesResponse;
 
 
 public class GiveActivity extends Activity implements View.OnClickListener {
@@ -82,9 +85,14 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     Spinner spinnerCategories;
     EditText etHeadline;
     EditText etDescription;
+    EditText etStreet;
+    EditText etZipcode;
+    EditText etCity;
+    EditText etCountry;
     Spinner spinnerPickupType;
     Button btnPickStartTime;
     Button btnPickEndTime;
+
 
     private static int RESULT_LOAD_IMG = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
@@ -94,14 +102,16 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     private Bitmap mDisplayedBitmap;
     private ServerService serverService;
     private CreatePublicationReceiver createPublicationReceiver;
-    private GlobalSettings globalSettings =GlobalSettings.getInstance();
-    User  savedUser;
+    private getAllCategoriesResponse categoriesList;
+    private GlobalSettings settings;
+    private User sessionUser;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
             serverService = binder.getService();
+            serverService.startGetAllCategories();
         }
 
         @Override
@@ -118,11 +128,16 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         Intent intent = new Intent(this,ServerService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        settings = GlobalSettings.getInstance();
+        sessionUser = settings.getUserFromPref();
+
+
         // RECEIVER
         createPublicationReceiver = new CreatePublicationReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ServerService.START_CREATE_PUBLICATION_RESULT);
         intentFilter.addAction(ServerService.IMAGE_RETURN_URL);
+        intentFilter.addAction(ServerService.ALL_CATEGORIES_RESULT);
         registerReceiver(createPublicationReceiver, intentFilter);
 
         interceptScrollview = (InterceptScrollView) findViewById(R.id.intercept_scrollview);
@@ -138,13 +153,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnGive = (Button) findViewById(R.id.btn_give);
         relImageWrapper = findViewById(R.id.rel_image_wrapper);
 
-        // SPINNER CATEGORIES
-        List<String> Categories =  Arrays.asList("Bikes", "Furniture", "Clothes", "Books", "Select category");
-        spinnerCategories = (Spinner) findViewById(R.id.spinner_category);
-        ArrayAdapter<String> catAdapter = new CategoriesSpinnerAdapter(this, R.layout.categories_dropdown_item_layout, Categories);
-        spinnerCategories.setAdapter(catAdapter);
-        spinnerCategories.setSelection(Categories.size()-1);
-
         // SPINNER PICKUP TYPE
         List<String> PickupTypes = Arrays.asList("Home", "Street", "Select pickup type");
         spinnerPickupType = (Spinner) findViewById(R.id.spinner_pickup_type);
@@ -158,6 +166,13 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         // DESCRIPTION FIELD
         etDescription = (EditText) findViewById(R.id.et_description);
         // BUTTON PICK START TIME
+
+        etStreet = (EditText) findViewById(R.id.et_street);
+        etCity = (EditText) findViewById(R.id.et_city);
+        etCountry = (EditText) findViewById(R.id.et_country);
+        etZipcode = (EditText) findViewById(R.id.et_zipcode);
+
+
         btnPickStartTime = (Button) findViewById(R.id.btn_pick_start_time);
         // BUTTON PICK END TIME
         btnPickEndTime = (Button) findViewById(R.id.btn_pick_end_time);
@@ -195,8 +210,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         btnPickEndTime.setOnClickListener(this);
 
         setTouchImageViewState(TouchImageViewState.PICK_IMAGE);
-        savedUser = globalSettings.getUserFromPref();
-
     }
 
     @Override
@@ -374,7 +387,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                 setTouchImageViewState(TouchImageViewState.SHOW_IMAGE);
                 break;
             case R.id.btn_give:
-                if(populatePublication()){
+                if(populateAndValidatePublication()){
                     try {
                         serverService.startCreatePublication(pub);
                     }catch(Exception e){ }
@@ -585,28 +598,91 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private boolean populatePublication(){
+    private boolean populateAndValidatePublication()
+    {
+        boolean titleIsValid = false;
+        boolean descriptionIsValid = false;
+        boolean categoryIsSet = false;
+        boolean userIsSet = false;
+        boolean locationIsSet = false;
+        boolean addressIsSet = false;
+        boolean imageIsSet = false;
+        Category currCategoryItem = ((Category)spinnerCategories.getSelectedItem());
+        String currLocation = spinnerPickupType.getSelectedItem().toString();
 
-        pub.title = etHeadline.getText().toString();
-        pub.description = etDescription.getText().toString();
-        pub.categoryId = new Category();
-        pub.categoryId.id = 1;
-        pub.userId = savedUser;
-        pub.userId.id = savedUser.id;
-
-        if( true )
+        if(!etHeadline.getText().toString().isEmpty())
         {
-            Log.d("FUCK YOU", "fuck you again.");
+            pub.title = etHeadline.getText().toString();
+            titleIsValid = true;
+        }
+        else
+        {
+            Toast.makeText(this, "Headline is not set !!", Toast.LENGTH_SHORT).show();
+        }
+
+        if(!etDescription.getText().toString().isEmpty())
+        {
+            pub.description = etDescription.getText().toString();
+            descriptionIsValid = true;
+        }
+        else
+        {
+            Toast.makeText(this, "Description is not set !!", Toast.LENGTH_SHORT).show();
+        }
+        if(currCategoryItem.categoryname != "Select Category")
+        {
+            pub.categoryId = currCategoryItem;
+            categoryIsSet = true;
+        }
+        else
+        {
+            Toast.makeText(this, "You need to choose a category !!", Toast.LENGTH_SHORT).show();
+        }
+
+        if(!etStreet.getText().toString().isEmpty() && !etCountry.getText().toString().isEmpty()
+                && !etCity.getText().toString().isEmpty() && !etZipcode.getText().toString().isEmpty())
+        {
+            Address tempAddr = new Address();
+            tempAddr.city = etCity.getText().toString();
+            tempAddr.country = etCountry.getText().toString();
+            tempAddr.street = etStreet.getText().toString();
+            tempAddr.zipcode = Integer.parseInt(etZipcode.getText().toString());
+            pub.addressid = tempAddr;
+
+            addressIsSet = true;
+        }
+        else
+        {
+            Toast.makeText(this, "You need to set a pickup address !!", Toast.LENGTH_SHORT).show();
+        }
+
+        if(sessionUser != null)
+        {
+            pub.userId = sessionUser;
+
+            userIsSet = true;
+        }
+        else
+        {
+            Toast.makeText(this, "Something went wrong, try logging out of the application, and log in again !!", Toast.LENGTH_LONG).show();
+        }
+
+        if(currLocation != "Select pickup type")
+        {
+            pub.pickuptype = currLocation;
+            locationIsSet = true;
+        }
+        else
+        {
+            Toast.makeText(this, "Please select a pickup location", Toast.LENGTH_LONG).show();
+        }
+
+        if(titleIsValid == true && descriptionIsValid == true && categoryIsSet == true && userIsSet == true && locationIsSet == true && addressIsSet == true)
+        {
+            Date currTimeStamp = new Date();
+            pub.timestamp = currTimeStamp.toString();
             return true;
         }
-        else{
-            return false;
-        }
-    }
-
-    private boolean publishImage(){
-
-
 
         return false;
     }
@@ -679,20 +755,50 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             if (intent.getAction().compareTo(ServerService.START_CREATE_PUBLICATION_RESULT)==0)
             {
                 long pubId = serverService.getReturnedPublicationId();
-                if(pubId != -1){
+                if(pubId != -1)
+                {
                     if(mDisplayedBitmap != null && currentTouchImageViewState == TouchImageViewState.SHOW_IMAGE){
                         ByteArrayOutputStream oStream = new ByteArrayOutputStream();
                         mDisplayedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, oStream);
                         byte[] byteArray = oStream.toByteArray();
                         String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-                        serverService.startSavingImage("testFilename.jpeg", imageEncoded, pubId);
-                        //Toast.makeText(getBaseContext(), "Size: " + byteArray.length, Toast.LENGTH_LONG).show();
+                        serverService.startSavingImage("publicationImg.jpg", imageEncoded, pubId);
                     }
                 }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Something went wrong !! Please try again", Toast.LENGTH_SHORT).show();
+                }
             }
-            else if(intent.getAction().compareTo(ServerService.IMAGE_RETURN_URL)==0){
 
+            if(intent.getAction().compareTo(ServerService.ALL_CATEGORIES_RESULT)==0)
+            {
+                categoriesList = serverService.getAllCategories();
+                ArrayList<Category> Categories = new ArrayList<>();
+
+                Category selectCategory = new Category();
+                selectCategory.categoryname = "Select Category";
+
+                Categories.add(selectCategory);
+
+                for(Category cat : categoriesList)
+                {
+                    Categories.add(cat);
+                }
+
+                spinnerCategories = (Spinner) findViewById(R.id.spinner_category);
+                ArrayAdapter<Category> catAdapter = new CategoriesSpinnerAdapter(getApplicationContext(), R.layout.categories_dropdown_item_layout, Categories);
+                spinnerCategories.setAdapter(catAdapter);
+                spinnerCategories.setSelection(0);
+
+
+            }
+
+            if(intent.getAction().compareTo(ServerService.IMAGE_RETURN_URL)==0)
+            {
+                String test = serverService.getLatestImageURL();
+                finish();
             }
         }
     }

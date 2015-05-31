@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                mDialog.dismiss();
                 break;
         }
     }

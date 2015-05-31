@@ -12,15 +12,17 @@ import com.iha.genbrug.R;
 
 import java.util.List;
 
+import webservice.Category;
+
 /**
  * Created by Gladiator HelmetFace on 5/16/2015.
  */
-public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
+public class CategoriesSpinnerAdapter extends ArrayAdapter<Category> {
 
     private Context context;
-    private List<String> objects;
+    private List<Category> objects;
 
-    public CategoriesSpinnerAdapter(Context context, int resource, List<String> objects) {
+    public CategoriesSpinnerAdapter(Context context, int resource, List<Category> objects) {
         super(context, resource, objects);
         this.context = context;
         this.objects = objects;
@@ -46,7 +48,7 @@ public class CategoriesSpinnerAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(  Context.LAYOUT_INFLATER_SERVICE );
         View row = inflater.inflate(R.layout.categories_dropdown_item_layout, parent, false);
         TextView label = (TextView)row.findViewById(R.id.tv_category_name);
-        label.setText(objects.get(position));
+        label.setText(objects.get(position).categoryname);
 
         ImageView icon=(ImageView)row.findViewById(R.id.iv_category_icon);
 
