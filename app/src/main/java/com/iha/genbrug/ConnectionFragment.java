@@ -70,9 +70,28 @@ public class ConnectionFragment extends Fragment {
             final android.net.NetworkInfo mobile = connMgr
                     .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-            if (wifi.isConnected() || mobile.isConnected()) {
+            if(mobile != null && mobile.isConnected())
+            {
+                activity = getActivity();
 
+                if(activity instanceof LoginActivity)
+                {
+                    loginActivity = (LoginActivity) activity;
+                    loginActivity.enabledState(true);
+                }
+                if (activity instanceof CreateAccountActivity)
+                {
+                    createAccountActivity = (CreateAccountActivity) activity;
+                    createAccountActivity.enabledState(true);
+                }
 
+                getActivity().findViewById(R.id.login_button).setEnabled(true);
+
+                textView.setText(" ");
+
+            }
+            else if(wifi != null && wifi.isConnected())
+            {
                 activity = getActivity();
 
                 if(activity instanceof LoginActivity)
@@ -92,7 +111,6 @@ public class ConnectionFragment extends Fragment {
             }
             else
             {
-
                 activity = getActivity();
 
                 if(activity instanceof LoginActivity)
@@ -110,7 +128,6 @@ public class ConnectionFragment extends Fragment {
                 getActivity().findViewById(R.id.login_button).setEnabled(false);
 
                 textView.setText("No Internet Connection!");
-
             }
         }
     };

@@ -113,7 +113,9 @@ public class FeedFragment extends Fragment {
             ArrayList<GenbrugItem> list = new ArrayList<>();
 
             for (Publication pub : responseList) {
-                GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
+                GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id, pub.addressid);
+                item.setPickupStartTime(pub.pickupStartime);
+                item.setPickupEndTime(pub.pickupEndtime);
                 list.add(item);
             }
 
@@ -159,10 +161,13 @@ public class FeedFragment extends Fragment {
                 ArrayList<GenbrugItem> list = new ArrayList<>();
 
                 for (Publication pub : responseList) {
-                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id);
+                    GenbrugItem item = new GenbrugItem(pub.title, pub.description, pub.imageURL ,pub.id, pub.addressid);
+                    item.setPickupStartTime(pub.pickupStartime);
+                    item.setPickupEndTime(pub.pickupEndtime);
                     list.add(item);
                 }
 
+                fAdapter = new FeedAdapter(list, getActivity());
                 fLayoutManager.scrollToPosition(scrollPosition);
                 fRecyclerView.setAdapter(fAdapter);
                 swipeContainer.setRefreshing(false);

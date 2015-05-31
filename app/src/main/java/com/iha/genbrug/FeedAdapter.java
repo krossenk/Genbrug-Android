@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.location.Address;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
@@ -19,7 +21,11 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import webservice.Subscription;
 import webservice.User;
@@ -84,6 +90,41 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         holder.tvDesc.setText(gi.getDescription());
         publicationId = gi.getItemId();
 
+        final String addressString = gi.getAddress().street + "," + gi.getAddress().zipcode + " " + gi.getAddress().city;
+        holder.tvAddress.setText(addressString);
+        holder.tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String tempString = addressString.replace(' ', '+');
+
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + tempString);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                ctx.startActivity(mapIntent);
+
+            }
+        });
+        //String pickupTime = "From: " + gi.getPickupStartTime() + " To: " + gi.getPickupEndTime();
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy:hh:mm:ss");
+        Date startTime = null;
+        Date endTime = null;
+
+        try {
+            startTime = format.parse(gi.getPickupStartTime());
+            endTime = format.parse(gi.getPickupEndTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String pickupStartTime = startTime.getDate() + "/" + startTime.getMonth() + " " + startTime.getHours() + ":" + startTime.getMinutes();
+        String pickupEndTime = endTime.getDate() + "/" + endTime.getMonth() + " " + endTime.getHours() + ":" + endTime.getMinutes();
+
+
+        String pickupTime = pickupStartTime + " - " + pickupEndTime;
+
+        holder.tvPickupTime.setText(pickupTime);
 
         if(userId != 0)
         {
@@ -169,6 +210,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         protected TextView tvDesc;
         protected NetworkImageView ivPhoto;
         protected ImageButton ibSubscribe;
+        protected TextView tvAddress;
+        protected TextView tvPickupTime;
 
         public GenbrugItemViewHolder( View v ) {
             super(v);
@@ -176,6 +219,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             ivPhoto = (NetworkImageView) v.findViewById(R.id.iv_photo);
             ibSubscribe = (ImageButton) v.findViewById(R.id.ib_feed_subscribe);
+            tvAddress = (TextView) v.findViewById(R.id.tv_pickup_addr_feed);
+            tvPickupTime = (TextView) v.findViewById(R.id.tv_pickup_time_feed);
 
             // Square the background image dynamically
             // SOURCE: http://stackoverflow.com/questions/9798392/imageview-have-height-match-width

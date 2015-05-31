@@ -80,7 +80,6 @@
             android:id="@+id/tv_pickup_addr_feed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gammel Munkegade 1, 8000 Aarhus C"
             android:layout_toRightOf="@id/iv_pickup_type_feed"
             android:layout_below="@id/tv_pickup_time_feed"
             android:layout_marginLeft="5dp"
