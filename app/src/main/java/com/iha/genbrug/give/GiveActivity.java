@@ -610,7 +610,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         Category currCategoryItem = ((Category)spinnerCategories.getSelectedItem());
         String currLocation = spinnerPickupType.getSelectedItem().toString();
 
-        if(etHeadline.getText().toString() != null)
+        if(!etHeadline.getText().toString().isEmpty())
         {
             pub.title = etHeadline.getText().toString();
             titleIsValid = true;
@@ -620,7 +620,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "Headline is not set !!", Toast.LENGTH_SHORT).show();
         }
 
-        if(etDescription.getText().toString() != null)
+        if(!etDescription.getText().toString().isEmpty())
         {
             pub.description = etDescription.getText().toString();
             descriptionIsValid = true;
@@ -639,8 +639,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "You need to choose a category !!", Toast.LENGTH_SHORT).show();
         }
 
-        if(etStreet.getText().toString() != null && etCountry.getText().toString() != null
-                && etCity.getText().toString() != null && etZipcode.getText().toString() != null)
+        if(!etStreet.getText().toString().isEmpty() && !etCountry.getText().toString().isEmpty()
+                && !etCity.getText().toString().isEmpty() && !etZipcode.getText().toString().isEmpty())
         {
             Address tempAddr = new Address();
             tempAddr.city = etCity.getText().toString();
@@ -649,7 +649,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             tempAddr.zipcode = Integer.parseInt(etZipcode.getText().toString());
             pub.addressid = tempAddr;
 
-            locationIsSet = true;
+            addressIsSet = true;
         }
         else
         {
@@ -670,7 +670,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         if(currLocation != "Select pickup type")
         {
             pub.pickuptype = currLocation;
-            addressIsSet = true;
+            locationIsSet = true;
         }
         else
         {
