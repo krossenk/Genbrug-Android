@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import webservice.Address;
 import webservice.Category;
 import webservice.Publication;
 import webservice.User;
@@ -84,6 +85,10 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     Spinner spinnerCategories;
     EditText etHeadline;
     EditText etDescription;
+    EditText etStreet;
+    EditText etZipcode;
+    EditText etCity;
+    EditText etCountry;
     Spinner spinnerPickupType;
     Button btnPickStartTime;
     Button btnPickEndTime;
@@ -161,6 +166,13 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         // DESCRIPTION FIELD
         etDescription = (EditText) findViewById(R.id.et_description);
         // BUTTON PICK START TIME
+
+        etStreet = (EditText) findViewById(R.id.et_street);
+        etCity = (EditText) findViewById(R.id.et_city);
+        etCountry = (EditText) findViewById(R.id.et_country);
+        etZipcode = (EditText) findViewById(R.id.et_zipcode);
+
+
         btnPickStartTime = (Button) findViewById(R.id.btn_pick_start_time);
         // BUTTON PICK END TIME
         btnPickEndTime = (Button) findViewById(R.id.btn_pick_end_time);
@@ -593,6 +605,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         boolean categoryIsSet = false;
         boolean userIsSet = false;
         boolean locationIsSet = false;
+        boolean addressIsSet = false;
         boolean imageIsSet = false;
         Category currCategoryItem = ((Category)spinnerCategories.getSelectedItem());
         String currLocation = spinnerPickupType.getSelectedItem().toString();
@@ -626,9 +639,27 @@ public class GiveActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "You need to choose a category !!", Toast.LENGTH_SHORT).show();
         }
 
+        if(etStreet.getText().toString() != null && etCountry.getText().toString() != null
+                && etCity.getText().toString() != null && etZipcode.getText().toString() != null)
+        {
+            Address tempAddr = new Address();
+            tempAddr.city = etCity.getText().toString();
+            tempAddr.country = etCountry.getText().toString();
+            tempAddr.street = etStreet.getText().toString();
+            tempAddr.zipcode = Integer.parseInt(etZipcode.getText().toString());
+            pub.addressid = tempAddr;
+
+            locationIsSet = true;
+        }
+        else
+        {
+            Toast.makeText(this, "You need to set a pickup address !!", Toast.LENGTH_SHORT).show();
+        }
+
         if(sessionUser != null)
         {
             pub.userId = sessionUser;
+
             userIsSet = true;
         }
         else
@@ -639,26 +670,19 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         if(currLocation != "Select pickup type")
         {
             pub.pickuptype = currLocation;
-            locationIsSet = true;
+            addressIsSet = true;
         }
         else
         {
             Toast.makeText(this, "Please select a pickup location", Toast.LENGTH_LONG).show();
         }
 
-        if(titleIsValid == true && descriptionIsValid == true && categoryIsSet == true && userIsSet == true && locationIsSet == true)
+        if(titleIsValid == true && descriptionIsValid == true && categoryIsSet == true && userIsSet == true && locationIsSet == true && addressIsSet == true)
         {
             Date currTimeStamp = new Date();
             pub.timestamp = currTimeStamp.toString();
             return true;
         }
-
-        return false;
-    }
-
-    private boolean publishImage(){
-
-
 
         return false;
     }
@@ -739,9 +763,12 @@ public class GiveActivity extends Activity implements View.OnClickListener {
                         byte[] byteArray = oStream.toByteArray();
                         String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-                        serverService.startSavingImage("testFilename.jpeg", imageEncoded, pubId);
-                        //Toast.makeText(getBaseContext(), "Size: " + byteArray.length, Toast.LENGTH_LONG).show();
+                        serverService.startSavingImage("publicationImg.jpg", imageEncoded, pubId);
                     }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Something went wrong !! Please try again", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -770,6 +797,7 @@ public class GiveActivity extends Activity implements View.OnClickListener {
 
             if(intent.getAction().compareTo(ServerService.IMAGE_RETURN_URL)==0)
             {
+                String test = serverService.getLatestImageURL();
                 finish();
             }
         }

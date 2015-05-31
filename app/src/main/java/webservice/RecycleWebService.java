@@ -163,28 +163,28 @@ public class RecycleWebService
             }
         });
     }
-    
+
     public Long createPublication(final Publication publication ) throws java.lang.Exception
     {
         return (Long)execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
                 __envelope.addMapping("","publication",new Publication().getClass());
                 SoapObject __soapReq = new SoapObject("http://recycle/", "createPublication");
                 __envelope.setOutputSoapObject(__soapReq);
-                
+
                 PropertyInfo __info=null;
                 __info = new PropertyInfo();
                 __info.namespace="";
                 __info.name="publication";
-                __info.type= Publication.class;
+                __info.type=Publication.class;
                 __info.setValue(publication!=null?publication:SoapPrimitive.NullSkip);
                 __soapReq.addProperty(__info);
                 return __envelope;
             }
-            
+
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
                 SoapObject __soap=(SoapObject)__result;
@@ -201,7 +201,7 @@ public class RecycleWebService
             }
         },"");
     }
-    
+
     public android.os.AsyncTask< Void, Void, OperationResult< Long>> createPublicationAsync(final Publication publication)
     {
         return executeAsync(new Functions.IFunc< Long>() {
@@ -279,31 +279,31 @@ public class RecycleWebService
             }
         });
     }
-    
+
     public getAllPublicationsResponse getAllPublications( ) throws java.lang.Exception
     {
         return (getAllPublicationsResponse)execute(new IWcfMethod()
         {
             @Override
             public ExtendedSoapSerializationEnvelope CreateSoapEnvelope(){
-              ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
+                ExtendedSoapSerializationEnvelope __envelope = createEnvelope();
                 SoapObject __soapReq = new SoapObject("http://recycle/", "getAllPublications");
                 __envelope.setOutputSoapObject(__soapReq);
-                
+
                 PropertyInfo __info=null;
                 return __envelope;
             }
-            
+
             @Override
             public java.lang.Object ProcessResult(ExtendedSoapSerializationEnvelope __envelope,java.lang.Object __result)throws java.lang.Exception {
                 return (getAllPublicationsResponse)getResult(getAllPublicationsResponse.class,__result,"getAllPublicationsResponse",__envelope);
             }
         },"");
     }
-    
-    public android.os.AsyncTask< Void, Void, OperationResult<getAllPublicationsResponse>> getAllPublicationsAsync()
+
+    public android.os.AsyncTask< Void, Void, OperationResult< getAllPublicationsResponse>> getAllPublicationsAsync()
     {
-        return executeAsync(new Functions.IFunc<getAllPublicationsResponse>() {
+        return executeAsync(new Functions.IFunc< getAllPublicationsResponse>() {
             public getAllPublicationsResponse Func() throws java.lang.Exception {
                 return getAllPublications( );
             }
@@ -547,9 +547,9 @@ public class RecycleWebService
         },"");
     }
 
-    public android.os.AsyncTask< Void, Void, OperationResult< Publication>> getPublicationAsync(final Long id)
+    public android.os.AsyncTask< Void, Void, OperationResult<Publication>> getPublicationAsync(final Long id)
     {
-        return executeAsync(new Functions.IFunc< Publication>() {
+        return executeAsync(new Functions.IFunc<Publication>() {
             public Publication Func() throws java.lang.Exception {
                 return getPublication( id);
             }
