@@ -1,6 +1,5 @@
 package com.iha.genbrug;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,9 +27,8 @@ import webservice.User;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemViewHolder> {
     private ArrayList<GenbrugItem> mDataset;
-    private static int pos;
     private ImageLoader imgLoader;
-    private ServerService serverService;
+    private static int pos;
     private GlobalSettings  globalSettings =GlobalSettings.getInstance();
     long  userId;
     List<Subscription> subList;
@@ -64,8 +62,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                                                    int viewType) {
         User user = globalSettings.getUserFromPref();
         userId = user.id;
-
-
         Intent intent = new Intent(ctx, ServerService.class);
         ctx.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
@@ -146,12 +142,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
         holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                pos = position;
                 String imageUrl = gi.getImageURL();
                 String headline = gi.getHeadline();
                 String desc = gi.getDescription();
                 long itemId = gi.getItemId();
+                pos = position;
 
 
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
@@ -159,9 +154,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 intent.putExtra("headline", headline);
                 intent.putExtra("desc", desc);
                 intent.putExtra("itemId",itemId);
-                pos = position;
                 v.getContext().startActivity(intent);
-                ((Activity)v.getContext()).finish();
             }
         });
     }

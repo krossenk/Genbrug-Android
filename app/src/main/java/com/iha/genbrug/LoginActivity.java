@@ -186,10 +186,7 @@ public class LoginActivity extends FragmentActivity {
                 user = serverService.getValidatedUser();
                 if(isNetworkAvailable(context)&&user != null) {
                     startActivity(mainIntent);
-                    finish();
-
                     loginStatusVariable =true;
-
                     globalSettings.saveUserToPref(user);
                     //islogin is a boolean value of your login status pushed to SharedPreferences
                     globalSettings.sharedPreferences.edit().putBoolean("Islogin", loginStatusVariable).commit();
