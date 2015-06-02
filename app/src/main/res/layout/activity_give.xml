@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.iha.genbrug.give.InterceptRelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/give_background"
@@ -162,7 +162,7 @@
 
         </RelativeLayout>
 
-        <com.iha.genbrug.give.InterceptLinearLayout
+        <LinearLayout
             android:background="@drawable/give_background_2"
             android:id="@+id/linFormWrapper"
             android:orientation="vertical"
@@ -318,8 +318,8 @@
                 android:text="Give"
                 android:background="@color/brown"/>
 
-        </com.iha.genbrug.give.InterceptLinearLayout>
+        </LinearLayout>
 
-    </com.iha.genbrug.give.InterceptRelativeLayout>
+    </RelativeLayout>
 
 </com.iha.genbrug.give.InterceptScrollView>
