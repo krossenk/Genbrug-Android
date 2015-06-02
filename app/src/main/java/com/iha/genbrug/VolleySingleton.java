@@ -2,6 +2,9 @@ package com.iha.genbrug;
 
 /**
  * Created by Morten on 25-05-2015.
+ *
+ * Gotten from: https://github.com/CypressNorth/Volley-Singleton
+ *
  */
 
 import com.android.volley.RequestQueue;

@@ -80,7 +80,7 @@ public class GenbrugItem {
 
     public String getPickupEndTime()
     {
-        return pickupStartTime;
+        return pickupEndTime;
     }
 
     public void setPickupEndTime(String endTime)
