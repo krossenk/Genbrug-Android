@@ -84,10 +84,6 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
             holder.tvDesc.setText("No description!");
         }
 
-    /*    if(gi.getAmount() != 0)
-        {
-            holder.amount.setText(Integer.toString(gi.getAmount()));
-        }*/
 
         if(gi.getImageURL() != null)
         {
@@ -128,7 +124,6 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
         protected TextView tvDesc;
         protected NetworkImageView givePhoto;
         protected View itemView;
-        protected TextView amount;
 
 
         public PubItemViewHolder( View v ) {
@@ -137,7 +132,6 @@ public class PubAdapter extends RecyclerView.Adapter<PubAdapter.PubItemViewHolde
             tvDesc = (TextView) v.findViewById(R.id.tv_desc);
             givePhoto = (NetworkImageView) v.findViewById(R.id.give_photo);
             itemView = v.findViewById(R.id.pub_layout);
-            //amount = (TextView) v.findViewById(R.id.subscriptionsAmount);
 
         }
     }

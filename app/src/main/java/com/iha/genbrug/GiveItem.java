@@ -9,17 +9,15 @@ public class GiveItem {
     private String description;
     private String imageURL;
     private long itemId;
-    private int amount;
 
 
-    public GiveItem(String newItemName, String newDescription, String imageURL, long itemId,int amount) {
+
+    public GiveItem(String newItemName, String newDescription, String imageURL, long itemId) {
         this.headline = newItemName;
         this.description = newDescription;
         this.imageURL = imageURL;
         this.itemId = itemId;
-        this.amount = amount;
-
-    }
+          }
 
     public String getHeadline() {
         return headline;
@@ -38,8 +36,5 @@ public class GiveItem {
         return itemId;
     }
 
-    public int getAmount() {
-        return amount;
-    }
 
 }

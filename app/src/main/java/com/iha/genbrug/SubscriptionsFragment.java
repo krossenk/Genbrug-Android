@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class SubscriptionsFragment extends Fragment {
     private ServerService serverService;
     private SubscriptionMessagesReceiver  receiver;
     public static getUserSubscriptionsResponse userSubscriptionsResponseList;
+    private SwipeRefreshLayout swipeContainer;
 
     private GlobalSettings  globalSettings = GlobalSettings.getInstance();
     long  userId;
@@ -45,8 +47,6 @@ public class SubscriptionsFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
-            User user = globalSettings.getUserFromPref();
-            userId = user.id;
             serverService = binder.getService();
             serverService.startGetUserSubscriptions(userId);
         }
@@ -76,7 +76,8 @@ public class SubscriptionsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        User user = globalSettings.getUserFromPref();
+        userId = user.id;
         Activity parentAct = getActivity();
 
         Intent intent = new Intent(parentAct, ServerService.class);
@@ -84,8 +85,9 @@ public class SubscriptionsFragment extends Fragment {
         parentAct.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         receiver = new SubscriptionMessagesReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONS_RESULT);
+        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_USERSUBSRIPTIONS_RESULT);
         parentAct.registerReceiver(receiver, intentFilter);
+
 
         subRecyclerView = (RecyclerView) getView().findViewById(R.id.rcview_sub);
 
@@ -96,6 +98,20 @@ public class SubscriptionsFragment extends Fragment {
         subLayoutManager = new LinearLayoutManager(getActivity());
         subRecyclerView.setLayoutManager(subLayoutManager);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainerSub);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                serverService.startGetUserSubscriptions(userId);
+
+            }
+
+        });
+
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
+                android.R.color.holo_blue_light,
+                android.R.color.holo_purple);
 
         if(userSubscriptionsResponseList != null)
         {
@@ -118,7 +134,6 @@ public class SubscriptionsFragment extends Fragment {
                 }
             }
 
-            // specify an adapter (see also next example)
             subAdapter = new SubAdapter(list);
             subRecyclerView.setAdapter(subAdapter);
 
@@ -139,7 +154,7 @@ public class SubscriptionsFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONS_RESULT)==0)
+            if (intent.getAction().compareTo(ServerService.ALL_USERSUBSRIPTIONS_RESULT)==0)
             {
                 userSubscriptionsResponseList = serverService.getUserSubscriptions();
 
@@ -153,8 +168,6 @@ public class SubscriptionsFragment extends Fragment {
                         long publicationId = subscription.publicationId.id;
                         if(FeedFragment.responseList != null)
                         {
-
-
                             for (Publication publication : FeedFragment.responseList)
                                 {
 
@@ -165,12 +178,11 @@ public class SubscriptionsFragment extends Fragment {
                                     }
                                 }
                         }
-
                     }
                 }
-
                 subAdapter = new SubAdapter(list);
                 subRecyclerView.setAdapter(subAdapter);
+                swipeContainer.setRefreshing(false);
             }
         }
     }

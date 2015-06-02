@@ -43,7 +43,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
     boolean itemSubscribedCheck = false;
     private Context ctx;
     long publicationId;
-    ServerService serverService;
+    long secPublicationId;
+    boolean buttonCheck = false;
+    ServerService serverService = new ServerService();
 
     private ServiceConnection serviceConnection;
 
@@ -54,6 +56,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         this.ctx = context;
         mDataset = myDataset;
         this.serviceConnection = serviceConnection;
+
     }
 
     // Create new views (invoked by the layout manager)
@@ -75,14 +78,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final GenbrugItemViewHolder holder,  final int position) {
+    public void onBindViewHolder(final GenbrugItemViewHolder holder, final int  position) {
         // Get element from dataset for given position
         final GenbrugItem gi = mDataset.get(position);
 
         // Insert the contents of the current element into the view
         holder.tvHeadline.setText(gi.getHeadline());
         holder.tvDesc.setText(gi.getDescription());
-        publicationId = gi.getItemId();
 
         final String addressString = gi.getAddress().street + "," + gi.getAddress().zipcode + " " + gi.getAddress().city;
         holder.tvAddress.setText(addressString);
@@ -125,13 +127,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             if(subList != null)
             {
                 for (Subscription sub : subList) {
-                    if (sub.publicationId.id == publicationId) {
-                        itemSubscribedCheck = true;
+                    if (sub.publicationId.id == gi.getItemId()) {
+                        buttonCheck = true;
                     }
-
                 }
 
-                if(itemSubscribedCheck)
+                if(buttonCheck)
                 {
                    holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
 
@@ -139,10 +140,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
                 else {
                     holder.ibSubscribe.setImageResource(R.drawable.ic_sub_not_selected);
                 }
-            }
-
-            else {
-                itemSubscribedCheck = false;
             }
         }
 
@@ -155,20 +152,32 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
             public void onClick(View view) {
                 if (view.getId() == R.id.ib_feed_subscribe) {
                     //If user clicks on subscribe button.
-
-                    if(itemSubscribedCheck)
+                   itemSubscribedCheck = false;
+                    if(userId != 0)
                     {
-                        Toast.makeText(ctx, gi.getHeadline() + " is already subscribed", Toast.LENGTH_SHORT).show();
+                        if(subList != null)
+                        {
+                            for (Subscription sub : subList) {
+                                if (sub.publicationId.id == gi.getItemId()) {
+                                    itemSubscribedCheck = true;
+
+                                }
+
+                            }
+                            if(itemSubscribedCheck) {
+                                Toast.makeText(ctx, gi.getHeadline() + " is already subscribed", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                serverService.createSubscription(userId, gi.getItemId());
+                                Toast.makeText(ctx, gi.getHeadline()+ " is subscribed", Toast.LENGTH_SHORT).show();
+                                holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
+                                itemSubscribedCheck = true;
+                            }
+                        }
 
                     }
 
-                    else
-                    {
-                        serverService.createSubscription(userId, publicationId);
-                        Toast.makeText(ctx, gi.getHeadline()+ " is subscribed", Toast.LENGTH_SHORT).show();
-                        holder.ibSubscribe.setImageResource(R.drawable.ic_sub_selected);
-                        itemSubscribedCheck = true;
-                    }
                 }
             }
         });
@@ -176,16 +185,22 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GenbrugItemVie
         imgLoader = VolleySingleton.getInstance().getImageLoader();
         holder.ivPhoto.setImageUrl(gi.getImageURL(), imgLoader);
 
+        final int finalPosition = position;
         holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 long itemId = gi.getItemId();
-                pos = position;
+                pos = finalPosition;
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
 
                 intent.putExtra("itemId",itemId);
                 v.getContext().startActivity(intent);
             }
         });
+    }
+
+    public long getSecondPublication(long pubId)
+    {
+        return pubId;
     }
 
     public static int getPostion ()

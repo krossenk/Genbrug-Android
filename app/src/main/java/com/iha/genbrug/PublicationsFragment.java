@@ -35,16 +35,9 @@ public class PublicationsFragment extends Fragment{
     private RecyclerView.LayoutManager pubLayoutManager;
     private GlobalSettings  globalSettings =GlobalSettings.getInstance();
     long  userId;
-    private ServerService serverService;
-    User user = globalSettings.getUserFromPref();
+     User user = globalSettings.getUserFromPref();
     long publicationUserId;
     Activity parentActivity = getActivity();
-    private getPublicationSubscriptionsResponse publicationSubscriptionsResponseList;
-    private AmountMessageReceiver  receiver;
-    int amount;
-    long publicationId;
-    ArrayList<Long> amountList = new ArrayList<>();
-
 
 
 
@@ -52,55 +45,11 @@ public class PublicationsFragment extends Fragment{
         // Required empty public constructor
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
-
-            //User user = globalSettings.getUserFromPref();
-            userId = user.id;
-
-            if(FeedFragment.responseList != null)
-            {
-
-                for (Publication pub : FeedFragment.responseList)
-                {
-                    publicationUserId = pub.userId.id;
-                    if(publicationUserId == userId)
-                    {
-                       /* itemId = pub.id;*/
-                        amountList.add(pub.id);
-                    }
-
-                }
-
-
-                for(long pubId : amountList)
-                {
-                    serverService = binder.getService();
-                    serverService.startGetPublicationSubscriptions(pubId);
-                }
-
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         parentActivity = getActivity();
-        Intent intent = new Intent(parentActivity, ServerService.class);
 
-        parentActivity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        receiver = new AmountMessageReceiver();
-        IntentFilter intentFilter = new IntentFilter(ServerService.ALL_PUBLICATIONSUBSRIPTIONS_RESULT);
-        parentActivity.registerReceiver(receiver, intentFilter);
 
         pubRecyclerView = (RecyclerView) getView().findViewById(R.id.rcview_pub);
 
@@ -113,25 +62,16 @@ public class PublicationsFragment extends Fragment{
 
         User user = globalSettings.getUserFromPref();
         userId = user.id;
+
         final ArrayList<GiveItem> GiveList = new ArrayList<>();
 
         if(FeedFragment.responseList != null) {
             for (Publication pub : FeedFragment.responseList) {
-                amount = 0;
+
                 publicationUserId = pub.userId.id;
                 if(publicationUserId == userId) {
-                    if(publicationSubscriptionsResponseList != null) {
-                       for (Subscription sub : publicationSubscriptionsResponseList) {
-                           publicationId = sub.publicationId.id;
 
-                           for (long pubId : amountList) {
-                               if (sub.publicationId.id == pubId) {
-                                   amount++;
-                               }
-                           }
-                       }
-                    }
-                    GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id,amount);
+                    GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id);
                     GiveList.add(giveItem);
                 }
             }
@@ -149,37 +89,4 @@ public class PublicationsFragment extends Fragment{
         return inflater.inflate(R.layout.fragment_publications, container, false);
     }
 
-    private class AmountMessageReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().compareTo(ServerService.ALL_PUBLICATIONSUBSRIPTIONS_RESULT) == 0) {
-                final ArrayList<GiveItem> GiveList = new ArrayList<>();
-                if(FeedFragment.responseList != null) {
-                    for (Publication pub : FeedFragment.responseList) {
-                        amount = 0;
-                        publicationUserId = pub.userId.id;
-                        if(publicationUserId == userId)
-                        {
-                            publicationSubscriptionsResponseList = serverService.getPublicationSubscriptions();
-                            for(Subscription sub: publicationSubscriptionsResponseList)
-                            {
-                                publicationId = sub.publicationId.id;
-                                for(long pubId : amountList)
-                                {
-                                    if(sub.publicationId.id == pubId)
-                                    {
-                                        amount ++;
-                                    }
-                                }
-
-                            }
-                            //amount = publicationSubscriptionsResponseList.size();
-                            GiveItem giveItem = new GiveItem(pub.title,pub.description,pub.imageURL,pub.id,amount);
-                            GiveList.add(giveItem);
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
