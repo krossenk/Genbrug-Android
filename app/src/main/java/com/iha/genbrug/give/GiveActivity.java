@@ -22,7 +22,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -177,14 +176,6 @@ public class GiveActivity extends Activity implements View.OnClickListener {
         // BUTTON PICK END TIME
         btnPickEndTime = (Button) findViewById(R.id.btn_pick_end_time);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        //ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        //categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-       // spinnerCategories.setAdapter(categoriesAdapter);
-
-        // SOURCE: https://github.com/MikeOrtiz/TouchImageView
         ivChosenImage = (TouchImageView) findViewById(R.id.iv_chosen_image);
 
         // Square the background image dynamically
@@ -272,8 +263,8 @@ public class GiveActivity extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // IMPORTANT: INCLUDE THIS IN SOURCES, used example from following tutorial
-        // http://programmerguru.com/android-tutorial/how-to-pick-image-from-gallery/
+        // Loading an image from gallery, scaling it, rotating if necessary and displaying image
+        // SOURCE: http://programmerguru.com/android-tutorial/how-to-pick-image-from-gallery/
         try{
             // When an Image is picked
             if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK

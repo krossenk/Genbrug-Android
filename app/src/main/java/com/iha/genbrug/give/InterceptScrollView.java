@@ -10,8 +10,6 @@ import android.widget.ScrollView;
  */
 public class InterceptScrollView extends ScrollView {
 
-    // SOURCE: http://stackoverflow.com/questions/20590236/scrollview-with-children-view-how-to-intercept-scroll-conditionally
-
     public InterceptScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
