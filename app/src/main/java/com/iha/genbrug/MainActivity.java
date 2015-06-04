@@ -48,7 +48,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         viewPager.setAdapter(new MyAdapter(fragmentManager));
-        // Bind the tabs to the ViewPager
+        // Pager sliding tabs:
+        // https://github.com/astuetz/PagerSlidingTabStrip
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(viewPager);
     }
